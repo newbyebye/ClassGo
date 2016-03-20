@@ -1,9 +1,9 @@
 # ClassGo
 
 # Requirements 
-node 5.xx
-express
-handlebars
+node 5.xx  
+express  
+handlebars  
 bootstrap 3.xx
 
 # Start
