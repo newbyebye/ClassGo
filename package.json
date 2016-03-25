@@ -23,7 +23,7 @@
     "grunt-node-inspector": "^0.4.1",
     "time-grunt": "^0.3.1",
     "grunt-concurrent": "^0.5.0",
-    "grunt-nodemon": "^0.2.1", 
+    "grunt-nodemon": "^0.2.1",
     "open": "0.0.5"
   },
   "engines": {
@@ -33,5 +33,16 @@
   "scripts": {
     "start": "node keystone.js"
   },
-  "main": "keystone.js"
+  "main": "keystone.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/newbyebye/ClassGo.git"
+  },
+  "author": "newbyebye",
+  "license": "GPLv2",
+  "bugs": {
+    "url": "https://github.com/newbyebye/ClassGo/issues"
+  },
+  "homepage": "https://github.com/newbyebye/ClassGo#readme",
+  "description": "Interactive Class for Teacher and Students"
 }
