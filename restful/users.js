@@ -10,13 +10,13 @@ var accessTokenDao = require('../dao/accessTokenDao');
 
 /* 
 *  regist new user
-*  POST /api/user/new
+*  POST /v1/user
 *  body {"username":"demo", "password":"demo", "fullname":"fullname"}
 *  
 *  success {"token":"sadfasdf", "ttl":1209600, userId:1}
 *  fail {"error":{"name":"Error", "status":500, "message":"login failed", "statusCode":401}}
 */
-router.post('/user/new', function(req, res, next) {
+router.post('/user', function(req, res, next) {
   	userDao.add(req.body, function(err, result){
   		if (err) {
   			next(err);
@@ -57,7 +57,7 @@ router.post('/user/new', function(req, res, next) {
 
 /*
 *  user login
-*  POST /api/user/login
+*  POST /v1/user/login
 *  body {"username":"xxx", "password":"xxxx"}
 * 
 *  success {"token":"xx", "ttl":1209600,"userId":"sdfasdf"}
@@ -67,6 +67,7 @@ router.post('/user/new', function(req, res, next) {
 router.post('/user/login', function(req, res, next){
   userDao.login(req.body, function(err, result){
       if (err || result.length == 0) {
+          console.log(err);
           var err = new Error('login failed');
           err.status = 401;
           next(err);
@@ -93,7 +94,7 @@ router.post('/user/login', function(req, res, next){
 
 /*
 *  user logout
-*  POST /api/user/logout
+*  POST /v1/user/logout
 *  body {"token":"xxx"}
 *
 *  success {}
@@ -113,7 +114,7 @@ router.post('/user/logout', checkToken, function(req, res, next){
 
 /*
 *   get user info
-*  	GET /api/user/:id
+*  	GET /v1/user/:id
 *   get user info    
 *
 */
@@ -134,11 +135,11 @@ router.get('/user/:id', function(req, res, next){
 
 /**
 *   update user info
-*	  POST /api/user/:id
+*	  PUT /v1/user/:id
 *   update user
 * 
 */
-router.post('/user/:id', checkToken, function(req, res, next){
+router.put('/user/:id', checkToken, function(req, res, next){
     console.log(req.api_user, req.params.id);
     if (req.api_user.userId != req.params.id) {
         var err = new Error('deny access');

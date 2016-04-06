@@ -13,13 +13,13 @@ var signDao = require('../dao/signDao');
 
 /* 
 *  create new class
-*  POST /api/post/new
+*  POST /v1/post
 *  body {"title":"demo", "body":"demo"}
 *  
 *  success {"id":1}
 *  fail {"error":{"name":"Error", "status":500, "message":"login failed", "statusCode":401}}
 */
-router.post('/post/new', checkToken, function(req, res, next) {
+router.post('/post', checkToken, function(req, res, next) {
     req.body.authorId = req.api_user.userId;
   	postDao.add(req.body, function(err, result){
   		if (err) {
@@ -36,7 +36,7 @@ router.post('/post/new', checkToken, function(req, res, next) {
 
 /*
 *   get class info
-*  	GET /api/post/:id
+*  	GET /v1/post/:id
 *
 */
 router.get('/post/:id', function(req, res, next){
@@ -55,10 +55,10 @@ router.get('/post/:id', function(req, res, next){
 
 /**
 *   update class info
-*	  POST /api/post/:id/edit
+*	  PUT /v1/post/:id
 * 
 */
-router.post('/post/:id/edit', checkToken, function(req, res, next){
+router.put('/post/:id', checkToken, function(req, res, next){
     postDao.queryById({id: req.params.id}, function(err, result){
       if (err || result.length == 0) {
           var err = new Error('not found');
@@ -90,10 +90,10 @@ router.post('/post/:id/edit', checkToken, function(req, res, next){
 
 /**
 *   delete post info
-*   POST /api/post/:id/delete
+*   DELETE /v1/post/:id
 * 
 */
-router.post('/post/:id/delete', checkToken, function(req, res, next){
+router.delete('/post/:id', checkToken, function(req, res, next){
     postDao.queryById({id: req.params.id}, function(err, result){
       if (err || result.length == 0) {
           var err = new Error('not found');
@@ -124,11 +124,11 @@ router.post('/post/:id/delete', checkToken, function(req, res, next){
 
 /**
 *  start lesson
-*  POST /api/post/:id/lesson/new
+*  POST /v1/post/:id/lesson
 *  BODY: {"status": 1, "starttime": "2010-10-05", "timeout": 600, "lng":12312.1231, "lat":1.2342} 
 *  success: {"id":1}
 */
-router.post('/post/:id/lesson/new', checkToken, function(req, res, next){
+router.post('/post/:id/lesson', checkToken, function(req, res, next){
     postDao.queryById({id: req.params.id}, function(err, result){
       if (err || result.length == 0) {
           var err = new Error('not found');
@@ -162,10 +162,10 @@ router.post('/post/:id/lesson/new', checkToken, function(req, res, next){
 
 /**
 *  stop lesson
-*  POST /post/lesson/:id/edit
+*  PUT /v1/post/lesson/:id
 *  BODY: {"status": 2, "lng":12312.1231, "lat":1.2342} 
 */
-router.post('/post/lesson/:id/edit', checkToken, function(req, res, next){
+router.put('/post/lesson/:id', checkToken, function(req, res, next){
     lessonDao.queryById({id: req.params.id}, function(err, result){
       if (err || result.length == 0) {
           var err = new Error('not found');
@@ -197,10 +197,10 @@ router.post('/post/lesson/:id/edit', checkToken, function(req, res, next){
 
 /**
 * student sign
-* POST /api/post/lesson/:id/sign/new
+* POST /v1/post/lesson/:id/sign
 * BODY: {"lng":12312.1231, "lat":1.2342}
 */
-router.post('/post/lesson/:id/sign/new', checkToken, function(req, res, next){
+router.post('/post/lesson/:id/sign', checkToken, function(req, res, next){
     lessonDao.queryById({id: req.params.id}, function(err, result){
       if (err || result.length == 0) {
           var err = new Error('not found');

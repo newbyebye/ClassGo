@@ -51,6 +51,11 @@ module.exports = {
     update: function (param, callback) {
         
         pool.getConnection(function(err, connection) {
+            if (err) {
+                console.log('[INSERT ERROR] - ', err.message);
+                callback(err);
+                return;
+            }
             // email=? emailVerified=? gender=? photo=? fullname=? mobile=? region=? school=? brief=? where id=?
             connection.query($user.update, 
                 [param.email, param.emailVerified, param.gender, param.photo, param.fullname, 
@@ -63,6 +68,12 @@ module.exports = {
     },
     login: function(param, callback) {
         pool.getConnection(function(err, connection) {
+            if (err) {
+                console.log('[INSERT ERROR] - ', err.message);
+                callback(err);
+                return;
+            }
+
             connection.query($user.login, [param.username, param.password], function(err, result) {
                 callback(err, result);
                 connection.release();
@@ -71,6 +82,12 @@ module.exports = {
     },
     queryById: function (param, callback) {
         pool.getConnection(function(err, connection) {
+            if (err) {
+                console.log('[INSERT ERROR] - ', err.message);
+                callback(err);
+                return;
+            }
+
             connection.query($user.queryById, param.id, function(err, result) {
                 callback(err, result);
                 connection.release();
@@ -79,6 +96,12 @@ module.exports = {
     },
     queryAll: function (param, callback) {
         pool.getConnection(function(err, connection) {
+            if (err) {
+                console.log('[INSERT ERROR] - ', err.message);
+                callback(err);
+                return;
+            }
+            
             connection.query($user.queryAll, function(err, result) {
                 callback(err, result);
                 connection.release();

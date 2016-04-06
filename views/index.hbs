@@ -1,2 +1,30 @@
-<h1>{{title}}</h1>
-<p>Welcome to {{title}}</p>
+<form class="form-signin" role="form">
+     	
+    <h2 class="form-signin-heading">请输入账号密码</h2>
+	<input type="text" id="username" name="username" class="form-control" placeholder="帐号名" required autofocus>
+    <input type="password" id="password" name="password" class="form-control" placeholder="密码" required>
+    <div class="checkbox">
+      <label>
+        <input type="checkbox" value="remember-me"> 记住我
+      </label>
+    </div>
+    <div id="alert" class="alert alert-danger" role="alert" style="display: none">
+	  <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+	  <strong>Warning!</strong> 用户名或密码错误
+	</div>
+    <button class="btn btn-lg btn-primary btn-block" type="button" onClick="login();">登陆</button>
+</form>
+
+<script type="text/javascript">
+function login(){
+	var data = $('form').serializeObject();
+	
+	CG.UserLoginController.login(data, function(result){   
+			window.location = "./home";
+		}, 
+		function(err) {
+			$('#alert').show();
+		}
+	);
+}
+</script>
