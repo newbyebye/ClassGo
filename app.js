@@ -17,6 +17,9 @@ var routes = require('./routes/index');
 var users = require('./restful/users');
 var posts = require('./restful/posts');
 
+// wechat menu
+var wechat = require('./routes/wechat');
+
 var app = express();
 
 // view engine setup
@@ -36,6 +39,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', routes);
 app.use('/v1', users);
 app.use('/v1', posts);
+
+wechat.createMenu();
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

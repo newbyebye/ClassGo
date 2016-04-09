@@ -2,7 +2,7 @@
 
 var url = require('url');
 var crypto = require('crypto');
-
+var request = require('request');
 
 module.exports = {
     checkSignature: function(req, res, next){
@@ -29,5 +29,60 @@ module.exports = {
         }
         // 消息真实性验证通过，继续后面的处理
         return next();
+    },
+
+    getToken: function(callback) {
+        var tokenUrl = 'https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appId=' + process.env.WECHAT_APPID + '&secret=' + process.env.WECHAT_SCRET;
+
+        request.get(tokenUrl, function(error, response, body) {
+            if (error) {
+                callback(error);
+            }
+            else {
+
+                try {
+                    var token = JSON.parse(body).access_token;
+                    callback(null, token);
+                }
+                catch (e) {
+                    callback(e);
+                }
+            }
+        });
+    },
+
+    createMenu: function() {
+        this.getToken(function(error, token){
+            if (error) {
+                console.log(error);
+                return;
+            }
+
+            var data = {
+                "button" :[
+                    {
+                        "type": "view",
+                        "name": "ClassGo",
+                        "url": "http://classgo.newbyebye.com"
+                    },
+                    {
+                        "type": "view",
+                        "name": "About",
+                        "url": "http://classgo.newbyebye.com/app"
+                    },
+                ]
+            }
+
+            var options = {
+                headers: {"Connection": "close"},
+                url: 'https://api.weixin.qq.com/cgi-bin/menu/create?access_token='+token,
+                method: 'POST',
+                json: true,
+                body: data
+            };
+            request(options, function(error, response, body) {
+                console.log(response);
+            });
+        });
     }
 };
