@@ -13,3 +13,5 @@ version 0.1 2016-04-30
 
 # Start
 DEBUG=ClassGo npm start
+
+pm2 start bin/www
