@@ -63,7 +63,7 @@ module.exports = {
                     {
                         "type": "view",
                         "name": "ClassGo",
-                        "url": "http://classgo.newbyebye.com"
+                        "url": "http://classgo.newbyebye.com/home.html"
                     },
                     {
                         "type": "view",

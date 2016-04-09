@@ -40,7 +40,7 @@ app.use('/', routes);
 app.use('/v1', users);
 app.use('/v1', posts);
 
-wechat.createMenu();
+//wechat.createMenu();
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

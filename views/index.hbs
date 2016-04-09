@@ -20,7 +20,7 @@ function login(){
 	var data = $('form').serializeObject();
 	
 	CG.UserLoginController.login(data, function(result){   
-			window.location = "./home";
+			window.location = "./home.html";
 		}, 
 		function(err) {
 			$('#alert').show();
