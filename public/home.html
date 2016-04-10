@@ -1,241 +1,225 @@
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
-    <title>ClassGo</title>
-
-    <link rel="stylesheet" href="./lib/weui/weui.min.css">
-    <link rel="stylesheet" href="./lib/jquery-weui/jquery-weui.css">
-    <link rel="stylesheet" href="./css/example.css"/>
-
-
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no">
+<title>ClassGo</title>
+<link rel="stylesheet" href="js/mobilebone.css">
+<link rel="stylesheet" href="css/wechat.css">
+<link rel="stylesheet" href="./lib/weui/weui.min.css">
 </head>
-<body ontouchstart>
-    <div class="container" id="container">
 
-    </div>
-    
-    <script type="text/html" id="tpl_home">
-    
-    <div id="home_pull" class="weui-pull-to-refresh-layer" style="display:none;">
-      <div class='pull-to-refresh-arrow'></div>
-      <div class='pull-to-refresh-preloader'></div>
-      <div class="down">下拉刷新</div>
-      <div class="up">释放刷新</div>
-      <div class="refresh">正在刷新</div>
-    </div>
-
-    <div class="weui_tab">
-        <div class="weui_tab_bd">
-            <div class="weui_panel weui_panel_access">
-            <div class="weui_panel_hd"></div>
-            <div class="weui_panel_bd" >  
-                <div id="home_content">
-                </div>
-                <a class="weui_panel_ft" href="javascript:void(0);" onclick="loadmore()">查看更多</a>
-            </div>
-        </div>
-
-        </div>
-        <div class="weui_tabbar">
-            <a href="#/" class="weui_tabbar_item weui_bar_item_on" >
-                <div class="weui_tabbar_icon">
-                    <img src="./img/icon_nav_article.png" alt="">
-                </div>
-                <p class="weui_tabbar_label">发现</p>
-            </a>
-
-            <a href="#/create" class="weui_tabbar_item ">
-                <div class="weui_tabbar_icon">
-                    <img src="./img/icon_nav_button.png" alt="">
-                </div>
-                <p class="weui_tabbar_label">创建</p>
-            </a>
+<body>
+<div class="header out" data-role="header">
+    <h1>ClassGo</h1>
+    <a href="#pageAddClass" class="icon-add" data-ajax="false">添加</a>
+    <a href="../index.html" class="icon-search" data-ajax="false">搜索</a>
+</div>
+<div id="pageHome" class="page out" data-title="ClassGo">
+    <div class="content">
+        <div class="" id="contentHome">
             
-            <a href="#/about" class="weui_tabbar_item">
-                <div class="weui_tabbar_icon">
-                    <img src="./img/icon_nav_cell.png" alt="">
-                </div>
-                <p class="weui_tabbar_label">我</p>
-            </a>
         </div>
     </div>
-    </script>
+</div>
 
-
-    <script type="text/html" id="tpl_create">
-
-    <div class="weui_tab">
-        <div class="weui_tab_bd">
-            <div class="weui_panel weui_panel_access">
-
-            <div class="weui_panel_bd">             
-                <div class="weui_cells_title">新建课程</div>
-                <form class="form-signin" role="create_form">
-                <div class="weui_cells weui_cells_form">
-                    <div class="weui_cell">
-                        <div class="weui_cell_hd"><label class="weui_label">课程名称</label></div>
-                        <div class="weui_cell_bd weui_cell_primary">
-                            <input id="create_title" class="weui_input"  placeholder="请输入课程名称"/>
-                        </div>
+<div id="pageAddClass" class="page out">
+    <div class="header" data-role="header">
+        <a href="#pageHome" class="icon-back" data-rel="back">返回</a>
+        <h1>新建课程</h1>
+    </div>
+    <div class="content">
+        <div class="wechat-detail">
+            <div class="weui_cells weui_cells_form">
+                <div class="weui_cell">
+                    <div class="weui_cell_hd"><label class="weui_label">课程名称</label></div>
+                    <div class="weui_cell_bd weui_cell_primary">
+                        <input id="create_title" class="weui_input"  placeholder="请输入课程名称"/>
                     </div>
-                    <div class="weui_cell">
-                        <div class="weui_cell_hd"><label class="weui_label">上课时间</label></div>
-                        <div class="weui_cell_bd weui_cell_primary">
-                            <input id="create_time" class="weui_input"  placeholder="请输入上课时间"/>
-                        </div>
-                    </div>
-                    <div class="weui_cell">
-                        <div class="weui_cell_hd"><label class="weui_label">上课地点</label></div>
-                        <div class="weui_cell_bd weui_cell_primary">
-                            <input id="create_address"  class="weui_input"  placeholder="请输入上课地点"/>
-                        </div>
-                    </div>
-
                 </div>
-                
+
+                <div class="weui_cell">
+                    <div class="weui_cell_hd"><label class="weui_label">上课时间</label></div>
+                    <div class="weui_cell_bd weui_cell_primary">
+                        <input id="create_time" class="weui_input"  placeholder="请输入上课时间"/>
+                    </div>
+                </div>
+
+                <div class="weui_cell">
+                    <div class="weui_cell_hd"><label class="weui_label">上课地点</label></div>
+                    <div class="weui_cell_bd weui_cell_primary">
+                        <input id="create_address"  class="weui_input"  placeholder="请输入上课地点"/>
+                    </div>
+                </div>
+                <h5 class="contact-h">课程简介</h5>
                 <div class="weui_cells_title"></div>
                     <div class="weui_cells weui_cells_form">
                     <div class="weui_cell">
                         <div class="weui_cell_bd weui_cell_primary">
-                            <textarea id="create_body" class="weui_textarea" placeholder="请输入课程说明" rows="3"></textarea>
+                            <textarea id="create_body" class="weui_textarea" placeholder="请输入课程说明" rows="5"></textarea>
                             <div  class="weui_textarea_counter"><span>0</span>/200</div>
                         </div>
                     </div>
                 </div>
-                </form>
 
                 <div class="weui_cells_tips"></div>
                 <div class="weui_btn_area">
                     <a class="weui_btn weui_btn_primary" href="javascript:postCreate()" id="showTooltips">确定</a>
                 </div>
+            </div>        
+        </div>
+        
+    </div>
+</div>
+
+<div id="pageChatList" class="page out">
+    <div class="header" data-role="header">
+        <a href="#pageHome" class="icon-back" data-rel="back">返回</a>
+        <h1>课程</h1>
+    </div>
+    <div class="content">
+        <div class="wechat-detail">
+            <img id="screenShot" data-src="img/screenshot/1.jpg" data-width="720" data-height="2405">          
+        </div>
+        <div class="loading"></div>
+    </div>
+</div>
+
+<div id="pageContacts" class="page out">
+    <div class="content">
+        <div>
+            <div class="contact-group">
+                <div class="contact-list">
+                    <img src="img/head/contact-1.png">
+                    <nickname>新的朋友</nickname>
+                </div>
+                <div class="contact-list">
+                    <img src="img/head/contact-2.png">
+                    <nickname>群聊</nickname>
+                </div>
+                <div class="contact-list">
+                    <img src="img/head/contact-3.png">
+                    <nickname>标签</nickname>
+                </div>
+                <div class="contact-list">
+                    <img src="img/head/contact-4.png">
+                    <nickname>公众号</nickname>
+                </div>
+            </div>
+            <h5 class="contact-h">企业号</h5>
+            <div class="contact-group">
+                <div class="contact-list">
+                    <img src="img/head/contact-5.png">
+                    <nickname>腾讯企业号</nickname>
+                </div>
+            </div>
+            <h5 class="contact-h">A</h5>
+            <div class="contact-group">
+                <div class="contact-list">
+                    <img src="img/head/header-1.jpg">
+                    <nickname>爱钓鱼的小伙</nickname>
+                </div>
+                <div class="contact-list">
+                    <img src="img/head/header-7.jpg">
+                    <nickname>阿里巴巴</nickname>
+                </div>
+            </div>
+            <h5 class="contact-h">B</h5>
+            <div class="contact-group">
+                <div class="contact-list">
+                    <img src="img/head/header-8.gif">
+                    <nickname>Big-laugh</nickname>
+                </div>
+            </div>
+            <h5 class="contact-h">M</h5>
+            <div class="contact-group">
+                <div class="contact-list">
+                    <img src="img/head/header-0.jpg">
+                    <nickname>Mobilebone</nickname>
+                </div>
+            </div>
+            <h5 class="contact-h">Q</h5>
+            <div class="contact-group">
+                <div class="contact-list">
+                    <img src="img/head/header-6.jpg">
+                    <nickname>乔巴</nickname>
+                </div>
             </div>
         </div>
-
-
-        </div>
-        <div class="weui_tabbar">
-            <a href="#/" class="weui_tabbar_item" >
-                <div class="weui_tabbar_icon">
-                    <img src="./img/icon_nav_article.png" alt="">
-                </div>
-                <p class="weui_tabbar_label">发现</p>
-            </a>
-
-            <a href="#/create" class="weui_tabbar_item weui_bar_item_on">
-                <div class="weui_tabbar_icon">
-                    <img src="./img/icon_nav_button.png" alt="">
-                </div>
-                <p class="weui_tabbar_label">创建</p>
-            </a>
-            
-            <a href="#/about" class="weui_tabbar_item">
-                <div class="weui_tabbar_icon">
-                    <img src="./img/icon_nav_cell.png" alt="">
-                </div>
-                <p class="weui_tabbar_label">我</p>
-            </a>
-        </div>
     </div>
-    </script>
+</div>
 
-    <script type="text/html" id="tpl_about">
-
-    <div class="weui_tab">
-        <div class="weui_tab_bd">
-            <div class="weui_panel weui_panel_access">
-            <div class="weui_panel_bd">
-                        
-                <div class="weui_cells">
-                    <div class="weui_cell">
-                        <div class="weui_cell_bd weui_cell_primary">
-                            <p>头像</p>
-                        </div>
-                        <div class="weui_cell_ft">
-                            <img src="./img/vcode.jpg" />
-                        </div>
-                    </div>
-
-                    <div class="weui_cell">
-                        <div class="weui_cell_bd weui_cell_primary">
-                            <p>姓名</p>
-                        </div>
-                        <div class="weui_cell_ft">罗云峰</div>
-                    </div>
-
-                    <div class="weui_cell">
-                        <div class="weui_cell_bd weui_cell_primary">
-                            <p>专业</p>
-                        </div>
-                        <div class="weui_cell_ft">自动化</div>
-                    </div>
-
-                    <div class="weui_cell">
-                        <div class="weui_cell_bd weui_cell_primary">
-                            <p>学校</p>
-                        </div>
-                        <div class="weui_cell_ft">华中科技大学</div>
-                    </div>
-
-                    <div class="weui_cell">
-                        <div class="weui_cell_bd weui_cell_primary">
-                            <p>个人简介</p>
-                        </div>
-                   
-                        <div class="weui_cell_ft">
-                            <textarea class="weui_textarea" placeholder="请输入课程说明" rows="10">1994年华中理工大学系统工程专业毕业，获博士学位。1997年华中理工大学系统工程博士后出站后留校工作。现为华中科技大学系统工程研究所教授、博士生导师。湖北省系统工程学会理事、副秘书长，武汉市系统工程学会理事。留校工作后一直从事决策分析及相关领域的教学和科研工作。</textarea>
-                        </div>
-
+<div id="pageMe" class="page out">
+    <div class="content">
+        <div>
+            <div class="me-group">
+                <div class="me-header">
+                    <img class="me-head" src="img/head/header-0.jpg">
+                    <div class="me-detail">
+                        <h6>Mobilebone</h6>
+                        <img src="img/account.png" width="153" height="16">
                     </div>
                 </div>
-
+            </div>
+            <div class="me-group">
+                <div class="me-list">
+                    <i class="icon-me icon-me-1"></i>相册
+                </div>
+                <div class="me-list">
+                    <i class="icon-me icon-me-2"></i>收藏
+                </div>
+            </div>
+            <div class="me-group">
+                <div class="me-list">
+                    <i class="icon-me icon-me-3"></i>钱包
+                </div>
+            </div>
+            <div class="me-group">
+                <div class="me-list">
+                    <i class="icon-me icon-me-4"></i>设置
+                </div>
             </div>
         </div>
-
-        </div>
-        <div class="weui_tabbar">
-            <a href="#/" class="weui_tabbar_item" >
-                <div class="weui_tabbar_icon">
-                    <img src="./img/icon_nav_article.png" alt="">
-                </div>
-                <p class="weui_tabbar_label">发现</p>
-            </a>
-
-            <a href="#/create" class="weui_tabbar_item">
-                <div class="weui_tabbar_icon">
-                    <img src="./img/icon_nav_button.png" alt="">
-                </div>
-                <p class="weui_tabbar_label">创建</p>
-            </a>
-            
-            <a href="#/about" class="weui_tabbar_item weui_bar_item_on">
-                <div class="weui_tabbar_icon">
-                    <img src="./img/icon_nav_cell.png" alt="">
-                </div>
-                <p class="weui_tabbar_label">我</p>
-            </a>
-        </div>
     </div>
-    </script>
+</div>
 
-    <script src="./lib/jquery/jquery-1.10.2.js"></script>  
-    <script src="./lib/jquery/jquery.json-2.4.js"></script>
-    <script src="./lib/jquery-weui/jquery-weui.js"></script>
-    <script src="js/classgo.js"></script>
-    <script src="./lib/weui/zepto.min.js"></script>
-    <script src="./lib/weui/router.min.js"></script>
-    <script src="./js/example.js"></script>
+<div class="footer out" data-role="footer">
+    <a href="#pageHome" data-rel="auto">
+        <i class="icon-wechat"></i>首页
+    </a>
+    <a href="#pageContacts" data-rel="auto">
+        <i class="icon-contacts"></i>发现
+    </a>
+
+    <a href="#pageMe" data-rel="auto">
+        <i class="icon-mes"></i>我
+    </a>
+</div>
+
+<script src="js/iscroll-lite.js"></script>
+
+<script src="js/zepto-docs.js"></script>
+<!--zepto或者fastclick都是可以的
+-->
+<!--<script src="js/fastclick.js"></script>
+<script>
+FastClick.attach(document.body);
+</script>-->
+<script src="js/mobilebone.js"></script>
+<script src="js/wechat.js"></script>
+<script src="lib/jquery/jquery-1.10.2.js"></script>  
+<script src="lib/jquery/jquery.json-2.4.js"></script>
+<script src="js/classgo.js"></script>
 
 <script type="text/javascript">
     var g_skip = 0;
-    var page = 5;
+    var page = 20;
 
     function postCreate(){
         var data = {title:$(create_title).val(), body:$(create_body).val(), time: $(create_time).val(), address: $(create_address).val()};
         
         CG.PostController.submit(data, function(result){   
-                window.location = "./home.html";
+                //window.location = "./home.html";
                 // view result.id
             }, 
             function(err) {
@@ -247,7 +231,14 @@
     function loadHomeData(skip, limit){
         CG.PostController.get('/v1/post?filter={"order":"updateAt","skip":'+skip+',"limit":'+limit+'}', function(data){
             data.forEach(function(e){
-                $(home_content).append('<a href="javascript:void(0);" class="weui_media_box weui_media_appmsg"> <div class="weui_media_hd"><img class="weui_media_appmsg_thumb" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAHgAAAB4CAMAAAAOusbgAAAAeFBMVEUAwAD///+U5ZTc9twOww7G8MYwzDCH4YcfyR9x23Hw+/DY9dhm2WZG0kbT9NP0/PTL8sux7LFe115T1VM+zz7i+OIXxhes6qxr2mvA8MCe6J6M4oz6/frr+us5zjn2/fa67rqB4IF13XWn6ad83nxa1loqyirn+eccHxx4AAAC/klEQVRo3u2W2ZKiQBBF8wpCNSCyLwri7v//4bRIFVXoTBBB+DAReV5sG6lTXDITiGEYhmEYhmEYhmEYhmEY5v9i5fsZGRx9PyGDne8f6K9cfd+mKXe1yNG/0CcqYE86AkBMBh66f20deBc7wA/1WFiTwvSEpBMA2JJOBsSLxe/4QEEaJRrASP8EVF8Q74GbmevKg0saa0B8QbwBdjRyADYxIhqxAZ++IKYtciPXLQVG+imw+oo4Bu56rjEJ4GYsvPmKOAB+xlz7L5aevqUXuePWVhvWJ4eWiwUQ67mK51qPj4dFDMlRLBZTqF3SDvmr4BwtkECu5gHWPkmDfQh02WLxXuvbvC8ku8F57GsI5e0CmUwLz1kq3kD17R1In5816rGvQ5VMk5FEtIiWislTffuDpl/k/PzscdQsv8r9qWq4LRWX6tQYtTxvI3XyrwdyQxChXioOngH3dLgOFjk0all56XRi/wDFQrGQU3Os5t0wJu1GNtNKHdPqYaGYQuRDfbfDf26AGLYSyGS3ZAK4S8XuoAlxGSdYMKwqZKM9XJMtyqXi7HX/CiAZS6d8bSVUz5J36mEMFDTlAFQzxOT1dzLRljjB6+++ejFqka+mXIe6F59mw22OuOw1F4T6lg/9VjL1rLDoI9Xzl1MSYDNHnPQnt3D1EE7PrXjye/3pVpr1Z45hMUdcACc5NVQI0bOdS1WA0wuz73e7/5TNqBPhQXPEFGJNV2zNqWI7QKBd2Gn6AiBko02zuAOXeWIXjV0jNqdKegaE/kJQ6Bfs4aju04lMLkA2T5wBSYPKDGF3RKhFYEa6A1L1LG2yacmsaZ6YPOSAMKNsO+N5dNTfkc5Aqe26uxHpx7ZirvgCwJpWq/lmX1hA7LyabQ34tt5RiJKXSwQ+0KU0V5xg+hZrd4Bn1n4EID+WkQdgLfRNtvil9SPfwy+WQ7PFBWQz6dGWZBLkeJFXZGCfLUjCgGgqXo5TuSu3cugdcTv/HjqnBTEMwzAMwzAMwzAMwzAMw/zf/AFbXiOA6frlMAAAAABJRU5ErkJggg==" alt=""></div><div class="weui_media_bd"><h4 class="weui_media_title">'+e.title+'</h4><p class="weui_media_desc">'+e.body+'</p></div></a>');
+                $(contentHome).append('\
+                    <a href="#pageChatList" class="wechat-list">\
+                        <img src="img/head/header-1.jpg">\
+                        <div class="cell">\
+                            <div class="wechat-h-time"><h5>'+e.title+'</h5><time>早上09:51</time></div>\
+                            <p>'+e.body+'</p>\
+                        </div>\
+                    </a>');
             });
             g_skip += data.length;
         });

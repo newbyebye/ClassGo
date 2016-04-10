@@ -26,6 +26,7 @@ module.exports = {
             }
 
             // 建立连接，向表中插入值
+            connection.query("set names utf8;");
             connection.query($sql.insert, [param.title, param.body, param.address, param.time, param.authorId], function(err, result) {
 
                 callback(err, result);
@@ -71,7 +72,8 @@ module.exports = {
         console.log(param);
         console.log(param.order, param.skip, param.limit);
         pool.getConnection(function(err, connection) {
-            connection.query($sql.queryAll + " order by ? DESC limit ?, ?", [param.order, param.skip, param.limit], function(err, result) {
+            connection.query("set names utf8;");
+            connection.query($sql.queryAll + " order by ? ASC limit ?, ?", [param.order, param.skip, param.limit], function(err, result) {
                 callback(err, result);
                 connection.release();
             });

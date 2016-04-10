@@ -21,6 +21,7 @@ var signDao = require('../dao/signDao');
 */
 router.post('/post', checkToken, function(req, res, next) {
     req.body.authorId = req.api_user.userId;
+    console.log(req.body);
   	postDao.add(req.body, function(err, result){
   		if (err) {
         console.log(err);
@@ -67,7 +68,7 @@ router.get('/post', function(req, res, next){
           next(err);
           return
       }
-
+      console.log(result);
       res.status(200).json(result);
   });
 });
