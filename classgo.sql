@@ -1,4 +1,4 @@
-create database classgo;
+create database classgo CHARACTER SET 'utf8' COLLATE 'utf8_general_ci';
 
 use classgo;
 
@@ -18,9 +18,7 @@ create table user (
     brief     varchar(256),    
     createAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updateAt TIMESTAMP NOT NULL 
-);
-
-DROP TRIGGER IF EXISTS `update_user_trigger`;
+)ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TRIGGER `update_user_trigger` BEFORE UPDATE ON `user`
  FOR EACH ROW SET NEW.`updateAt` = NOW();
@@ -34,9 +32,8 @@ create table accessToken (
     token       varchar(128) NOT NULL,
     createAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updateAt TIMESTAMP NOT NULL
-);
+)ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-DROP TRIGGER IF EXISTS `update_accessToken_trigger`;
 
 CREATE TRIGGER `update_accessToken_trigger` BEFORE UPDATE ON `accessToken`
  FOR EACH ROW SET NEW.`updateAt` = NOW();
@@ -51,7 +48,7 @@ create table post (
     authorId    BIGINT NOT NULL,
     createAt     TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updateAt     TIMESTAMP NOT NULL 
-);
+)ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
 CREATE TRIGGER `update_post_trigger` BEFORE UPDATE ON `post`
@@ -63,7 +60,7 @@ create table assistant (
     assistantId    BIGINT NOT NULL,
     createAt     TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updateAt     TIMESTAMP NOT NULL 
-);
+)ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TRIGGER `update_assistant_trigger` BEFORE UPDATE ON `assistant`
  FOR EACH ROW SET NEW.`updateAt` = NOW();
@@ -73,7 +70,7 @@ create table tag (
     title          varchar(32) NOT NULL,
     createAt     TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updateAt     TIMESTAMP NOT NULL 
-);
+)ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TRIGGER `update_tag_trigger` BEFORE UPDATE ON `tag`
  FOR EACH ROW SET NEW.`updateAt` = NOW();
@@ -84,7 +81,7 @@ create table postTag (
     tagId    BIGINT NOT NULL,
     createAt     TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updateAt     TIMESTAMP NOT NULL 
-);
+)ENGINE=InnoDB DEFAULT CHARSET=utf8;
 CREATE TRIGGER `update_postTag_trigger` BEFORE UPDATE ON `postTag`
  FOR EACH ROW SET NEW.`updateAt` = NOW();
 
@@ -95,7 +92,7 @@ create table comment (
     body        text,
     createAt     TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updateAt     TIMESTAMP NOT NULL 
-);
+)ENGINE=InnoDB DEFAULT CHARSET=utf8;
 CREATE TRIGGER `update_comment_trigger` BEFORE UPDATE ON `comment`
  FOR EACH ROW SET NEW.`updateAt` = NOW();
 
@@ -109,7 +106,7 @@ create table lesson (
     lat             decimal(10, 7),
     createAt       TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updateAt       TIMESTAMP NOT NULL 
-);
+)ENGINE=InnoDB DEFAULT CHARSET=utf8;
 CREATE TRIGGER `update_lesson_trigger` BEFORE UPDATE ON `lesson`
  FOR EACH ROW SET NEW.`updateAt` = NOW();
 
@@ -121,6 +118,6 @@ create table sign (
     lat             decimal(10, 7),
     createAt         TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updateAt         TIMESTAMP NOT NULL 
-);
+)ENGINE=InnoDB DEFAULT CHARSET=utf8;
 CREATE TRIGGER `update_sign_trigger` BEFORE UPDATE ON `sign`
  FOR EACH ROW SET NEW.`updateAt` = NOW();

@@ -18,6 +18,8 @@
 <script type="text/javascript">
 function login(){
 	var data = $('form').serializeObject();
+
+	data.password = CryptoJS.SHA256(data.password).toString();
 	
 	CG.UserLoginController.login(data, function(result){
 			// success {"token":"sadfasdf", "ttl":1209600, userId:1}
