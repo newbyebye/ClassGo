@@ -18,7 +18,7 @@
     
     <script type="text/html" id="tpl_home">
     
-    <div class="weui-pull-to-refresh-layer">
+    <div id="home_pull" class="weui-pull-to-refresh-layer" style="display:none;">
       <div class='pull-to-refresh-arrow'></div>
       <div class='pull-to-refresh-preloader'></div>
       <div class="down">下拉刷新</div>
@@ -319,12 +319,23 @@
         );
     }
 
+
     $(document.body).pullToRefresh().on("pull-to-refresh", function() {
         setTimeout(function() {
           $("#time").text(new Date);
           $(document.body).pullToRefreshDone();
+          $(home_pull).hide();
         }, 2000);
       });
+
+    $(document.body).pullToRefresh().on("pull-to-start", function() {
+        $(home_pull).show();
+    });
+
+    $(document.body).pullToRefresh().on("pull-to-end", function() {
+        $(home_pull).hide();
+    });
+
 
 </script>
 

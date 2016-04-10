@@ -686,7 +686,6 @@ body {
   margin-top: 10px;
 }
 .weui-pull-to-refresh {
-  margin-top: -50px;
   -webkit-transition: -webkit-transform .4s;
   transition: -webkit-transform .4s;
   transition: transform .4s;

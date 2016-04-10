@@ -864,6 +864,7 @@
     var p = $.getTouchPosition(e);
     this.start = p;
     this.diffX = this.diffY = 0;
+    this.container.trigger("pull-to-start");
   };
 
   PTR.prototype.touchMove= function(e) {
@@ -893,6 +894,7 @@
     this.container.removeClass("pull-down pull-up");
     this.container.css("transform", "");
     if(Math.abs(this.diffY) <= this.distance) {
+      this.container.trigger("pull-to-end");
     } else {
       this.container.addClass("refreshing");
       this.container.trigger("pull-to-refresh");
