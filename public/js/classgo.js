@@ -31,7 +31,7 @@ $(function() {
 
 	CG.ObjController = CG.Object.extend({
 		objName : '',
-
+		// window.localStorage.getItem
 		get : function(path, successProc, errorProc, bAsync) {
 			var isAsyncLoad = true;
 			if (typeof (bAsync) != 'undefined') {
@@ -41,6 +41,7 @@ $(function() {
 				url : path,
 				dataType : 'json',
 				async : isAsyncLoad,
+				headers : {"x-access-token":window.localStorage.getItem("token")},
 				/*
 				dataFilter : function(data, type) {
 					return data;
@@ -80,6 +81,7 @@ $(function() {
 				data : self.createSubmitData(data),
 				dataType : "json",
 				contentType : "application/json;charset=UTF-8",
+				headers : {"x-access-token":window.localStorage.getItem("token")},
 				success : function(result) {
 					if (successProc) {
 						successProc(result);
@@ -156,6 +158,10 @@ $(function(){
 	        var self = this;
 	        this.submit(data, successProc, errorProc);
 	    }
+	});
+
+	CG.PostController = CG.SingleObjController.extend({
+		objName: "./v1/post"
 	});
 });
 

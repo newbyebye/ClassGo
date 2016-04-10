@@ -9,7 +9,7 @@ var pool  = mysql.createPool($conf.mysql);
 
 // CRUD SQL语句
 var $sql = {
-    insert:'INSERT INTO post(id, title, body, authorId) VALUES(0,?,?,?)',
+    insert:'INSERT INTO post(id, title, body, address, time, authorId) VALUES(0,?,?,?,?,?)',
     update:'update post set title=?, body=? where id=?',
     delete: 'delete from post where id=?',
     queryById: 'select * from post where id=?',
@@ -26,8 +26,7 @@ module.exports = {
             }
 
             // 建立连接，向表中插入值
-            // 'INSERT INTO user(id, username, password) VALUES(0,?,?)',
-            connection.query($sql.insert, [param.title, param.body, param.authorId], function(err, result) {
+            connection.query($sql.insert, [param.title, param.body, param.address, param.time, param.authorId], function(err, result) {
 
                 callback(err, result);
 
@@ -66,6 +65,8 @@ module.exports = {
             });
         });
     },
+
+    // /v1/post?filter={"fields":{},"where":{},"order":"a ASC","skip":21,"limit":20,"include":{},"includefilter":{}}
     queryAll: function (param, callback) {
         pool.getConnection(function(err, connection) {
             connection.query($sql.queryAll, function(err, result) {

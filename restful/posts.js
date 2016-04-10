@@ -14,7 +14,7 @@ var signDao = require('../dao/signDao');
 /* 
 *  create new class
 *  POST /v1/post
-*  body {"title":"demo", "body":"demo"}
+*  body {"title":"demo", "body":"demo", "address": "", "time": ""}
 *  
 *  success {"id":1}
 *  fail {"error":{"name":"Error", "status":500, "message":"login failed", "statusCode":401}}
@@ -23,6 +23,7 @@ router.post('/post', checkToken, function(req, res, next) {
     req.body.authorId = req.api_user.userId;
   	postDao.add(req.body, function(err, result){
   		if (err) {
+        console.log(err);
   			next(err);
   			return;
   		}
@@ -51,6 +52,26 @@ router.get('/post/:id', function(req, res, next){
       res.status(200).json(result[0]);
   });
 
+});
+
+
+/**
+*   get all class info
+*   GET /v1/post?filter={"fields":{},"where":{},"order":"a ASC","skip":21,"limit":20,"include":{},"includefilter":{}}
+*/
+router.get('/post', function(req, res, next){
+  console.log(req.query);
+
+  postDao.queryAll(req.query, function(err, result){
+      if (err || result.length == 0) {
+          var err = new Error('not found');
+          err.status = 501;
+          next(err);
+          return
+      }
+
+      res.status(200).json(result);
+  });
 });
 
 /**
@@ -85,7 +106,6 @@ router.put('/post/:id', checkToken, function(req, res, next){
       });
     });
 
-    
 });
 
 /**

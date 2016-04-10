@@ -19,7 +19,10 @@
 function login(){
 	var data = $('form').serializeObject();
 	
-	CG.UserLoginController.login(data, function(result){   
+	CG.UserLoginController.login(data, function(result){
+			// success {"token":"sadfasdf", "ttl":1209600, userId:1}
+			window.localStorage.setItem("token", result.token);
+			window.localStorage.setItem("userId", result.userId);
 			window.location = "./home.html";
 		}, 
 		function(err) {

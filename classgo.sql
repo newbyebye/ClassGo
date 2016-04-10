@@ -35,6 +35,8 @@ create table post (
     id BIGINT NOT NULL PRIMARY KEY AUTO_INCREMENT,
     title          varchar(128) NOT NULL,
     body        text,
+    address     varchar(64),
+    time        varchar(64),
     authorId    BIGINT NOT NULL,
     createAt     TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updateAt     TIMESTAMP NOT NULL ON UPDATE CURRENT_TIMESTAMP DEFAULT CURRENT_TIMESTAMP

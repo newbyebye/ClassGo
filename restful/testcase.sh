@@ -21,6 +21,7 @@ curl -H "Content-Type:application/json" -H "x-access-token:eyJ0eXAiOiJKV1QiLCJhb
 
 6. 获取帖子信息
 curl -H "Content-Type:application/json" http://localhost:3000/api/post/1
+curl -H "Content-Type:application/json" http://localhost:3000/api/post?filter={"fields":{},"where":{},"order":"a ASC","skip":21,"limit":20,"include":{},"includefilter":{}}
 
 7. 修改贴子
 curl -H "Content-Type:application/json" -H "x-access-token:eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjksImlhdCI6MTQ1OTc0NDA0N30.QcWSRFrzSqORYXbYobnewVvJK5WdDhZ3WugJxYyzFNE" --data '{"title":"demo1", "body":"demo1"}' http://localhost:3000/api/post/1/edit
