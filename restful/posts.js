@@ -62,10 +62,8 @@ router.get('/post/:id', function(req, res, next){
 router.get('/post', function(req, res, next){
   console.log(req.query);
 
-  postDao.queryAll(req.query, function(err, result){
+  postDao.queryAll(JSON.parse(req.query.filter), function(err, result){
       if (err || result.length == 0) {
-          var err = new Error('not found');
-          err.status = 501;
           next(err);
           return
       }

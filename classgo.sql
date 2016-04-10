@@ -17,8 +17,14 @@ create table user (
     school     varchar(64),
     brief     varchar(256),    
     createAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updateAt TIMESTAMP NOT NULL ON UPDATE CURRENT_TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    updateAt TIMESTAMP NOT NULL 
 );
+
+DROP TRIGGER IF EXISTS `update_user_trigger`;
+
+CREATE TRIGGER `update_user_trigger` BEFORE UPDATE ON `user`
+ FOR EACH ROW SET NEW.`updateAt` = NOW();
+
 
 create table accessToken (
     id BIGINT NOT NULL PRIMARY KEY AUTO_INCREMENT,
@@ -27,8 +33,13 @@ create table accessToken (
     ipAddr        varchar(32),
     token       varchar(128) NOT NULL,
     createAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updateAt TIMESTAMP NOT NULL ON UPDATE CURRENT_TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    updateAt TIMESTAMP NOT NULL
 );
+
+DROP TRIGGER IF EXISTS `update_accessToken_trigger`;
+
+CREATE TRIGGER `update_accessToken_trigger` BEFORE UPDATE ON `accessToken`
+ FOR EACH ROW SET NEW.`updateAt` = NOW();
 
 
 create table post (
@@ -39,31 +50,43 @@ create table post (
     time        varchar(64),
     authorId    BIGINT NOT NULL,
     createAt     TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updateAt     TIMESTAMP NOT NULL ON UPDATE CURRENT_TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    updateAt     TIMESTAMP NOT NULL 
 );
+
+
+CREATE TRIGGER `update_post_trigger` BEFORE UPDATE ON `post`
+ FOR EACH ROW SET NEW.`updateAt` = NOW();
 
 create table assistant (
     id BIGINT NOT NULL PRIMARY KEY AUTO_INCREMENT,
     postId          BIGINT NOT NULL,
     assistantId    BIGINT NOT NULL,
     createAt     TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updateAt     TIMESTAMP NOT NULL ON UPDATE CURRENT_TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    updateAt     TIMESTAMP NOT NULL 
 );
+
+CREATE TRIGGER `update_assistant_trigger` BEFORE UPDATE ON `assistant`
+ FOR EACH ROW SET NEW.`updateAt` = NOW();
 
 create table tag (
     id BIGINT NOT NULL PRIMARY KEY AUTO_INCREMENT,
     title          varchar(32) NOT NULL,
     createAt     TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updateAt     TIMESTAMP NOT NULL ON UPDATE CURRENT_TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    updateAt     TIMESTAMP NOT NULL 
 );
+
+CREATE TRIGGER `update_tag_trigger` BEFORE UPDATE ON `tag`
+ FOR EACH ROW SET NEW.`updateAt` = NOW();
 
 create table postTag (
     id BIGINT NOT NULL PRIMARY KEY AUTO_INCREMENT,
     postId          BIGINT NOT NULL,
     tagId    BIGINT NOT NULL,
     createAt     TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updateAt     TIMESTAMP NOT NULL ON UPDATE CURRENT_TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    updateAt     TIMESTAMP NOT NULL 
 );
+CREATE TRIGGER `update_postTag_trigger` BEFORE UPDATE ON `postTag`
+ FOR EACH ROW SET NEW.`updateAt` = NOW();
 
 create table comment (
     id BIGINT NOT NULL PRIMARY KEY AUTO_INCREMENT,
@@ -71,20 +94,24 @@ create table comment (
     authorId    BIGINT NOT NULL,
     body        text,
     createAt     TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updateAt     TIMESTAMP NOT NULL ON UPDATE CURRENT_TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    updateAt     TIMESTAMP NOT NULL 
 );
+CREATE TRIGGER `update_comment_trigger` BEFORE UPDATE ON `comment`
+ FOR EACH ROW SET NEW.`updateAt` = NOW();
 
 create table lesson (
     id BIGINT NOT NULL PRIMARY KEY AUTO_INCREMENT,
     postId          BIGINT NOT NULL,
     status            numeric,
-    starttime      TIMESTAMP,
+    starttime      DATETIME NOT NULL,
     timeout           numeric,
     lng             decimal(10, 7),
     lat             decimal(10, 7),
     createAt       TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updateAt       TIMESTAMP NOT NULL ON UPDATE CURRENT_TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    updateAt       TIMESTAMP NOT NULL 
 );
+CREATE TRIGGER `update_lesson_trigger` BEFORE UPDATE ON `lesson`
+ FOR EACH ROW SET NEW.`updateAt` = NOW();
 
 create table sign (
     id BIGINT NOT NULL PRIMARY KEY AUTO_INCREMENT,
@@ -93,5 +120,7 @@ create table sign (
     lng                decimal(10, 7),
     lat             decimal(10, 7),
     createAt         TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updateAt         TIMESTAMP NOT NULL ON UPDATE CURRENT_TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    updateAt         TIMESTAMP NOT NULL 
 );
+CREATE TRIGGER `update_sign_trigger` BEFORE UPDATE ON `sign`
+ FOR EACH ROW SET NEW.`updateAt` = NOW();

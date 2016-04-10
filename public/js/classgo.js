@@ -163,6 +163,7 @@ $(function(){
 	CG.PostController = CG.SingleObjController.extend({
 		objName: "./v1/post"
 	});
+
 });
 
 //(new Date()).Format("yyyy-MM-dd hh:mm:ss.S") ==> 2006-07-02 08:09:04.423   
