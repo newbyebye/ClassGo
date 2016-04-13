@@ -46,7 +46,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/wechat', wechat(config, function(req, res, next){
   var message = req.weixin;
 
-  console.debug(message);
+  console.log(message);
 
 /*
   Text Type msg
@@ -70,21 +70,22 @@ app.use('/wechat', wechat(config, function(req, res, next){
             type: 'text'
           });
       }
-      else if (message.Content === "3") {
-          res.replay({
-          type: "music",
-          content: {
-            title: "来段音乐吧",
-            description: "一无所有",
-            musicUrl: "http://mp3.com/xx.mp3",
-            hqMusicUrl: "http://mp3.com/xx.mp3",
-            thumbMediaId: "thisThumbMediaId"
-          }
-        });
+      else if (message.Content == "3") {
+          res.reply([
+              {
+                title: '你来我家接我吧',
+                description: '这是女神与高富帅之间的对话',
+                picurl: 'http://nodeapi.cloudfoundry.com/qrcode.jpg',
+                url: 'http://nodeapi.cloudfoundry.com/'
+              }
+            ]);
+      }
+      else {
+          res.reply("help");
       }
   }
   else {
-      res.replay("help");
+      res.reply("help");
   }
   /*
   if (message.FromUserName === 'diaosi') {
