@@ -42,7 +42,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-// wechat msg replay
+// wechat msg reply
 app.use('/wechat', wechat(config, function(req, res, next){
   var message = req.weixin;
 
@@ -63,14 +63,18 @@ app.use('/wechat', wechat(config, function(req, res, next){
   if (message.MsgType === 'text') {
       if (message.Content == "1") {
           res.reply('hehe');
+          return;
       }
-      else if (message.Content == "2") {
+
+      if (message.Content == "2") {
           res.reply({
             content: 'text object',
             type: 'text'
           });
+          return;
       }
-      else if (message.Content == "3") {
+      
+      if (message.Content == "3") {
           res.reply([
               {
                 title: '你来我家接我吧',
@@ -79,44 +83,12 @@ app.use('/wechat', wechat(config, function(req, res, next){
                 url: 'http://nodeapi.cloudfoundry.com/'
               }
             ]);
-      }
-      else {
-          res.reply("help");
-      }
+          return;
+      }    
   }
   else {
-      res.reply("help");
+      res.reply("1 创建游戏");
   }
-  /*
-  if (message.FromUserName === 'diaosi') {
-      res.replay('hehe');
-  } else if (message.FromUserName === 'text') {
-      res.replay({
-          content: 'text object',
-          type: 'text'
-      });
-  } else if (message.FromUserName === 'hehe') {
-      res.replay({
-          type: "music",
-          content: {
-            title: "来段音乐吧",
-            description: "一无所有",
-            musicUrl: "http://mp3.com/xx.mp3",
-            hqMusicUrl: "http://mp3.com/xx.mp3",
-            thumbMediaId: "thisThumbMediaId"
-          }
-      });
-  } else {
-     res.reply([
-      {
-        title: '你来我家接我吧',
-        description: '这是女神与高富帅之间的对话',
-        picurl: 'http://nodeapi.cloudfoundry.com/qrcode.jpg',
-        url: 'http://nodeapi.cloudfoundry.com/'
-      }
-    ]);
-  }
-  */
 }));
 
 app.use('/', routes);
