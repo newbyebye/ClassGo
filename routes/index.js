@@ -11,9 +11,4 @@ router.get('/app', function(req, res, next) {
 	res.render('app', {});
 });
 
-/* wechat */
-router.get('/wechat', function(req, res, next) {
-	wechat.checkSignature(req, res, next);
-});
-
 module.exports = router;
