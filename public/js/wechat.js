@@ -10,9 +10,7 @@ Mobilebone.onpagefirstinto = function(pageinto) {
 	}
 
 	// bind custom scroll events for content
-	var weChatScroll = new IScroll(pageinto.querySelector(".content"), {
-		// tap: true
-	});
+	var weChatScroll = new IScroll(pageinto.querySelector(".content"), { mouseWheel: true, click: true });
 	// /Android/i.test(navigator.userAgent) && pageinto.addEventListener('tap', Mobilebone.handleTapEvent, false);
 };
 
