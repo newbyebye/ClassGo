@@ -16,6 +16,7 @@
     "morgan": "~1.6.1",
     "mysql": "^2.10.2",
     "request": "^2.70.0",
-    "serve-favicon": "~2.3.0"
+    "serve-favicon": "~2.3.0",
+    "wechat": "^2.0.3"
   }
 }

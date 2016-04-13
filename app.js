@@ -17,8 +17,14 @@ var routes = require('./routes/index');
 var users = require('./restful/users');
 var posts = require('./restful/posts');
 
-// wechat menu
-var wechat = require('./routes/wechat');
+// wechat 
+var wechat = require('wechat');
+var config = {
+    token: process.env.WECHAT_TOKEN,
+    appid: process.env.WECHAT_APPID,
+    encodingAESKey: process.env.WECHAT_AESKEY
+};
+
 
 var app = express();
 
@@ -36,11 +42,44 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+// wechat msg replay
+app.use('/wechat', wechat(config, function(req, res, next){
+  var message = req.weixin;
+
+  if (message.FromUserName === 'diaosi') {
+      res.replay('hehe');
+  } else if (message.FromUserName === 'text') {
+      res.replay({
+          content: 'text object',
+          type: 'text'
+      });
+  } else if (message.FromUserName === 'hehe') {
+      res.replay({
+          type: "music",
+          content: {
+            title: "来段音乐吧",
+            description: "一无所有",
+            musicUrl: "http://mp3.com/xx.mp3",
+            hqMusicUrl: "http://mp3.com/xx.mp3",
+            thumbMediaId: "thisThumbMediaId"
+          }
+      });
+  } else {
+     res.reply([
+      {
+        title: '你来我家接我吧',
+        description: '这是女神与高富帅之间的对话',
+        picurl: 'http://nodeapi.cloudfoundry.com/qrcode.jpg',
+        url: 'http://nodeapi.cloudfoundry.com/'
+      }
+    ]);
+  }
+}));
+
 app.use('/', routes);
 app.use('/v1', users);
 app.use('/v1', posts);
 
-//wechat.createMenu();
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

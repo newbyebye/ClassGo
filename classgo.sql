@@ -6,7 +6,7 @@ create table user (
     id BIGINT NOT NULL PRIMARY KEY AUTO_INCREMENT,
     username  varchar(32) NOT NULL,
     CONSTRAINT SYS_CT_66 UNIQUE(username),
-    password  varchar(32),
+    password  varchar(64),
     email     varchar(64),
     emailVerified BOOLEAN,
     gender        boolean,
