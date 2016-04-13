@@ -46,6 +46,47 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/wechat', wechat(config, function(req, res, next){
   var message = req.weixin;
 
+  console.debug(message);
+
+/*
+  Text Type msg
+  { 
+    ToUserName: 'gh_56f773fca953',
+    FromUserName: 'o1xOlv3Imod0J4GiufGwrkxP9H6k',
+    CreateTime: '1460551418',
+    MsgType: 'text',
+    Content: '123',
+    MsgId: '6273020574844743668' 
+  }
+  */
+
+  if (message.MsgType === 'text') {
+      if (message.Content == "1") {
+          res.reply('hehe');
+      }
+      else if (message.Content == "2") {
+          res.reply({
+            content: 'text object',
+            type: 'text'
+          });
+      }
+      else if (message.Content === "3") {
+          res.replay({
+          type: "music",
+          content: {
+            title: "来段音乐吧",
+            description: "一无所有",
+            musicUrl: "http://mp3.com/xx.mp3",
+            hqMusicUrl: "http://mp3.com/xx.mp3",
+            thumbMediaId: "thisThumbMediaId"
+          }
+        });
+      }
+  }
+  else {
+      res.replay("help");
+  }
+  /*
   if (message.FromUserName === 'diaosi') {
       res.replay('hehe');
   } else if (message.FromUserName === 'text') {
@@ -74,6 +115,7 @@ app.use('/wechat', wechat(config, function(req, res, next){
       }
     ]);
   }
+  */
 }));
 
 app.use('/', routes);
