@@ -86,9 +86,10 @@ app.use('/wechat', wechat(config, function(req, res, next){
           return;
       }    
   }
-  else {
-      res.reply("1 创建游戏");
-  }
+
+  // help
+  res.reply("1 创建游戏; \n 2 加入游戏");
+  
 }));
 
 app.use('/', routes);
