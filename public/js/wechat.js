@@ -1,6 +1,7 @@
 Mobilebone.onpagefirstinto = function(pageinto) {
 	// image size
 	var ele_screen_shot = null, src_screen_shot = '';
+	
 	if (pageinto.id == "pageChatList" && (ele_screen_shot = document.getElementById("screenShot"))) {
 		src_screen_shot = ele_screen_shot.getAttribute("data-src");
 		if (!ele_screen_shot.src) ele_screen_shot.src = src_screen_shot;
@@ -8,6 +9,7 @@ Mobilebone.onpagefirstinto = function(pageinto) {
 		ele_screen_shot.width = window.innerWidth;
 		ele_screen_shot.height = Math.round(ele_screen_shot.width * 2405 / 720);
 	}
+	
 
 	// bind custom scroll events for content
 	Mobilebone.IScroll = new IScroll(pageinto.querySelector(".content"), { mouseWheel: true, click: true, scrollX: true, freeScroll: true  });

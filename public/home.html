@@ -79,70 +79,62 @@
     </div>
     <div class="content">
         <div class="wechat-detail">
-            <img id="screenShot" data-src="img/screenshot/1.jpg" data-width="720" data-height="2405">          
+            <div class="weui_cells weui_cells_form">
+                <div class="weui_cell">
+                    <div class="weui_cell_hd"><label class="weui_label">课程名称</label></div>
+                    <div class="weui_cell_bd weui_cell_primary">
+                        <input id="create_title" class="weui_input"  placeholder="请输入课程名称"/>
+                    </div>
+                </div>
+
+                <div class="weui_cell">
+                    <div class="weui_cell_hd"><label class="weui_label">上课时间</label></div>
+                    <div class="weui_cell_bd weui_cell_primary">
+                        <input id="create_time" class="weui_input"  placeholder="请输入上课时间"/>
+                    </div>
+                </div>
+
+                <div class="weui_cell">
+                    <div class="weui_cell_hd"><label class="weui_label">上课地点</label></div>
+                    <div class="weui_cell_bd weui_cell_primary">
+                        <input id="create_address"  class="weui_input"  placeholder="请输入上课地点"/>
+                    </div>
+                </div>
+                <h5 class="contact-h">课程简介</h5>
+                <div class="weui_cells_title"></div>
+                    <div class="weui_cells weui_cells_form">
+                    <div class="weui_cell">
+                        <div class="weui_cell_bd weui_cell_primary">
+                            <textarea id="create_body" class="weui_textarea" placeholder="请输入课程说明" rows="5"></textarea>
+                            <div  class="weui_textarea_counter"><span>0</span>/200</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="weui_cells_tips"></div>
+                <div class="weui_btn_area">
+                    <a class="weui_btn weui_btn_primary" href="javascript:void(0)" onclick="postCreate()" id="showTooltips">确定</a>
+                </div>
+            </div>        
         </div>
-        <div class="loading"></div>
     </div>
 </div>
 
 <div id="pageContacts" class="page out">
     <div class="content">
         <div>
+            <h5 class="contact-h">我创建的</h5>
             <div class="contact-group">
                 <div class="contact-list">
                     <img src="img/head/contact-1.png">
                     <nickname>新的朋友</nickname>
                 </div>
-                <div class="contact-list">
-                    <img src="img/head/contact-2.png">
-                    <nickname>群聊</nickname>
-                </div>
-                <div class="contact-list">
-                    <img src="img/head/contact-3.png">
-                    <nickname>标签</nickname>
-                </div>
-                <div class="contact-list">
-                    <img src="img/head/contact-4.png">
-                    <nickname>公众号</nickname>
-                </div>
             </div>
-            <h5 class="contact-h">企业号</h5>
+            <h5 class="contact-h">我的关注</h5>
             <div class="contact-group">
                 <div class="contact-list">
                     <img src="img/head/contact-5.png">
                     <nickname>腾讯企业号</nickname>
-                </div>
-            </div>
-            <h5 class="contact-h">A</h5>
-            <div class="contact-group">
-                <div class="contact-list">
-                    <img src="img/head/header-1.jpg">
-                    <nickname>爱钓鱼的小伙</nickname>
-                </div>
-                <div class="contact-list">
-                    <img src="img/head/header-7.jpg">
-                    <nickname>阿里巴巴</nickname>
-                </div>
-            </div>
-            <h5 class="contact-h">B</h5>
-            <div class="contact-group">
-                <div class="contact-list">
-                    <img src="img/head/header-8.gif">
-                    <nickname>Big-laugh</nickname>
-                </div>
-            </div>
-            <h5 class="contact-h">M</h5>
-            <div class="contact-group">
-                <div class="contact-list">
-                    <img src="img/head/header-0.jpg">
-                    <nickname>Mobilebone</nickname>
-                </div>
-            </div>
-            <h5 class="contact-h">Q</h5>
-            <div class="contact-group">
-                <div class="contact-list">
-                    <img src="img/head/header-6.jpg">
-                    <nickname>乔巴</nickname>
                 </div>
             </div>
         </div>
@@ -154,31 +146,47 @@
         <div>
             <div class="me-group">
                 <div class="me-header">
-                    <img class="me-head" src="img/head/header-0.jpg">
+                    <img class="me-head" src="">
                     <div class="me-detail">
-                        <h6>Mobilebone</h6>
-                        <img src="img/account.png" width="153" height="16">
+                        <h6>ClassGo</h6>
                     </div>
                 </div>
             </div>
             <div class="me-group">
-                <div class="me-list">
-                    <i class="icon-me icon-me-1"></i>相册
+  
+                <div class="weui_cell">
+                    <div class="weui_cell_bd weui_cell_primary">
+                        <p>专业</p>
+                    </div>
+                    <div class="weui_cell_ft">自动化</div>
                 </div>
-                <div class="me-list">
-                    <i class="icon-me icon-me-2"></i>收藏
+
+                <div class="weui_cell">
+                    <div class="weui_cell_bd weui_cell_primary">
+                        <p>学校</p>
+                    </div>
+                    <div class="weui_cell_ft">华中科技大学</div>
                 </div>
+
+                <div class="weui_cell">
+                        <div class="weui_cell_bd weui_cell_primary">
+                            <p>个人简介</p>
+                        </div>
+                   
+                        <div class="weui_cell_ft">
+                            <textarea class="weui_textarea" placeholder="请输入课程说明" rows="10">1994年华中理工大学系统工程专业毕业，获博士学位。1997年华中理工大学系统工程博士后出站后留校工作。现为华中科技大学系统工程研究所教授、博士生导师。湖北省系统工程学会理事、副秘书长，武汉市系统工程学会理事。留校工作后一直从事决策分析及相关领域的教学和科研工作。</textarea>
+                        </div>
+
+                    </div>
+
             </div>
-            <div class="me-group">
-                <div class="me-list">
-                    <i class="icon-me icon-me-3"></i>钱包
-                </div>
-            </div>
+            <!--
             <div class="me-group">
                 <div class="me-list">
                     <i class="icon-me icon-me-4"></i>设置
                 </div>
             </div>
+            -->
         </div>
     </div>
 </div>
