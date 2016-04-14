@@ -10,12 +10,17 @@ Mobilebone.onpagefirstinto = function(pageinto) {
 	}
 
 	// bind custom scroll events for content
-	var weChatScroll = new IScroll(pageinto.querySelector(".content"), { mouseWheel: true, click: true });
+	Mobilebone.IScroll = new IScroll(pageinto.querySelector(".content"), { mouseWheel: true, click: true, scrollX: true, freeScroll: true  });
 	// /Android/i.test(navigator.userAgent) && pageinto.addEventListener('tap', Mobilebone.handleTapEvent, false);
+
 };
 
 Mobilebone.callback = function(pageinto, pageout) {
 	var header = document.querySelector("body > .header"), footer = document.querySelector("body > .footer");
+
+	if (pageinto && pageout){
+		console.log("callback " + pageinto.id + ":" + pageout.id);
+	}
 
 	// element of link at bottom
 	var ele_link_in = null, ele_link_out = null;

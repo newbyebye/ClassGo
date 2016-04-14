@@ -17,8 +17,7 @@
 </div>
 <div id="pageHome" class="page out" data-title="ClassGo">          
     <div class="content">    
-        <div class="" id="contentHome">
-            
+        <div id="scroller">
         </div>
     </div>
 </div>
@@ -232,7 +231,7 @@ FastClick.attach(document.body);
     function loadHomeData(skip, limit){
         CG.PostController.get('/v1/post?filter={"order":"updateAt","skip":'+skip+',"limit":'+limit+'}', function(data){
             data.forEach(function(e){
-                $(contentHome).append('\
+                $(scroller).append('\
                     <a href="#pageChatList" class="wechat-list" data-rel="external">\
                         <img src="img/head/header-1.jpg">\
                         <div class="cell">\
@@ -242,6 +241,7 @@ FastClick.attach(document.body);
                     </a>');
             });
             g_skip += data.length;
+            Mobilebone.IScroll.refresh();
         });
     }
 
@@ -252,6 +252,8 @@ FastClick.attach(document.body);
     function loadmore() {
         loadHomeData(g_skip, page);
     }
+
+    document.addEventListener('touchmove', function (e) { e.preventDefault(); }, false);
 
 </script>
 
