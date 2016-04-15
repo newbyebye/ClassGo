@@ -10,7 +10,7 @@ var pool  = mysql.createPool($conf.mysql);
 
 // CRUD SQL语句{"username":"demo", "password":"demo", "fullname":"fullname", "openID": "openID"}
 var $user = {
-    insert:'INSERT INTO user(id, username, password, openID, fullname) VALUES(0,?,?,?,?)',
+    insert:'INSERT INTO user(id, username, password, openID, fullname, studentNo) VALUES(0,?,?,?,?,?)',
     update:'update user set email=?, emailVerified=?, gender=?, photo=?, fullname=?, mobile=?, region=?, school=?, brief=? where id=?',
     delete: 'delete from user where id=?',
     login: 'select * from user where username=? and password=?',
@@ -29,7 +29,7 @@ module.exports = {
 
             // 建立连接，向表中插入值
             // 'INSERT INTO user(id, username, password) VALUES(0,?,?)',
-            connection.query($user.insert, [param.username, param.password, param.openID, param.fullname], function(err, result) {
+            connection.query($user.insert, [param.username, param.password, param.openID, param.fullname, param.studentNo], function(err, result) {
 
                 callback(err, result);
 

@@ -3,6 +3,7 @@
 var url = require('url');
 var crypto = require('crypto');
 var request = require('request');
+var userDao = require('../dao/userDao');
 
 // wechat 
 var wechat = require('wechat');
@@ -17,7 +18,6 @@ var List = wechat.List;
 
 List.add('help', [
   ['回复{0} 姓名,学号 实名注册', function (info, req, res){
-      console.log(info);
       res.reply('已注册');
   }],
   ['回复{1}创建猜数字游戏', function (info, req, res){
@@ -30,8 +30,26 @@ module.exports = {
     middleware: wechat(config).text(function (message, req, res, next) {
         console.log(message);
 
-        if (message.Content === 'list') {
-              res.wait('view');
+        // 账号注册
+        if ((message.Content.indexOf('1 ') == 0) && (message.Content.indexOf(',') > 0)) {
+            var str = message.Content.substr(2).trim();
+            var a = str.splite(',');
+            if (a.length != 2) {
+                res.reply('输入错误\r\n回复{0} 姓名,学号 实名注册');
+                return;
+            }
+
+            var data = {"username":message.FromUserName, "openID": message.FromUserName, "fullname":a[0], "studentNo":a[1]};
+            userDao.add(data, function(err, result){
+                if (err) {
+                    console.log(err);
+                    res.reply("账号注册失败");
+                    return;
+                }
+
+                res.reply("恭喜，账号注册成功");
+            });
+
         }
         else {
               res.wait('help');

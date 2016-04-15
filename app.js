@@ -46,7 +46,6 @@ app.use(session(
 
 app.use(express.static(path.join(__dirname, 'public')));
 
-
 app.use('/wechat', wechat.middleware);
 
 

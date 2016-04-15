@@ -12,6 +12,7 @@ create table user (
     gender        boolean,
     photo       varchar(256),
     fullname  varchar(32),
+    studentNo  varchar(32),
     mobile     varchar(32),
     region     varchar(64),
     school     varchar(64),
