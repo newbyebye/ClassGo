@@ -14,7 +14,7 @@ var config = {
     encodingAESKey: process.env.WECHAT_AESKEY
 };
 
-function defaultRegistUser(data, callback){
+function defaultRegistUser(data, req, callback){
     userDao.add(data, function(err, result){
         if (err) {
             console.log(err);
@@ -35,7 +35,7 @@ function registUser(message, req, res){
     }
     
     var data = {"username":message.FromUserName, "openID": message.FromUserName, "fullname":a[0], "studentNo":a[1]};
-    defaultRegistUser(data, function(err, result){
+    defaultRegistUser(data, req, function(err, result){
         if (err) {
             console.log(err);
             res.reply("账号注册失败");
@@ -55,7 +55,7 @@ function createNumberGame(message, req, res) {
     }
 
     if (!req.wxsession.user){
-        defaultRegistUser({"username":message.FromUserName, "openID": message.FromUserName}, function(err, callback){
+        defaultRegistUser({"username":message.FromUserName, "openID": message.FromUserName}, req, function(err, callback){
                 gameDao.add({type:1, userId:req.wxsession.user.id}, function(err, result){
                 if (err) {
                     console.log(err);
@@ -92,7 +92,7 @@ function endGame(message, req, res) {
         return;
     }
 
-    gameDao.update({id:req.wxsession.game.id, status:0}, function(err, result){
+    gameDao.update({id:req.wxsession.game.id, status:0}, req, function(err, result){
         if (err){
             res.reply("游戏结束失败");
             return;
