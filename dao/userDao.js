@@ -43,9 +43,10 @@ module.exports = {
                         return;
                     }
                     else{
+                        var userId = result[0].id;
                         // update user
                         connection.query('update user set username=?,password=?,fullname=?,studentNo=? where openID=?', [param.username, param.password, param.fullname, param.studentNo,param.openID], function(err, result) {
-                            result.insertId = result[0].id;
+                            result.insertId = userId;
                             callback(err, result);
                             // 释放连接 
                             connection.release();
