@@ -4,7 +4,56 @@ var url = require('url');
 var crypto = require('crypto');
 var request = require('request');
 
+// wechat 
+var wechat = require('wechat');
+var config = {
+    token: process.env.WECHAT_TOKEN,
+    appid: process.env.WECHAT_APPID,
+    encodingAESKey: process.env.WECHAT_AESKEY
+};
+
+// wechat msg reply
+var List = wechat.List;
+
+List.add('help', [
+  ['回复{0} 姓名,学号 实名注册', function (info, req, res){
+      console.log(info);
+      res.reply('已注册');
+  }],
+  ['回复{1}创建猜数字游戏', function (info, req, res){
+      res.reply('已创建');
+  }]
+]);
+
 module.exports = {
+
+    middleware: wechat(config).text(function (message, req, res, next) {
+        console.log(message);
+
+        if (message.Content === 'list') {
+              res.wait('view');
+        }
+        else {
+              res.wait('help');
+          }
+        }).image(function (message, req, res, next) {
+          
+        }).voice(function (message, req, res, next) {
+          // TODO
+        }).video(function (message, req, res, next) {
+          // TODO
+        }).location(function (message, req, res, next) {
+          // TODO
+        }).link(function (message, req, res, next) {
+          // TODO
+        }).event(function (message, req, res, next) {
+          // TODO
+        }).device_text(function (message, req, res, next) {
+          // TODO
+        }).device_event(function (message, req, res, next) {
+          // TODO
+        }).middlewarify(),
+
     checkSignature: function(req, res, next){
         console.log('checkSignature');
         req.query = url.parse(req.url, true).query;

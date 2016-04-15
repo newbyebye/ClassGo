@@ -11,7 +11,7 @@ var accessTokenDao = require('../dao/accessTokenDao');
 /* 
 *  regist new user
 *  POST /v1/user
-*  body {"username":"demo", "password":"demo", "fullname":"fullname"}
+*  body {"username":"demo", "password":"demo", "fullname":"fullname", "openID": "openID"}
 *  
 *  success {"token":"sadfasdf", "ttl":1209600, userId:1}
 *  fail {"error":{"name":"Error", "status":500, "message":"login failed", "statusCode":401}}

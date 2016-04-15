@@ -15,7 +15,8 @@ create table user (
     mobile     varchar(32),
     region     varchar(64),
     school     varchar(64),
-    brief     varchar(256),    
+    brief     varchar(256),
+    openID    varchar(64),
     createAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updateAt TIMESTAMP NOT NULL 
 )ENGINE=InnoDB DEFAULT CHARSET=utf8;
