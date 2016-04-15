@@ -69,7 +69,9 @@ module.exports = {
 
                 // 建立连接，向表中插入值
                 connection.query($sql.insert, [param.postId, param.userId, code, param.type], function(err, result) {
-                    result.code = code;
+                    if (result){
+                        result.code = code;
+                    }
                     callback(err, result);
 
                     // 释放连接 
