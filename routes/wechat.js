@@ -21,7 +21,10 @@ function defaultRegistUser(data, req, callback){
             callback(err);
             return;
         }
-        req.wxsession.user = {id:result.insertId, openID:openID};
+        if (req.wxsession){
+            req.wxsession.user = {id:result.insertId};
+        }
+        
         callback(err, result);
     });
 }
@@ -48,7 +51,7 @@ function registUser(message, req, res){
 function createNumberGame(message, req, res) {
     console.log(req.wxsession);
 
-    if (req.wxsession.game) {
+    if (req.wxsession && req.wxsession.game) {
         res.reply('您游戏创建的游戏正在进行中！请把房号告诉参与的同学。\n房号：' + req.wxsession.game.code + '\n请认真选取1～100里的任意一个自然数，如果你选择的\
         数字与全班的平均数的70%最为接近，那你就说获胜者。\n\n回复[s]查询游戏状态\n回复[e]结束游戏,查看游戏结果');
         return;
