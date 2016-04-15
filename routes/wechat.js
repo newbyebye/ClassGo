@@ -61,15 +61,51 @@ module.exports = {
             var data = {
                 "button" :[
                     {
-                        "type": "view",
-                        "name": "ClassGo",
-                        "url": "http://classgo.newbyebye.com/home.html"
+                        "name": "注册",
+                        sub_button: [
+                            {
+                                "type": "click",
+                                "name": "注册",
+                                "key" : "MENU_REG_1"
+                            },
+                            {
+                                "type": "location_select",
+                                "name": "签到",
+                                "key" : "MENU_REG_2"
+                            },
+                        ]
                     },
                     {
-                        "type": "view",
-                        "name": "About",
-                        "url": "http://classgo.newbyebye.com/app"
+                        "name": "创建游戏",
+                        "sub_button":[
+                            {
+                                "type": "click",
+                                "name": "猜数字",
+                                "key" : "MENU_GAME_1"
+                            },
+                        ]
                     },
+                    {
+                        "name":"更多",
+                        "sub_button": [
+                            {
+                                "type": "click",
+                                "name": "帮助",
+                                "key" : "MENU_ABOUT_1"
+                            },
+                            {
+                                "type": "view",
+                                "name": "ClassGo",
+                                "url": "http://classgo.newbyebye.com/home.html"
+                            },
+                            {
+                                "type": "view",
+                                "name": "About",
+                                "url": "http://classgo.newbyebye.com/app"
+                            },
+                        ]
+                    }
+                    
                 ]
             }
 
