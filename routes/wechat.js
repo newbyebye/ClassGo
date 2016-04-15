@@ -95,7 +95,7 @@ function endGame(message, req, res) {
         return;
     }
 
-    gameDao.update({id:req.wxsession.game.id, status:0}, req, function(err, result){
+    gameDao.update({id:req.wxsession.game.id, status:0}, function(err, result){
         if (err){
             res.reply("游戏结束失败");
             return;
