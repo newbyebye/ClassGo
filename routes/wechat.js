@@ -4,6 +4,7 @@ var url = require('url');
 var crypto = require('crypto');
 var request = require('request');
 var userDao = require('../dao/userDao');
+var gameDao  = require('../dao/gameDao');
 
 // wechat 
 var wechat = require('wechat');
@@ -13,6 +14,46 @@ var config = {
     encodingAESKey: process.env.WECHAT_AESKEY
 };
 
+
+
+function registUser(message, req, res){
+    var str = message.Content.substr(2).trim();
+    var a = str.split(',');
+    if (a.length != 2) {
+        res.reply('输入错误\r\n回复{0} 姓名,学号 实名注册');
+        return;
+    }
+
+    var data = {"username":message.FromUserName, "openID": message.FromUserName, "fullname":a[0], "studentNo":a[1]};
+    userDao.add(data, function(err, result){
+        if (err) {
+            console.log(err);
+            res.reply("账号注册失败");
+            return;
+        }
+
+        res.reply("恭喜，账号注册成功");
+    });
+}
+
+function createNumberGame(message, req, res) {
+    gameDao.add({type:1}, function(err, result){
+        if (err) {
+            console.log(err);
+            res.reply("游戏创建失败");
+            return;
+        }
+
+        res.reply('游戏创建成功！请把房号告诉参与的同学。\n\
+        房号：' + result.code + '\n\
+        请认真选取1～100里的任意一个自然数，如果你选择的\
+           数字与全班的平均数的70%最为接近，那你就说获胜者。\n\n\
+        回复[7]查询游戏状态\n回复[8]提前结束游戏,查看游戏结果');
+    });
+
+    
+}
+
 // wechat msg reply
 var List = wechat.List;
 
@@ -21,11 +62,7 @@ List.add('help', [
       res.reply('输入错误\r\n回复{0} 姓名,学号 实名注册');
   }],
   ['回复{1}创建猜数字游戏', function (info, req, res){
-      res.reply('游戏创建成功！请把房号告诉参与的同学。\r\n\
-        房号：2913\r\n\
-        请认真选取1～100里的任意一个自然数，如果你选择的\
-           数字与全班的平均数的70%最为接近，那你就说获胜者。\r\n\r\n\
-        回复[8]查看游戏结果');
+      createNumberGame(info, req, res);
   }]
 ]);
 
@@ -36,24 +73,10 @@ module.exports = {
 
         // 账号注册
         if ((message.Content.indexOf('0 ') == 0) && (message.Content.indexOf(',') > 0)) {
-            var str = message.Content.substr(2).trim();
-            var a = str.split(',');
-            if (a.length != 2) {
-                res.reply('输入错误\r\n回复{0} 姓名,学号 实名注册');
-                return;
-            }
-
-            var data = {"username":message.FromUserName, "openID": message.FromUserName, "fullname":a[0], "studentNo":a[1]};
-            userDao.add(data, function(err, result){
-                if (err) {
-                    console.log(err);
-                    res.reply("账号注册失败");
-                    return;
-                }
-
-                res.reply("恭喜，账号注册成功");
-            });
-
+            registUser(message, req, res);
+        }
+        else if (message.Content === '1') {
+            createNumberGame(message, req, res);
         }
         else {
               res.wait('help');

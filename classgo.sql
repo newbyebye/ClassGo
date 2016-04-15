@@ -123,3 +123,32 @@ create table sign (
 )ENGINE=InnoDB DEFAULT CHARSET=utf8;
 CREATE TRIGGER `update_sign_trigger` BEFORE UPDATE ON `sign`
  FOR EACH ROW SET NEW.`updateAt` = NOW();
+
+
+create table game (
+    id BIGINT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    postId          BIGINT,
+    status          numeric,
+    code            varchar(8) NOT NULL,
+    type            numeric,
+
+    createAt       TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updateAt       TIMESTAMP NOT NULL 
+)ENGINE=InnoDB DEFAULT CHARSET=utf8;
+CREATE TRIGGER `update_game_trigger` BEFORE UPDATE ON `game`
+FOR EACH ROW SET NEW.`updateAt` = NOW();
+
+create table userGame (
+    id BIGINT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    gameId          BIGINT NOT NULL,
+    userId          BIGINT NOT NULL,
+    var1            numeric,
+    var2            numeric,
+
+    createAt       TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updateAt       TIMESTAMP NOT NULL 
+)ENGINE=InnoDB DEFAULT CHARSET=utf8;
+CREATE TRIGGER `update_userGame_trigger` BEFORE UPDATE ON `userGame`
+FOR EACH ROW SET NEW.`updateAt` = NOW();
+
+
