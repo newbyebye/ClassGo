@@ -140,8 +140,8 @@ module.exports = {
         console.log(message);
 
         if (!req.wxsession.user){
-            defaultRegistUser({"username":message.FromUserName, "openID": message.FromUserName}, function(err, callback){
-
+            defaultRegistUser({"username":message.FromUserName, "openID": message.FromUserName}, function(err, result){
+                console.log(err);
             });
         }
 
