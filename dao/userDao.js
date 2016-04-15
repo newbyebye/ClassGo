@@ -15,11 +15,13 @@ var $user = {
     delete: 'delete from user where id=?',
     login: 'select * from user where username=? and password=?',
     queryById: 'select id, username, email, emailVerified, gender, photo, fullname, mobile, region, school, brief, createAt, updateAt from user where id=?',
-    queryAll: 'select id, username, email, emailVerified, gender, photo, fullname, mobile, region, school, brief, createAt, updateAt from user'
+    queryAll: 'select id, username, email, emailVerified, gender, photo, fullname, mobile, region, school, brief, createAt, updateAt from user',
+    queryByOpenID: 'select * from user where openID=?',
 };
 
 module.exports = {
     add: function (param, callback) {
+
         pool.getConnection(function(err, connection) {
             if (err) {
                 console.log('[INSERT ERROR] - ', err.message);
@@ -27,15 +29,39 @@ module.exports = {
                 return;
             }
 
-            // 建立连接，向表中插入值
-            // 'INSERT INTO user(id, username, password) VALUES(0,?,?)',
-            connection.query($user.insert, [param.username, param.password, param.openID, param.fullname, param.studentNo], function(err, result) {
+            if (param.openID){
+                // reg from wechat
+                connection.query($user.queryByOpenID, param.openID, function(err, result) {
+                    if (err || result.length == 0){
+                        // new user
+                        connection.query($user.insert, [param.username, param.password, param.openID, param.fullname, param.studentNo], function(err, result) {
+                            callback(err, result);
+                            // 释放连接 
+                            connection.release();
+                        });
 
-                callback(err, result);
+                        return;
+                    }
+                    else{
+                        // update user
+                        connection.query('update user set username=?,password=?,fullname=?,studentNo=? where openID=?', [param.username, param.password, param.fullname, param.studentNo,param.openID], function(err, result) {
+                            callback(err, result);
+                            // 释放连接 
+                            connection.release();
+                        });
 
-                // 释放连接 
-                connection.release();
-            });
+                        return;
+                    }
+                });
+            }
+            else {
+                // new user
+                connection.query($user.insert, [param.username, param.password, param.openID, param.fullname, param.studentNo], function(err, result) {
+                    callback(err, result);
+                    // 释放连接 
+                    connection.release();
+                });
+            }          
         });
     },
     /*

@@ -31,9 +31,9 @@ module.exports = {
         console.log(message);
 
         // 账号注册
-        if ((message.Content.indexOf('1 ') == 0) && (message.Content.indexOf(',') > 0)) {
+        if ((message.Content.indexOf('0 ') == 0) && (message.Content.indexOf(',') > 0)) {
             var str = message.Content.substr(2).trim();
-            var a = str.splite(',');
+            var a = str.split(',');
             if (a.length != 2) {
                 res.reply('输入错误\r\n回复{0} 姓名,学号 实名注册');
                 return;
