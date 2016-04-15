@@ -15,7 +15,7 @@ var pool  = mysql.createPool($conf.mysql);
 
 // CRUD SQL语句
 var $sql = {
-    insert:'INSERT INTO game(id, postId, status, code, type) VALUES(0,?,1,?,?)',
+    insert:'INSERT INTO game(id, postId, userId, status, code, type) VALUES(0,?,?,1,?,?)',
     update:'update game set status=? where id=?',
     queryById: 'select * from game where id=?',
     queryUniqueCode: 'select * from game where status = 1 and code = ?',
@@ -68,7 +68,7 @@ module.exports = {
                 }
 
                 // 建立连接，向表中插入值
-                connection.query($sql.insert, [param.postId, code, param.type], function(err, result) {
+                connection.query($sql.insert, [param.postId, param.userId, code, param.type], function(err, result) {
                     result.code = code;
                     callback(err, result);
 

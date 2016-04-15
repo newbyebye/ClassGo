@@ -128,6 +128,7 @@ CREATE TRIGGER `update_sign_trigger` BEFORE UPDATE ON `sign`
 create table game (
     id BIGINT NOT NULL PRIMARY KEY AUTO_INCREMENT,
     postId          BIGINT,
+    userId          BIGINT NOT NULL,         
     status          numeric,
     code            varchar(8) NOT NULL,
     type            numeric,
@@ -142,6 +143,7 @@ create table userGame (
     id BIGINT NOT NULL PRIMARY KEY AUTO_INCREMENT,
     gameId          BIGINT NOT NULL,
     userId          BIGINT NOT NULL,
+    status          numeric,
     var1            numeric,
     var2            numeric,
 

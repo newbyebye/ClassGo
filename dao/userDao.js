@@ -45,6 +45,7 @@ module.exports = {
                     else{
                         // update user
                         connection.query('update user set username=?,password=?,fullname=?,studentNo=? where openID=?', [param.username, param.password, param.fullname, param.studentNo,param.openID], function(err, result) {
+                            result.insertId = result[0].id;
                             callback(err, result);
                             // 释放连接 
                             connection.release();

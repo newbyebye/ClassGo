@@ -14,7 +14,17 @@ var config = {
     encodingAESKey: process.env.WECHAT_AESKEY
 };
 
-
+function defaultRegistUser(data, callback){
+    userDao.add(data, function(err, result){
+        if (err) {
+            console.log(err);
+            callback(err);
+            return;
+        }
+        req.wxsession.user = {id:result.insertId, openID:openID};
+        callback(err, result);
+    });
+}
 
 function registUser(message, req, res){
     var str = message.Content.substr(2).trim();
@@ -23,33 +33,90 @@ function registUser(message, req, res){
         res.reply('输入错误\r\n回复{0} 姓名,学号 实名注册');
         return;
     }
-
+    
     var data = {"username":message.FromUserName, "openID": message.FromUserName, "fullname":a[0], "studentNo":a[1]};
-    userDao.add(data, function(err, result){
+    defaultRegistUser(data, function(err, result){
         if (err) {
             console.log(err);
             res.reply("账号注册失败");
             return;
         }
-
-        res.reply("恭喜，账号注册成功");
+        res.reply("恭喜"+ a[0] +"，账号注册成功");
     });
 }
 
 function createNumberGame(message, req, res) {
     console.log(req.wxsession);
-    gameDao.add({type:1}, function(err, result){
-        if (err) {
-            console.log(err);
-            res.reply("游戏创建失败");
+
+    if (req.wxsession.game) {
+        res.reply('您游戏创建的游戏正在进行中！请把房号告诉参与的同学。\n房号：' + req.wxsession.game.code + '\n请认真选取1～100里的任意一个自然数，如果你选择的\
+        数字与全班的平均数的70%最为接近，那你就说获胜者。\n\n回复[s]查询游戏状态\n回复[e]结束游戏,查看游戏结果');
+        return;
+    }
+
+    if (!req.wxsession.user){
+        defaultRegistUser({"username":message.FromUserName, "openID": message.FromUserName}, function(err, callback){
+                gameDao.add({type:1, userId:req.wxsession.user.id}, function(err, result){
+                if (err) {
+                    console.log(err);
+                    res.reply("游戏创建失败");
+                    return;
+                }
+                console.log(result);
+                req.wxsession.game = {id: result.insertId, code: result.code};
+                
+                res.reply('游戏创建成功！请把房号告诉参与的同学。\n房号：' + result.code + '\n请认真选取1～100里的任意一个自然数，如果你选择的\
+            数字与全班的平均数的70%最为接近，那你就说获胜者。\n\n回复[s]查询游戏状态\n回复[e]结束游戏,查看游戏结果');
+            });
+        });
+    }
+    else{
+        gameDao.add({type:1, userId:req.wxsession.user.id}, function(err, result){
+            if (err) {
+                console.log(err);
+                res.reply("游戏创建失败");
+                return;
+            }
+            console.log(result);
+            req.wxsession.game = {id: result.insertId, code: result.code};
+            
+            res.reply('游戏创建成功！请把房号告诉参与的同学。\n房号：' + result.code + '\n请认真选取1～100里的任意一个自然数，如果你选择的\
+        数字与全班的平均数的70%最为接近，那你就说获胜者。\n\n回复[s]查询游戏状态\n回复[e]结束游戏,查看游戏结果');
+        });
+    }
+}
+
+function endGame(message, req, res) {
+    if (!req.wxsession.game){
+        res.reply("没有正在进行的游戏");
+        return;
+    }
+
+    gameDao.update({id:req.wxsession.game.id, status:0}, function(err, result){
+        if (err){
+            res.reply("游戏结束失败");
             return;
         }
-        console.log(result);
-        req.wxsession.game = {id: result.insertId, code: result.code};
-        
-        res.reply('游戏创建成功！请把房号告诉参与的同学。\n房号：' + result.code + '\n请认真选取1～100里的任意一个自然数，如果你选择的\
-    数字与全班的平均数的70%最为接近，那你就说获胜者。\n\n回复[7]查询游戏状态\n回复[8]提前结束游戏,查看游戏结果');
+
+        // TODO: 统计游戏结果
+        /*
+            参与的人数，获胜者姓名 学号，结果
+        */
+        res.reply('游戏结束');
+        delete req.wxsession.game;
     });
+}
+
+function statusGame(message, req, res) {
+    if (!req.wxsession.game){
+        res.reply("没有正在进行的游戏");
+        return;
+    }
+
+    // TODO: 统计当前游戏结果, 如果所有人都已经提交数据则直接结束游戏
+    /*
+        参与的人数，提交人数, 获胜者姓名 学号，结果
+    */
 }
 
 // wechat msg reply
@@ -69,6 +136,12 @@ module.exports = {
     middleware: wechat(config).text(function (message, req, res, next) {
         console.log(message);
 
+        if (!req.wxsession.user){
+            defaultRegistUser({"username":message.FromUserName, "openID": message.FromUserName}, function(err, callback){
+
+            });
+        }
+
         // 账号注册
         if ((message.Content.indexOf('0 ') == 0) && (message.Content.indexOf(',') > 0)) {
             registUser(message, req, res);
@@ -76,9 +149,15 @@ module.exports = {
         else if (message.Content === '1') {
             createNumberGame(message, req, res);
         }
+        else if (message.Content === 'e') {
+            endGame(message, req, res);
+        }
+        else if (message.Content === 's') {
+            statusGame(message, req, res);
+        }
         else {
               res.wait('help');
-          }
+            }
         }).image(function (message, req, res, next) {
           
         }).voice(function (message, req, res, next) {
