@@ -18,10 +18,14 @@ var List = wechat.List;
 
 List.add('help', [
   ['回复{0} 姓名,学号 实名注册', function (info, req, res){
-      res.reply('已注册');
+      res.reply('输入错误\r\n回复{0} 姓名,学号 实名注册');
   }],
   ['回复{1}创建猜数字游戏', function (info, req, res){
-      res.reply('已创建');
+      res.reply('游戏创建成功！请把房号告诉参与的同学。\r\n\
+        房号：2913\r\n\
+        请认真选取1～100里的任意一个自然数，如果你选择的\
+           数字与全班的平均数的70%最为接近，那你就说获胜者。\r\n\r\n\
+        回复[8]查看游戏结果');
   }]
 ]);
 
