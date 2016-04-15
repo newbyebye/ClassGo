@@ -37,21 +37,18 @@ function registUser(message, req, res){
 }
 
 function createNumberGame(message, req, res) {
+    console.log(req.session);
     gameDao.add({type:1}, function(err, result){
         if (err) {
             console.log(err);
             res.reply("游戏创建失败");
             return;
         }
-
-        res.reply('游戏创建成功！请把房号告诉参与的同学。\n\
-        房号：' + result.code + '\n\
-        请认真选取1～100里的任意一个自然数，如果你选择的\
-           数字与全班的平均数的70%最为接近，那你就说获胜者。\n\n\
-        回复[7]查询游戏状态\n回复[8]提前结束游戏,查看游戏结果');
+        req.session.game = {id: result[0].id, code: result.code};
+        
+        res.reply('游戏创建成功！请把房号告诉参与的同学。\n房号：' + result.code + '\n请认真选取1～100里的任意一个自然数，如果你选择的\
+    数字与全班的平均数的70%最为接近，那你就说获胜者。\n\n回复[7]查询游戏状态\n回复[8]提前结束游戏,查看游戏结果');
     });
-
-    
 }
 
 // wechat msg reply
