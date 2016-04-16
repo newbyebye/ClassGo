@@ -105,8 +105,10 @@ function endGame(message, req, res) {
         /*
             参与的人数，获胜者姓名 学号，结果
         */
+        req.wxsession.game = undefined;
+        console.log(req.wxsession.game);
         res.reply('游戏结束');
-        delete req.wxsession.game;
+        console.log(req.wxsession.game);
     });
 }
 
