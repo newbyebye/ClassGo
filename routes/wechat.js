@@ -66,7 +66,7 @@ function createNumberGame(message, req, res) {
                     return;
                 }
                 console.log(result);
-                req.wxsession.game = {id: result.insertId, code: result.code};
+                req.wxsession.game = {id: result.insertId, code: result.code, status: "create"};
                 
                 res.reply('游戏创建成功！请把房号告诉参与的同学。\n房号：' + result.code + '\n请认真选取1～100里的任意一个自然数，如果你选择的\
             数字与全班的平均数的70%最为接近，那你就说获胜者。\n\n回复[s]查询游戏状态\n回复[e]结束游戏,查看游戏结果');
@@ -106,9 +106,7 @@ function endGame(message, req, res) {
             参与的人数，获胜者姓名 学号，结果
         */
         req.wxsession.game = undefined;
-        console.log(req.wxsession.game);
         res.reply('游戏结束');
-        console.log(req.wxsession.game);
     });
 }
 
@@ -272,8 +270,10 @@ module.exports = {
                             {
                                 "type": "view",
                                 "name": "ClassGo",
-                                "url": "http://classgo.newbyebye.com/home.html"
+                                "url": "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxf4802f2b0504b7b3&redirect_uri=https%3a%2f%2fclassgo.newbyebye.com%2fwelogin&response_type=code&scope=snsapi_userinfo&state=111#wechat_redirect"
                             },
+
+
                             {
                                 "type": "view",
                                 "name": "About",

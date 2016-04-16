@@ -15,8 +15,6 @@ var bodyParser = require('body-parser');
 var routes = require('./routes/index');
 var wechat   = require('./routes/wechat');
 
-
-
 //wechat.createMenu();
 
 // restful api
