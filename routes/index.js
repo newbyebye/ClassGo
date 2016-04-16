@@ -32,10 +32,13 @@ router.get('/welogin', function(req, res, next){
 			            return;
 			        }
 
+			        if (req.session){
+            			req.session.user = {id:result.insertId, openID: data.openID};
+        			}
+        			console.log(req.session);
+
 			        res.redirect("/home.html#&pageMeEdit");
 			    });
-
-				
 				console.log(result);
 				
 			});					

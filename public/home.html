@@ -197,9 +197,9 @@
         <div>
             <div class="me-group">
                 <div class="me-header">
-                    <img class="me-head" src="http://wx.qlogo.cn/mmopen/7S7iaWVxSfqzs9AlVJlzOC4ibKwoeGTzqUibGSNF8ibA4foicIAiaZb8jkQadGQeJrjke8Czk270UibEh4g6icwNGemZPYrIqzsLmjNV/0">
+                    <img class="me-head" src="" id="me_edit_photo">
                     <div class="me-detail">
-                        <h6>ClassGo</h6>
+                        <h6><span id="me_edit_nickname"></span></h6>
                     </div>
                 </div>
             </div>
@@ -209,33 +209,33 @@
                 <div class="weui_cell">
                     <div class="weui_cell_hd"><label class="weui_label">姓名</label></div>
                     <div class="weui_cell_bd weui_cell_primary">
-                        <input id="create_title" class="weui_input"  placeholder="请输入姓名"/>
+                        <input id="me_edit_fullname" class="weui_input"  placeholder="请输入姓名"/>
                     </div>
                 </div>
 
                 <div class="weui_cell">
                     <div class="weui_cell_hd"><label class="weui_label">学号</label></div>
                     <div class="weui_cell_bd weui_cell_primary">
-                        <input id="create_time" class="weui_input"  placeholder="请输入学号"/>
+                        <input id="me_edit_studentNo" class="weui_input"  placeholder="请输入学号"/>
                     </div>
                 </div>
 
                 <div class="weui_cell">
                     <div class="weui_cell_hd"><label class="weui_label">专业</label></div>
                     <div class="weui_cell_bd weui_cell_primary">
-                        <input id="create_address"  class="weui_input"  placeholder="请输入专业"/>
+                        <input id="me_edit_profession"  class="weui_input"  placeholder="请输入专业"/>
                     </div>
                 </div>
                 <div class="weui_cell">
                     <div class="weui_cell_hd"><label class="weui_label">学校</label></div>
                     <div class="weui_cell_bd weui_cell_primary">
-                        <input id="create_address"  class="weui_input"  placeholder="请输入学校"/>
+                        <input id="me_edit_school"  class="weui_input"  placeholder="请输入学校"/>
                     </div>
                 </div>
 
                 <div class="weui_cells_tips"></div>
                 <div class="weui_btn_area">
-                    <a class="weui_btn weui_btn_primary" href="javascript:void(0)" onclick="saveUserInfo()" id="showTooltips">确定</a>
+                    <a class="weui_btn weui_btn_primary" href="javascript:void(0)" onclick="saveUserInfo()" data-ajax="false">确定</a>
                 </div>
             </div>   
             <!--
@@ -317,6 +317,10 @@ FastClick.attach(document.body);
 
     $(function(){ 
         loadHomeData(g_skip, page);
+        CG.MyController.load(function(data){
+            $('#me_edit_photo').attr('src', data.photo);
+            $('#me_edit_nickname').text(data.nickname);
+        });
     });
 
     function loadmore() {
