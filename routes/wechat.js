@@ -234,7 +234,7 @@ module.exports = {
             }
             else {
                 try {
-                    callback(error, body);
+                    callback(error, JSON.parse(body));
                 }
                 catch (e) {
                     callback(e);
@@ -252,7 +252,7 @@ module.exports = {
             }
             else {
                 try {
-                    callback(error, body);
+                    callback(error, JSON.parse(body));
                 }
                 catch (e) {
                     callback(e);
