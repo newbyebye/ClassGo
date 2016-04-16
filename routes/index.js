@@ -1,5 +1,6 @@
 var express = require('express');
 var router = express.Router();
+var wechat = require('./wechat');
 
 
 /* GET home page. */
@@ -15,7 +16,17 @@ router.get('/app', function(req, res, next) {
 router.get('/welogin', function(req, res, next){
 	console.log(req.query);
 
-	res.render('app', {});
+	wechat.getAccessToken(req.query.code, function(err, result){
+		console.log(result);
+
+		wechat.getUserInfo(result.access_token, result.openid, function(err, result){
+			console.log(result);
+		});
+
+		res.render('app', {});
+	});
+
+	
 });
 
 module.exports = router;

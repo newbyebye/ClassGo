@@ -225,6 +225,42 @@ module.exports = {
         });
     },
 
+    getAccessToken: function(code, callback) {
+        var tokenUrl = 'https://api.weixin.qq.com/sns/oauth2/access_token?appid='+process.env.WECHAT_APPID+'&secret='+process.env.WECHAT_SCRET+'&code='+code+'&grant_type=authorization_code';
+    
+        request.get(tokenUrl, function(error, response, body) {
+            if (error) {
+                callback(error);
+            }
+            else {
+                try {
+                    callback(undefined, JSON.parse(body));
+                }
+                catch (e) {
+                    callback(e);
+                }
+            }
+        });
+    },
+
+    getUserInfo: function(accessToken, openID, callback) {
+        var url = 'https://api.weixin.qq.com/sns/userinfo?access_token='+accessToken+'&openid='+openID+'&lang=zh_CN';
+
+        request.get(tokenUrl, function(error, response, body) {
+            if (error) {
+                callback(error);
+            }
+            else {
+                try {
+                    callback(undefined, JSON.parse(body));
+                }
+                catch (e) {
+                    callback(e);
+                }
+            }
+        });
+    },
+
     createMenu: function() {
         this.getToken(function(error, token){
             if (error) {
