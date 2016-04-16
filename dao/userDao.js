@@ -10,7 +10,7 @@ var pool  = mysql.createPool($conf.mysql);
 
 // CRUD SQL语句{"username":"demo", "password":"demo", "fullname":"fullname", "openID": "openID"}
 var $user = {
-    insert:'INSERT INTO user(id, username, password, openID, fullname, studentNo) VALUES(0,?,?,?,?,?)',
+    insert:'INSERT INTO user(id, username, password, openID, fullname, nickname, studentNo, city, photo) VALUES(0,?,?,?,?,?,?,?,?)',
     update:'update user set email=?, emailVerified=?, gender=?, photo=?, fullname=?, mobile=?, region=?, school=?, brief=? where id=?',
     delete: 'delete from user where id=?',
     login: 'select * from user where username=? and password=?',
@@ -34,7 +34,7 @@ module.exports = {
                 connection.query($user.queryByOpenID, param.openID, function(err, result) {
                     if (err || result.length == 0){
                         // new user
-                        connection.query($user.insert, [param.username, param.password, param.openID, param.fullname, param.studentNo], function(err, result) {
+                        connection.query($user.insert, [param.username, param.password, param.openID, param.fullname, param.nickname, param.studentNo, param.city, param.photo], function(err, result) {
                             callback(err, result);
                             // 释放连接 
                             connection.release();
@@ -45,6 +45,7 @@ module.exports = {
                     else{
                         var userId = result[0].id;
                         // update user
+                        // TODO: 如果有定义值则更新
                         connection.query('update user set username=?,password=?,fullname=?,studentNo=? where openID=?', [param.username, param.password, param.fullname, param.studentNo,param.openID], function(err, result) {
                             result.insertId = userId;
                             callback(err, result);
@@ -58,7 +59,7 @@ module.exports = {
             }
             else {
                 // new user
-                connection.query($user.insert, [param.username, param.password, param.openID, param.fullname, param.studentNo], function(err, result) {
+                connection.query($user.insert, [param.username, param.password, param.openID, param.fullname, param.nickname, param.studentNo, param.city, param.photo], function(err, result) {
                     callback(err, result);
                     // 释放连接 
                     connection.release();

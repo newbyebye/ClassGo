@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var wechat = require('./wechat');
+var userDao = require('../dao/userDao');
 
 
 /* GET home page. */
@@ -23,8 +24,20 @@ router.get('/welogin', function(req, res, next){
 			console.log(result);
 
 			wechat.getUserInfo(result.access_token, result.openid, function(err, result){
+				var data = {"username":result.openid, "openID": result.openid, "nickname":result.nickname, "photo":result.headimgurl, "city":result.city, "sex":result.sex};
+				userDao.add(data, function(err, result){
+			        if (err) {
+			            console.log(err);
+			            next();
+			            return;
+			        }
+
+			        res.redirect("/home.html#&pageMeEdit");
+			    });
+
+				
 				console.log(result);
-				res.redirect("/home.html#&pageMeEdit");
+				
 			});					
 		})
 		
