@@ -234,7 +234,7 @@ module.exports = {
             }
             else {
                 try {
-                    callback(undefined, JSON.parse(body));
+                    callback(error, body);
                 }
                 catch (e) {
                     callback(e);
@@ -246,7 +246,7 @@ module.exports = {
     getUserInfo: function(accessToken, openID, callback) {
         var url = 'https://api.weixin.qq.com/sns/userinfo?access_token='+accessToken+'&openid='+openID+'&lang=zh_CN';
 
-        request.get(tokenUrl, function(error, response, body) {
+        request.get(url, function(error, response, body) {
             if (error) {
                 callback(error);
             }
@@ -274,9 +274,9 @@ module.exports = {
                         "name": "注册",
                         sub_button: [
                             {
-                                "type": "click",
+                                "type": "view",
                                 "name": "注册",
-                                "key" : "MENU_REG_1"
+                                "url": "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxf4802f2b0504b7b3&redirect_uri=https%3a%2f%2fclassgo.newbyebye.com%2fwelogin&response_type=code&scope=snsapi_userinfo&state=111#wechat_redirect"
                             },
                             {
                                 "type": "location_select",

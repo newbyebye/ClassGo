@@ -21,9 +21,9 @@ router.get('/welogin', function(req, res, next){
 
 		wechat.getUserInfo(result.access_token, result.openid, function(err, result){
 			console.log(result);
-		});
 
-		res.render('app', {});
+			res.redirect("/home.html#&pageMeEdit");
+		});
 	});
 
 	

@@ -10,11 +10,13 @@
 </head>
 
 <body>
+
 <div class="header out" data-role="header">
     <h1>ClassGo</h1>
     <a href="#pageAddClass" class="icon-add" data-ajax="false">添加</a>
     <a href="../index.html" class="icon-search" data-ajax="false">搜索</a>
 </div>
+
 <div id="pageHome" class="page out" data-title="ClassGo">          
     <div class="content">    
         <div id="scroller">
@@ -180,56 +182,62 @@
                     </div>
 
             </div>
-            <!--
-            <div class="me-group">
-                <div class="me-list">
-                    <i class="icon-me icon-me-4"></i>设置
-                </div>
-            </div>
-            -->
+            
         </div>
     </div>
 </div>
 
-<div id="login" class="page out">
+<div id="pageMeEdit" class="page out">
+    <div class="header" data-role="header">
+        <a href="#pageMe" class="icon-back" data-rel="back">返回</a>
+        <h1>修改个人信息</h1>
+        <a href="#" class="icon-add" data-ajax="false">添加</a>
+    </div>
     <div class="content">
         <div>
             <div class="me-group">
                 <div class="me-header">
-                    <img class="me-head" src="">
+                    <img class="me-head" src="http://wx.qlogo.cn/mmopen/7S7iaWVxSfqzs9AlVJlzOC4ibKwoeGTzqUibGSNF8ibA4foicIAiaZb8jkQadGQeJrjke8Czk270UibEh4g6icwNGemZPYrIqzsLmjNV/0">
                     <div class="me-detail">
                         <h6>ClassGo</h6>
                     </div>
                 </div>
             </div>
-            <div class="me-group">
-  
+            
+            <div class="weui_cells weui_cells_form">
+                <h5 class="contact-h">为了便于统计成绩请注册真实个人信息</h5>
                 <div class="weui_cell">
+                    <div class="weui_cell_hd"><label class="weui_label">姓名</label></div>
                     <div class="weui_cell_bd weui_cell_primary">
-                        <p>专业</p>
+                        <input id="create_title" class="weui_input"  placeholder="请输入姓名"/>
                     </div>
-                    <div class="weui_cell_ft">自动化</div>
                 </div>
 
                 <div class="weui_cell">
+                    <div class="weui_cell_hd"><label class="weui_label">学号</label></div>
                     <div class="weui_cell_bd weui_cell_primary">
-                        <p>学校</p>
+                        <input id="create_time" class="weui_input"  placeholder="请输入学号"/>
                     </div>
-                    <div class="weui_cell_ft">华中科技大学</div>
                 </div>
 
                 <div class="weui_cell">
-                        <div class="weui_cell_bd weui_cell_primary">
-                            <p>个人简介</p>
-                        </div>
-                   
-                        <div class="weui_cell_ft">
-                            <textarea class="weui_textarea" placeholder="请输入课程说明" rows="10">1994年华中理工大学系统工程专业毕业，获博士学位。1997年华中理工大学系统工程博士后出站后留校工作。现为华中科技大学系统工程研究所教授、博士生导师。湖北省系统工程学会理事、副秘书长，武汉市系统工程学会理事。留校工作后一直从事决策分析及相关领域的教学和科研工作。</textarea>
-                        </div>
-
+                    <div class="weui_cell_hd"><label class="weui_label">专业</label></div>
+                    <div class="weui_cell_bd weui_cell_primary">
+                        <input id="create_address"  class="weui_input"  placeholder="请输入专业"/>
                     </div>
+                </div>
+                <div class="weui_cell">
+                    <div class="weui_cell_hd"><label class="weui_label">学校</label></div>
+                    <div class="weui_cell_bd weui_cell_primary">
+                        <input id="create_address"  class="weui_input"  placeholder="请输入学校"/>
+                    </div>
+                </div>
 
-            </div>
+                <div class="weui_cells_tips"></div>
+                <div class="weui_btn_area">
+                    <a class="weui_btn weui_btn_primary" href="javascript:void(0)" onclick="saveUserInfo()" id="showTooltips">确定</a>
+                </div>
+            </div>   
             <!--
             <div class="me-group">
                 <div class="me-list">
@@ -284,6 +292,10 @@ FastClick.attach(document.body);
                 $('#alert').show();
             }
         );
+    }
+
+    function saveUserInfo(){
+
     }
 
     function loadHomeData(skip, limit){
