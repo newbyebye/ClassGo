@@ -243,6 +243,24 @@ module.exports = {
         });
     },
 
+    refreshAccessToken: function(refreshToken, callback) {
+        var url = 'https://api.weixin.qq.com/sns/oauth2/refresh_token?appid='+process.env.WECHAT_APPID+'&grant_type=refresh_token&refresh_token=' + refreshToken;
+        
+        request.get(url, function(error, response, body) {
+            if (error) {
+                callback(error);
+            }
+            else {
+                try {
+                    callback(error, body);
+                }
+                catch (e) {
+                    callback(e);
+                }
+            }
+        });
+    },
+
     getUserInfo: function(accessToken, openID, callback) {
         var url = 'https://api.weixin.qq.com/sns/userinfo?access_token='+accessToken+'&openid='+openID+'&lang=zh_CN';
 
