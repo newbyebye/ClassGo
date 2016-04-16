@@ -11,11 +11,11 @@ var pool  = mysql.createPool($conf.mysql);
 // CRUD SQL语句{"username":"demo", "password":"demo", "fullname":"fullname", "openID": "openID"}
 var $user = {
     insert:'INSERT INTO user(id, username, password, openID, fullname, nickname, studentNo, city, photo) VALUES(0,?,?,?,?,?,?,?,?)',
-    update:'update user set email=?, emailVerified=?, gender=?, photo=?, fullname=?, mobile=?, region=?, school=?, brief=? where id=?',
+    update:'update user set email=?, emailVerified=?, gender=?, photo=?, fullname=?, mobile=?, city=?, school=?, brief=? where id=?',
     delete: 'delete from user where id=?',
     login: 'select * from user where username=? and password=?',
-    queryById: 'select id, username, email, emailVerified, gender, photo, fullname, mobile, region, school, brief, createAt, updateAt from user where id=?',
-    queryAll: 'select id, username, email, emailVerified, gender, photo, fullname, mobile, region, school, brief, createAt, updateAt from user',
+    queryById: 'select id, username, email, emailVerified, gender, photo, fullname, mobile, nickname, studentNo, city, school, brief, createAt, updateAt from user where id=?',
+    queryAll: 'select id, username, email, emailVerified, gender, photo, fullname, mobile, nickname, studentNo, city, school, brief, createAt, updateAt from user',
     queryByOpenID: 'select * from user where openID=?',
 };
 
