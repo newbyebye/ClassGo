@@ -14,11 +14,14 @@ router.get('/app', function(req, res, next) {
 
 /* Get wechat login */
 router.get('/welogin', function(req, res, next){
+	console.log(req.query);
 	wechat.getAccessToken(req.query.code, function(err, result){
+		console.log(result);
 		var refresh = result.refresh_token;
-		console.log(err);
+
 		wechat.refreshAccessToken(refresh, function(err, result){
-			console.log(err);
+			console.log(result);
+			
 			wechat.getUserInfo(result.access_token, result.openid, function(err, result){
 				console.log(result);
 				res.redirect("/home.html#&pageMeEdit");
