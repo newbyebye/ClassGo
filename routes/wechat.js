@@ -289,53 +289,16 @@ module.exports = {
             var data = {
                 "button" :[
                     {
-                        "name": "注册",
-                        sub_button: [
-                            {
-                                "type": "view",
-                                "name": "注册",
-                                "url": "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxf4802f2b0504b7b3&redirect_uri=https%3a%2f%2fclassgo.newbyebye.com%2fwelogin&response_type=code&scope=snsapi_userinfo&state=111#wechat_redirect"
-                            },
-                            {
-                                "type": "location_select",
-                                "name": "签到",
-                                "key" : "MENU_REG_2"
-                            },
-                        ]
+                        "type": "view",
+                        "name": "ClassGo",
+                        "url": "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxf4802f2b0504b7b3&redirect_uri=https%3a%2f%2fclassgo.newbyebye.com%2fwelogin&response_type=code&scope=snsapi_userinfo&state=111#wechat_redirect"
                     },
+
                     {
-                        "name": "创建游戏",
-                        "sub_button":[
-                            {
-                                "type": "click",
-                                "name": "猜数字",
-                                "key" : "MENU_GAME_1"
-                            },
-                        ]
+                        "type": "view",
+                        "name": "About",
+                        "url": "http://classgo.newbyebye.com/app"
                     },
-                    {
-                        "name":"更多",
-                        "sub_button": [
-                            {
-                                "type": "click",
-                                "name": "帮助",
-                                "key" : "MENU_ABOUT_1"
-                            },
-                            {
-                                "type": "view",
-                                "name": "ClassGo",
-                                "url": "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxf4802f2b0504b7b3&redirect_uri=https%3a%2f%2fclassgo.newbyebye.com%2fwelogin&response_type=code&scope=snsapi_userinfo&state=111#wechat_redirect"
-                            },
-
-
-                            {
-                                "type": "view",
-                                "name": "About",
-                                "url": "http://classgo.newbyebye.com/app"
-                            },
-                        ]
-                    }
-                    
                 ]
             }
 
