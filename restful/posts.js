@@ -44,9 +44,11 @@ router.post('/post', checkToken, function(req, res, next) {
 router.get('/post/:id', function(req, res, next){
   postDao.queryById({id: req.params.id}, function(err, result){
       if (err || result.length == 0) {
+          console.log(err);
           var err = new Error('not found');
           err.status = 501;
           next(err);
+
           return
       }
 
@@ -61,14 +63,14 @@ router.get('/post/:id', function(req, res, next){
 *   GET /v1/post?filter={"fields":{},"where":{},"order":"a ASC","skip":21,"limit":20,"include":{},"includefilter":{}}
 */
 router.get('/post', function(req, res, next){
-  console.log(req.query);
 
   postDao.queryAll(JSON.parse(req.query.filter), function(err, result){
       if (err || result.length == 0) {
+          console.log(err);
           next(err);
           return
       }
-      console.log(result);
+      
       res.status(200).json(result);
   });
 });

@@ -74,50 +74,29 @@
     </div>
 </div>
 
-<div id="pageChatList" class="page out">
+<div id="pageDetail" class="page out">
     <div class="header" data-role="header">
         <a href="#pageHome" class="icon-back" data-rel="back">返回</a>
-        <h1>课程</h1>
+        <h1>课程详情</h1>
     </div>
     <div class="content">
         <div class="wechat-detail">
-            <div class="weui_cells weui_cells_form">
-                <div class="weui_cell">
-                    <div class="weui_cell_hd"><label class="weui_label">课程名称</label></div>
-                    <div class="weui_cell_bd weui_cell_primary">
-                        <input id="create_title" class="weui_input"  placeholder="请输入课程名称"/>
-                    </div>
-                </div>
-
-                <div class="weui_cell">
-                    <div class="weui_cell_hd"><label class="weui_label">上课时间</label></div>
-                    <div class="weui_cell_bd weui_cell_primary">
-                        <input id="create_time" class="weui_input"  placeholder="请输入上课时间"/>
-                    </div>
-                </div>
-
-                <div class="weui_cell">
-                    <div class="weui_cell_hd"><label class="weui_label">上课地点</label></div>
-                    <div class="weui_cell_bd weui_cell_primary">
-                        <input id="create_address"  class="weui_input"  placeholder="请输入上课地点"/>
-                    </div>
-                </div>
-                <h5 class="contact-h">课程简介</h5>
-                <div class="weui_cells_title"></div>
-                    <div class="weui_cells weui_cells_form">
-                    <div class="weui_cell">
-                        <div class="weui_cell_bd weui_cell_primary">
-                            <textarea id="create_body" class="weui_textarea" placeholder="请输入课程说明" rows="5"></textarea>
-                            <div  class="weui_textarea_counter"><span>0</span>/200</div>
+            <div class="weui_panel weui_panel_access">
+                <div class="weui_panel_hd"><span id="detail_author"></span></div>
+                <div class="weui_panel_bd">
+                    <div class="weui_media_box weui_media_appmsg">
+                        <div class="weui_media_hd">
+                            <img class="weui_media_appmsg_thumb" id="detail_photo" src="" alt="">
+                        </div>
+                        <div class="weui_media_bd">
+                            <h4 class="weui_media_title"><span id="detail_title"></span></h4>
+                            <p><span id="detail_address"></span></p>
+                            <p class="weui_media_desc"><span id="detail_body"></span></p>
                         </div>
                     </div>
                 </div>
-
-                <div class="weui_cells_tips"></div>
-                <div class="weui_btn_area">
-                    <a class="weui_btn weui_btn_primary" href="javascript:void(0)" onclick="postCreate()" id="showTooltips">确定</a>
-                </div>
-            </div>        
+                <a class="weui_panel_ft" href="javascript:void(0);">查看更多</a>
+            </div>
         </div>
     </div>
 </div>
@@ -186,18 +165,6 @@
                     <div class="weui_cell_ft"><span id="me_show_school"></span></div>
                 </div>
 
-                <!--
-                <div class="weui_cell">
-                        <div class="weui_cell_bd weui_cell_primary">
-                            <p>个人简介</p>
-                        </div>
-                   
-                        <div class="weui_cell_ft">
-                            <textarea class="weui_textarea" placeholder="请输入课程说明" rows="10">1994年华中理工大学系统工程专业毕业，获博士学位。1997年华中理工大学系统工程博士后出站后留校工作。现为华中科技大学系统工程研究所教授、博士生导师。湖北省系统工程学会理事、副秘书长，武汉市系统工程学会理事。留校工作后一直从事决策分析及相关领域的教学和科研工作。</textarea>
-                        </div>
-
-                </div>
-                -->
             </div>
                 
         </div>
@@ -352,7 +319,7 @@ FastClick.attach(document.body);
         CG.PostController.get('/v1/post?filter={"order":"createAt","skip":'+skip+',"limit":'+limit+'}', function(data){
             data.forEach(function(e){
                 $(scroller).append('\
-                    <a href="#pageChatList" class="wechat-list" data-rel="external">\
+                    <a href="javascript:void(0)" onclick="viewHomeDetail('+ e.id +')" class="wechat-list" >\
                         <img src="'+ e.photo +'">\
                         <div class="cell">\
                             <div class="wechat-h-time"><h5>'+e.title+'</h5><time>'+$.timeago(e.createAt)+'</time></div>\
@@ -362,6 +329,25 @@ FastClick.attach(document.body);
             });
             g_skip += data.length;
             Mobilebone.IScroll.refresh();
+        });
+    }
+
+    function viewHomeDetail(id){
+        CG.PostController.get('/v1/post/'+id, function(data){
+            $('#detail_author').text(data.fullname + '-'+data.profession);
+            $('#detail_photo').attr('src', data.photo);
+            $('#detail_title').text(data.title);
+            var addr = "";
+            if (data.time){
+                addr += data.time;
+            }
+            if (data.address){
+                addr += data.address;
+            }
+            
+            $('#detail_address').text(addr);
+            $('#detail_body').text(data.body);
+            window.location = "./home.html#&pageDetail";
         });
     }
 
