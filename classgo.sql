@@ -16,6 +16,7 @@ create table user (
     studentNo  varchar(32),
     mobile     varchar(32),
     city      varchar(32),
+    profession varchar(32),
     school     varchar(64),
     brief     varchar(256),
     openID    varchar(64),
