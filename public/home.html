@@ -299,9 +299,13 @@ FastClick.attach(document.body);
     var page = 20;
 
     function updateMeView(view, data){
-        $('#' + view +'_photo').attr('src', data.photo);
-        $('#' + view +'_nickname').text(data.nickname);
-
+        if (data.photo){
+            $('#' + view +'_photo').attr('src', data.photo);
+        }
+        if (data.nickname){
+            $('#' + view +'_nickname').text(data.nickname);
+        }
+        
         $('#' + view +'_fullname').val(data.fullname);
         $('#' + view +'_fullname').text(data.fullname);
 
@@ -319,7 +323,7 @@ FastClick.attach(document.body);
         var data = {title:$(create_title).val(), body:$(create_body).val(), time: $(create_time).val(), address: $(create_address).val()};
         
         CG.PostController.submit(data, function(result){   
-                //window.location = "./home.html";
+                window.location = "./home.html";
                 // view result.id
             }, 
             function(err) {
@@ -331,8 +335,9 @@ FastClick.attach(document.body);
     function saveUserInfo(){
         var data = {fullname:$(me_edit_fullname).val(), studentNo:$(me_edit_studentNo).val(), profession: $(me_edit_profession).val(), school: $(me_edit_school).val()};
         
-        CG.MyController.update(data, function(result){   
-                //window.location = "./home.html#&pageMe";
+        CG.MyController.update(data, function(result){
+                updateMeView('me_show', data);   
+                window.location = "./home.html#&pageMe";
                 // view result.id
             }, 
             function(err) {
