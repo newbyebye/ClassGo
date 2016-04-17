@@ -13,7 +13,7 @@ var $sql = {
     update:'update post set title=?, body=? where id=?',
     delete: 'delete from post where id=?',
     queryById: 'select * from post where id=?',
-    queryAll: 'select * from post'
+    queryAll: 'select title, post.createAt, post.updateAt, post.body, user.photo, user.fullname, user.nickname from post,user where post.authorId = user.id'
 };
 
 module.exports = {
@@ -69,11 +69,9 @@ module.exports = {
     // /v1/post?filter={"where":{},"order":"a ASC/DESC","skip":21,"limit":20}
     // select * from post where authorId=1 order by updateAt desc limit 5,5 ; + " order by ? DESC limit ?, ?", [param.order, param.skip, param.limit],
     queryAll: function (param, callback) {
-        console.log(param);
         console.log(param.order, param.skip, param.limit);
         pool.getConnection(function(err, connection) {
-            connection.query("set names utf8;");
-            connection.query($sql.queryAll + " order by ? ASC limit ?, ?", [param.order, param.skip, param.limit], function(err, result) {
+            connection.query($sql.queryAll + " order by createAt desc limit ?, ?", [param.skip, param.limit], function(err, result) {
                 callback(err, result);
                 connection.release();
             });

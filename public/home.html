@@ -292,6 +292,8 @@ FastClick.attach(document.body);
 <script src="js/wechat.js"></script>
 <script src="lib/jquery/jquery-1.10.2.js"></script> 
 <script src="lib/jquery/jquery.json-2.4.js"></script>
+<script src="lib/jquery/jquery.timeago.js"></script> 
+
 <script src="js/classgo.js"></script>
 
 <script type="text/javascript">
@@ -347,13 +349,13 @@ FastClick.attach(document.body);
     }
 
     function loadHomeData(skip, limit){
-        CG.PostController.get('/v1/post?filter={"order":"updateAt","skip":'+skip+',"limit":'+limit+'}', function(data){
+        CG.PostController.get('/v1/post?filter={"order":"createAt","skip":'+skip+',"limit":'+limit+'}', function(data){
             data.forEach(function(e){
                 $(scroller).append('\
                     <a href="#pageChatList" class="wechat-list" data-rel="external">\
-                        <img src="img/head/header-1.jpg">\
+                        <img src="'+ e.photo +'">\
                         <div class="cell">\
-                            <div class="wechat-h-time"><h5>'+e.title+'</h5><time>早上09:51</time></div>\
+                            <div class="wechat-h-time"><h5>'+e.title+'</h5><time>'+$.timeago(e.createAt)+'</time></div>\
                             <p>'+e.body+'</p>\
                         </div>\
                     </a>');
@@ -362,8 +364,6 @@ FastClick.attach(document.body);
             Mobilebone.IScroll.refresh();
         });
     }
-
-
 
     $(function(){ 
         loadHomeData(g_skip, page);

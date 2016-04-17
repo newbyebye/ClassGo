@@ -18,7 +18,6 @@
 <script type="text/javascript">
 var token = "{{token}}";
 var userId = "{{userId}}";
-var update = {{update}};
 
 function login(){
 	var data = $('form').serializeObject();
@@ -41,12 +40,12 @@ $(function(){
 	if (token.length > 0) {
 		window.localStorage.setItem("token", token);
 		window.localStorage.setItem("userId", userId);
-		if (update){
+
+		{{#if update}}
 			window.location = "./home.html";
-		}
-		else{
+		{{else}}
 			window.location = "./home.html#&pageMeEdit";
-		}
+		{{/if}}
 	} 
 });
 
