@@ -19,6 +19,28 @@ var $user = {
     queryByOpenID: 'select * from user where openID=?',
 };
 
+function createUpdateSql(param){
+    // fullname=?, studentNo=?, profession=?, school=?, brief=? 
+    var sql = "";
+    if (param.fullname) {
+        sql += "fullname=?, "
+    }
+    if (param.studentNo) {
+        sql += "studentNo=?, ";
+    }
+    if (param.profession) {
+        sql += "profession=?, ";
+    }
+    if (param.school) {
+        sql += "school=?, ";
+    }
+    if (param.brief) {
+        sql += "brief=?, ";
+    }
+
+    sql = sql.substr(0, sql.length - 1);
+}
+
 module.exports = {
     add: function (param, callback) {
 
@@ -85,7 +107,9 @@ module.exports = {
                 callback(err);
                 return;
             }
-            // fullname=?, studentNo=?, profession=?, school=?, brief=?
+            
+            var sql = "update user set " + createUpdateSql(param) + " where id=?";
+            // update user set fullname=?, studentNo=?, profession=?, school=?, brief=? where id=?
             connection.query($user.update, 
                 [param.fullname, param.studentNo, param.profession, 
                      param.school, param.brief, param.id], function(err, result) {
