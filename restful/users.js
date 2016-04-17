@@ -120,11 +120,6 @@ router.post('/user/logout', checkToken, function(req, res, next){
 */
 router.get('/user/:id', function(req, res, next){
   var id = req.params.id;
-  if (id == 0 || id == '0') {
-      if (res.session && res.session.user) {
-        id = res.session.user.id;
-      }
-  }
   userDao.queryById({id: req.params.id}, function(err, result){
       console.log(err);
       if (err || result.length == 0) {

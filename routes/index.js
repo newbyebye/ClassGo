@@ -2,6 +2,8 @@ var express = require('express');
 var router = express.Router();
 var wechat = require('./wechat');
 var userDao = require('../dao/userDao');
+var jwt = require('jsonwebtoken');
+var accessTokenDao = require('../dao/accessTokenDao');
 
 
 /* GET home page. */
@@ -39,7 +41,7 @@ router.get('/welogin', function(req, res, next){
         			}
         			console.log(req.session);
 
-        			var userId = result[0].id;
+        			var userId = result.insertId;
 			      	var token = jwt.sign({userId: userId}, process.env.JWT_SECRET);
 			      	accessTokenDao.add({userId: userId, ttl: 1209600, token: token, ipAddr:req.connection.remoteAddress}, function(err, result){
 				        if (err) {

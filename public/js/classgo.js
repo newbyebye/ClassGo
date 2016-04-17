@@ -165,7 +165,7 @@ $(function(){
 	});
 
 	CG.MyController = CG.SingleObjController.extend({
-		objName: "./v1/user/0"
+		objName: "./v1/user/" +window.localStorage.getItem('userId')
 	});
 
 });
