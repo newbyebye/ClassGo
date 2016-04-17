@@ -34,14 +34,13 @@ router.get('/welogin', function(req, res, next){
 			            return;
 			        }
 
-
-
 			        if (req.session){
             			req.session.user = {id:result.insertId, openID: data.openID};
         			}
         			console.log(req.session);
 
         			var userId = result.insertId;
+        			var update = result.update;
 			      	var token = jwt.sign({userId: userId}, process.env.JWT_SECRET);
 			      	accessTokenDao.add({userId: userId, ttl: 1209600, token: token, ipAddr:req.connection.remoteAddress}, function(err, result){
 				        if (err) {
@@ -52,7 +51,8 @@ router.get('/welogin', function(req, res, next){
 				        res.render('index', {
 				          	token: token,
 				          	ttl: 1209600,
-				          	userId: userId
+				          	userId: userId,
+				          	update: update
 				        });
 				    });
 

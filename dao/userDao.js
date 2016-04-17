@@ -82,6 +82,7 @@ module.exports = {
                         console.log(sql);
                         connection.query(sql, [param.nickname, param.photo, param.sex, param.city, param.openID], function(err, result) {
                             result.insertId = userId;
+                            result.update = true;
                             callback(err, result);
                             // 释放连接 
                             connection.release();
