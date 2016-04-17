@@ -68,7 +68,9 @@ module.exports = {
                         var userId = result[0].id;
                         // update user
                         // TODO: 如果有定义值则更新
-                        connection.query('update user set username=?,password=?,fullname=?,studentNo=? where openID=?', [param.username, param.password, param.fullname, param.studentNo,param.openID], function(err, result) {
+                        var sql = "update user set " + createUpdateSql(param) + " where openID=?";
+                        console.log(sql);
+                        connection.query(sql, [param.username, param.password, param.fullname, param.studentNo,param.openID], function(err, result) {
                             result.insertId = userId;
                             callback(err, result);
                             // 释放连接 
@@ -100,6 +102,7 @@ module.exports = {
         });
     },*/
     update: function (param, callback) {
+
         
         pool.getConnection(function(err, connection) {
             if (err) {
