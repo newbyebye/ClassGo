@@ -11,11 +11,11 @@ var pool  = mysql.createPool($conf.mysql);
 // CRUD SQL语句{"username":"demo", "password":"demo", "fullname":"fullname", "openID": "openID"}
 var $user = {
     insert:'INSERT INTO user(id, username, password, openID, fullname, nickname, studentNo, city, photo) VALUES(0,?,?,?,?,?,?,?,?)',
-    update:'update user set email=?, emailVerified=?, gender=?, photo=?, fullname=?, mobile=?, city=?, school=?, brief=? where id=?',
+    update:'update user set fullname=?, studentNo=?, profession=?, school=?, brief=? where id=?',
     delete: 'delete from user where id=?',
     login: 'select * from user where username=? and password=?',
-    queryById: 'select id, username, email, emailVerified, gender, photo, fullname, mobile, nickname, studentNo, city, school, brief, createAt, updateAt from user where id=?',
-    queryAll: 'select id, username, email, emailVerified, gender, photo, fullname, mobile, nickname, studentNo, city, school, brief, createAt, updateAt from user',
+    queryById: 'select id, username, profession, sex, photo, fullname, mobile, nickname, studentNo, city, school, brief, createAt, updateAt from user where id=?',
+    //queryAll: 'select id, username, profession, sex, photo, fullname, mobile, nickname, studentNo, city, school, brief, createAt, updateAt from user',
     queryByOpenID: 'select * from user where openID=?',
 };
 
@@ -85,10 +85,10 @@ module.exports = {
                 callback(err);
                 return;
             }
-            // email=? emailVerified=? gender=? photo=? fullname=? mobile=? region=? school=? brief=? where id=?
+            // fullname=?, studentNo=?, profession=?, school=?, brief=?
             connection.query($user.update, 
-                [param.email, param.emailVerified, param.gender, param.photo, param.fullname, 
-                    param.mobile, param.region, param.school, param.brief, param.id], function(err, result) {
+                [param.fullname, param.studentNo, param.profession, 
+                     param.school, param.brief, param.id], function(err, result) {
                 callback(err, result);
                 connection.release();
             });
@@ -123,6 +123,7 @@ module.exports = {
             });
         });
     },
+    /*
     queryAll: function (param, callback) {
         pool.getConnection(function(err, connection) {
             if (err) {
@@ -136,6 +137,6 @@ module.exports = {
                 connection.release();
             });
         });
-    }
+    }*/
     
 };

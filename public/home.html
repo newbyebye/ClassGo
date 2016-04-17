@@ -148,28 +148,45 @@
         <div>
             <div class="me-group">
                 <div class="me-header">
-                    <img class="me-head" src="">
+                    <img class="me-head" src="" id="me_show_photo">
                     <div class="me-detail">
-                        <h6>ClassGo</h6>
+                        <h6><span id="me_show_nickname"></span></h6>
+                        <div class="weui_cell_ft"><a href="#pageMeEdit" >修改</a></div>
                     </div>
+                    
                 </div>
             </div>
             <div class="me-group">
   
                 <div class="weui_cell">
                     <div class="weui_cell_bd weui_cell_primary">
+                        <p>姓名</p>
+                    </div>
+                    <div class="weui_cell_ft"><span id="me_show_fullname"></span></div>
+                </div>
+
+                <div class="weui_cell">
+                    <div class="weui_cell_bd weui_cell_primary">
+                        <p>学号</p>
+                    </div>
+                    <div class="weui_cell_ft"><span id="me_show_studentNo"></span></div>
+                </div>
+
+                <div class="weui_cell">
+                    <div class="weui_cell_bd weui_cell_primary">
                         <p>专业</p>
                     </div>
-                    <div class="weui_cell_ft">自动化</div>
+                    <div class="weui_cell_ft"><span id="me_show_profession"></span></div>
                 </div>
 
                 <div class="weui_cell">
                     <div class="weui_cell_bd weui_cell_primary">
                         <p>学校</p>
                     </div>
-                    <div class="weui_cell_ft">华中科技大学</div>
+                    <div class="weui_cell_ft"><span id="me_show_school"></span></div>
                 </div>
 
+                <!--
                 <div class="weui_cell">
                         <div class="weui_cell_bd weui_cell_primary">
                             <p>个人简介</p>
@@ -179,10 +196,10 @@
                             <textarea class="weui_textarea" placeholder="请输入课程说明" rows="10">1994年华中理工大学系统工程专业毕业，获博士学位。1997年华中理工大学系统工程博士后出站后留校工作。现为华中科技大学系统工程研究所教授、博士生导师。湖北省系统工程学会理事、副秘书长，武汉市系统工程学会理事。留校工作后一直从事决策分析及相关领域的教学和科研工作。</textarea>
                         </div>
 
-                    </div>
-
+                </div>
+                -->
             </div>
-            
+                
         </div>
     </div>
 </div>
@@ -281,6 +298,23 @@ FastClick.attach(document.body);
     var g_skip = 0;
     var page = 20;
 
+    function updateMeView(view, data){
+        $('#' + view +'_photo').attr('src', data.photo);
+        $('#' + view +'_nickname').text(data.nickname);
+
+        $('#' + view +'_fullname').val(data.fullname);
+        $('#' + view +'_fullname').text(data.fullname);
+
+        $('#' + view +'_studentNo').val(data.studentNo);
+        $('#' + view +'_studentNo').text(data.studentNo);
+
+        $('#' + view +'_profession').val(data.profession);
+        $('#' + view +'_profession').text(data.profession);
+
+        $('#' + view +'_school').val(data.school);
+        $('#' + view +'_school').text(data.school);
+    }
+
     function postCreate(){
         var data = {title:$(create_title).val(), body:$(create_body).val(), time: $(create_time).val(), address: $(create_address).val()};
         
@@ -295,7 +329,16 @@ FastClick.attach(document.body);
     }
 
     function saveUserInfo(){
-
+        var data = {fullname:$(me_edit_fullname).val(), studentNo:$(me_edit_studentNo).val(), profession: $(me_edit_profession).val(), school: $(me_edit_school).val()};
+        
+        CG.MyController.update(data, function(result){   
+                //window.location = "./home.html#&pageMe";
+                // view result.id
+            }, 
+            function(err) {
+                $('#alert').show();
+            }
+        );
     }
 
     function loadHomeData(skip, limit){
@@ -315,11 +358,13 @@ FastClick.attach(document.body);
         });
     }
 
+
+
     $(function(){ 
         loadHomeData(g_skip, page);
         CG.MyController.load(function(data){
-            $('#me_edit_photo').attr('src', data.photo);
-            $('#me_edit_nickname').text(data.nickname);
+            updateMeView('me_edit', data);
+            updateMeView('me_show', data);
         });
     });
 

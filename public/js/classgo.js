@@ -110,6 +110,11 @@ $(function() {
 		submit : function(data, successProc, errorProc) {
 			var path = COMMON_JSON_PATH + this.objName;
 			this.post(path, data, successProc, errorProc);
+		},
+
+		update : function(data, successProc, errorProc) {
+			var path = COMMON_JSON_PATH + this.objName;
+			this.put(path, data, successProc, errorProc);
 		}
 	});
 
