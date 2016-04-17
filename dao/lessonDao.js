@@ -21,7 +21,8 @@ var $sql = {
     update:'update lesson set status=?, lng=?, lat=? where id=?',
     delete: 'delete from lesson where id=?',
     queryById: 'select * from lesson where id=?',
-    queryAll: 'select * from lesson'
+    queryAll: 'select * from lesson',
+    queryLessonByPostId: 'select id,postId,status from lesson where date(starttime) = curdate() and postId = ?'
 };
 
 module.exports = {
@@ -76,6 +77,15 @@ module.exports = {
     queryAll: function (param, callback) {
         pool.getConnection(function(err, connection) {
             connection.query($sql.queryAll, function(err, result) {
+                callback(err, result);
+                connection.release();
+            });
+        });
+    },
+    queryLessonByPostId: function(param, callback) {
+        pool.getConnection(function(err, connection) {
+            console.log($sql.queryLessonByPostId + param.id);
+            connection.query($sql.queryLessonByPostId, param.id, function(err, result) {
                 callback(err, result);
                 connection.release();
             });

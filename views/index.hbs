@@ -24,14 +24,15 @@ function login(){
 
 	data.password = CryptoJS.SHA256(data.password).toString();
 	
-	CG.UserLoginController.login(data, function(result){
+	CG.UserLoginController.login(data, function(err, result){
+			if (err){
+				$('#alert').show();
+				return;
+			}
 			// success {"token":"sadfasdf", "ttl":1209600, userId:1}
 			window.localStorage.setItem("token", result.token);
 			window.localStorage.setItem("userId", result.userId);
 			window.location = "./home.html";
-		}, 
-		function(err) {
-			$('#alert').show();
 		}
 	);
 }

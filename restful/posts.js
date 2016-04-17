@@ -142,11 +142,28 @@ router.delete('/post/:id', checkToken, function(req, res, next){
     });
 });
 
+/**
+* get post today lesson
+* GET /v1/post/:id/lesson
+* success: {"id":1, "status":1}
+*/
+router.get('/post/:id/lesson', function(req, res, next){
+    lessonDao.queryLessonByPostId({id: req.params.id}, function(err, result){
+      console.log(result);
+      if (err || result.length == 0) {
+          var err = new Error('not found');
+          err.status = 501;
+          next(err);
+          return
+      }
+      res.status(200).json(result[0]);
+    });
+});
 
 /**
 *  start lesson
 *  POST /v1/post/:id/lesson
-*  BODY: {"status": 1, "starttime": "2010-10-05", "timeout": 600, "lng":12312.1231, "lat":1.2342} 
+*  BODY: {"status": 1, "timeout": 600, "lng":12312.1231, "lat":1.2342} 
 *  success: {"id":1}
 */
 router.post('/post/:id/lesson', checkToken, function(req, res, next){
@@ -157,16 +174,16 @@ router.post('/post/:id/lesson', checkToken, function(req, res, next){
           next(err);
           return
       }
-
-      /*
+      
       if (req.api_user.userId != result[0].authorId) {
         var err = new Error('deny access');
         err.status = 401;
         next(err);
         return
       }
-      */
-
+      
+      // "starttime": "2010-10-05",
+      req.body.starttime = new Date();
       req.body.postId = req.params.id;
       lessonDao.add(req.body, function(err, result){
           if (err) {
@@ -195,14 +212,14 @@ router.put('/post/lesson/:id', checkToken, function(req, res, next){
           return
       }
 
-      /*
+      
       // TODO:
       if (req.api_user.userId != result[0].authorId) {
         var err = new Error('deny access');
         err.status = 401;
         next(err);
         return
-      }*/
+      }
 
       req.body.id = req.params.id;
       lessonDao.update(req.body, function(err, result){
@@ -215,6 +232,8 @@ router.put('/post/lesson/:id', checkToken, function(req, res, next){
       });
     });
 });
+
+
 
 /**
 * student sign

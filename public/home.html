@@ -81,6 +81,8 @@
     </div>
     <div class="content">
         <div class="wechat-detail">
+            <input type="hidden" id="detail_id">
+            <input type="hidden" id="detail_lesson_id">
             <div class="weui_panel weui_panel_access">
                 <div class="weui_panel_hd"><span id="detail_author"></span></div>
                 <div class="weui_panel_bd">
@@ -95,7 +97,44 @@
                         </div>
                     </div>
                 </div>
-                <a class="weui_panel_ft" href="javascript:void(0);">查看更多</a>
+
+                <div class="weui_tab" id="detail_other">
+                    <div class="weui_navbar">
+                        <div class="weui_navbar_item ">
+                            <a href="javascript:;" class="weui_btn weui_btn_mini weui_btn_primary">关注</a>
+                        </div>
+                        <div class="weui_navbar_item">
+                            <a href="javascript:;" class="weui_btn weui_btn_mini weui_btn_primary">点赞</a>
+                        </div>
+                        <div class="weui_navbar_item">
+                            <a href="javascript:void(0)" onclick="signIn()" class="weui_btn weui_btn_mini weui_btn_primary">签到</a>
+                        </div>
+                    </div>
+                    <div class="weui_tab_bd">
+
+                    </div>
+                </div>
+
+                <div class="weui_tab" id="detail_owner">
+                    <div class="weui_navbar">
+                        <div class="weui_navbar_item ">
+                            <a href="javascript:void(0)" onclick="startSignIn()" class="weui_btn weui_btn_mini weui_btn_primary">开启签到</a>
+                        </div>
+                        <div class="weui_navbar_item">
+                            <a href="javascript:;" class="weui_btn weui_btn_mini weui_btn_primary">查看签到</a>
+                        </div>
+                        <div class="weui_navbar_item">
+                            <a href="javascript:;" class="weui_btn weui_btn_mini weui_btn_primary">添加游戏</a>
+                        </div>
+                    </div>
+                    <div class="weui_tab_bd">
+
+                    </div>
+                </div>
+          
+                <div class="weui_panel_hd"><span id="detail_info" style="color: #f43530;"></span></div>
+
+                 <!-- <a class="weui_panel_ft" href="javascript:void(0);">查看更多</a> -->
             </div>
         </div>
     </div>
@@ -130,7 +169,9 @@
                     <img class="me-head" src="" id="me_show_photo">
                     <div class="me-detail">
                         <h6><span id="me_show_nickname"></span></h6>
-                        <div class="weui_cell_ft"><a href="#pageMeEdit" >修改</a></div>
+                        <div class="weui_cell_ft">
+                            <a href="#pageMeEdit" class="weui_btn weui_btn_mini weui_btn_primary">修改</a>
+                        </div>
                     </div>
                     
                 </div>
@@ -222,13 +263,6 @@
                     <a class="weui_btn weui_btn_primary" href="javascript:void(0)" onclick="saveUserInfo()" data-ajax="false">确定</a>
                 </div>
             </div>   
-            <!--
-            <div class="me-group">
-                <div class="me-list">
-                    <i class="icon-me icon-me-4"></i>设置
-                </div>
-            </div>
-            -->
         </div>
     </div>
 </div>
@@ -291,32 +325,23 @@ FastClick.attach(document.body);
     function postCreate(){
         var data = {title:$(create_title).val(), body:$(create_body).val(), time: $(create_time).val(), address: $(create_address).val()};
         
-        CG.PostController.submit(data, function(result){   
+        CG.PostController.submit(data, function(err, result){   
                 window.location = "./home.html";
-                // view result.id
-            }, 
-            function(err) {
-                $('#alert').show();
-            }
-        );
+            });
     }
 
     function saveUserInfo(){
         var data = {fullname:$(me_edit_fullname).val(), studentNo:$(me_edit_studentNo).val(), profession: $(me_edit_profession).val(), school: $(me_edit_school).val()};
         
-        CG.MyController.update(data, function(result){
+        CG.MyController.update(data, function(err, result){
                 updateMeView('me_show', data);   
                 window.location = "./home.html#&pageMe";
                 // view result.id
-            }, 
-            function(err) {
-                $('#alert').show();
-            }
-        );
+        });
     }
 
     function loadHomeData(skip, limit){
-        CG.PostController.get('/v1/post?filter={"order":"createAt","skip":'+skip+',"limit":'+limit+'}', function(data){
+        CG.PostController.get('/v1/post?filter={"order":"createAt","skip":'+skip+',"limit":'+limit+'}', function(err, data){
             data.forEach(function(e){
                 $(scroller).append('\
                     <a href="javascript:void(0)" onclick="viewHomeDetail('+ e.id +')" class="wechat-list" >\
@@ -333,7 +358,9 @@ FastClick.attach(document.body);
     }
 
     function viewHomeDetail(id){
-        CG.PostController.get('/v1/post/'+id, function(data){
+        loadTodayLesson(id);
+        CG.PostController.get('/v1/post/'+id, function(err, data){
+            $('#detail_id').val(id);
             $('#detail_author').text(data.fullname + '-'+data.profession);
             $('#detail_photo').attr('src', data.photo);
             $('#detail_title').text(data.title);
@@ -347,7 +374,58 @@ FastClick.attach(document.body);
             
             $('#detail_address').text(addr);
             $('#detail_body').text(data.body);
+
+            if (data.authorId == window.localStorage.getItem("userId")){
+                $('#detail_owner').show();
+                $('#detail_other').hide();
+            }
+            else{
+                $('#detail_owner').hide();
+                $('#detail_other').show();
+            }
+
             window.location = "./home.html#&pageDetail";
+        });
+    }
+
+    function startSignIn() {
+        
+        // {"status": 1, "starttime": "2010-10-05", "timeout": 600, "lng":12312.1231, "lat":1.2342}
+        var data = {"status": 1, "starttime": new Date(), "timeout": 600, "lng":12312.1231, "lat":1.2342};
+        CG.PostController.post('/v1/post/'+$('#detail_id').val()+'/lesson', data, function(err, data){
+            if (!err){
+                $('#detail_lesson_id').val(data.id);
+                $('#detail_info').text("签名已开始,请通知学员开始签到，10分钟后签到会自动关闭。");
+            }
+        });
+    }
+
+    function signIn() {
+        // /v1/post/lesson/:id/sign
+        //{"lng":12312.1231, "lat":1.2342}
+        var data = {"lng":12312.1231, "lat":1.2342};
+        if ($('#detail_lesson_id').val().length == 0){
+            $('#detail_info').text("签名未开启或已结束，无法签到");
+            return;
+        }
+
+        CG.PostController.post('/v1/post/lesson/'+$('#detail_lesson_id').val()+'/sign', data, function(err, data){
+            if (!err){
+                $('#detail_info').text("恭喜今日签到成功");
+            }
+        });
+    }
+
+    function loadTodayLesson(postId) {
+        CG.PostController.get('/v1/post/'+postId+'/lesson', function(err, data){
+            if (!err){
+                if (data.status == 1) {
+                    $('#detail_lesson_id').val(data.id);
+                }
+                else{
+                    $('#detail_lesson_id').val("");
+                }
+            }
         });
     }
 

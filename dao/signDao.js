@@ -24,7 +24,7 @@ var $sql = {
     update:'update sign set lng=?, lat=? where id=?',
     delete: 'delete from sign where id=?',
     queryById: 'select * from sign where id=?',
-    queryAll: 'select * from sign'
+    queryAll: 'select * from sign',
 };
 
 module.exports = {
@@ -83,6 +83,7 @@ module.exports = {
                 connection.release();
             });
         });
-    }
-    
+    },
+
+
 };

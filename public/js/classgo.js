@@ -32,7 +32,7 @@ $(function() {
 	CG.ObjController = CG.Object.extend({
 		objName : '',
 		// window.localStorage.getItem
-		get : function(path, successProc, errorProc, bAsync) {
+		get : function(path, callback, bAsync) {
 			var isAsyncLoad = true;
 			if (typeof (bAsync) != 'undefined') {
 				isAsyncLoad = bAsync;
@@ -47,12 +47,10 @@ $(function() {
 					return data;
 				},*/
 				success : function(data) {
-					successProc(data);
+					callback(null, data);
 				},
 				error : function(err, textStatus) {
-					if (errorProc) {
-						errorProc(err, textStatus);
-					}
+					callback(err);
 				}
 			});
 		},
@@ -73,7 +71,7 @@ $(function() {
 			return $.toJSON(json);
 		},
 
-		internalPost: function (path, data, type, successProc, errorProc) {
+		internalPost: function (path, data, type, callback) {
 			var self = this;
 			jQuery.ajax({
 				url : path,
@@ -82,39 +80,35 @@ $(function() {
 				dataType : "json",
 				contentType : "application/json;charset=UTF-8",
 				headers : {"x-access-token":window.localStorage.getItem("token")},
-				success : function(result) {
-					if (successProc) {
-						successProc(result);
-					}
+				success : function(result) {	
+					callback(null, result);	
 				},
-				error : function(err) {
-					if (errorProc) {
-						errorProc(err);
-					}
+				error : function(err) {	
+					callback(err);
 				}
 			});
 		},
 
-		post : function(path, data, successProc, errorProc) {
-			this.internalPost(path, data, "POST", successProc, errorProc);
+		post : function(path, data, callback) {
+			this.internalPost(path, data, "POST", callback);
 		},
 
-		put : function(path, data, successProc, errorProc) {
-			this.internalPost(path, data, "PUT", successProc, errorProc);
+		put : function(path, data, callback) {
+			this.internalPost(path, data, "PUT", callback);
 		},
 
-		delete : function(path, data, successProc, errorProc) {
-			this.internalPost(path, data, "DELETE", successProc, errorProc);
+		delete : function(path, data, callback) {
+			this.internalPost(path, data, "DELETE", callback);
 		},
 
-		submit : function(data, successProc, errorProc) {
+		submit : function(data, callback) {
 			var path = COMMON_JSON_PATH + this.objName;
-			this.post(path, data, successProc, errorProc);
+			this.post(path, data, callback);
 		},
 
-		update : function(data, successProc, errorProc) {
+		update : function(data, callback) {
 			var path = COMMON_JSON_PATH + this.objName;
-			this.put(path, data, successProc, errorProc);
+			this.put(path, data, callback);
 		}
 	});
 
@@ -129,7 +123,7 @@ $(function() {
 			var self = this;
 			var path = COMMON_JSON_PATH + this.objName;
 
-			this.get(path, function(data) {
+			this.get(path, function(err, data) {
 				if (null == data) {
 					return;
 				}
@@ -145,10 +139,6 @@ $(function() {
 				if (callback) {
 					callback(data, self);
 				}
-			}, function(err, textStatus) {
-				if (self.loadErrProc) {
-					self.loadErrProc(err, textStatus);
-				}
 			});
 		}
 	});
@@ -159,9 +149,9 @@ $(function(){
 	CG.UserLoginController = CG.SingleObjController.extend({
 	    objName: "./v1/user/login",
 	   
-	    login: function(data, successProc, errorProc){
+	    login: function(data, callback){
 	        var self = this;
-	        this.submit(data, successProc, errorProc);
+	        this.submit(data, callback);
 	    }
 	});
 
