@@ -21,24 +21,34 @@ var $user = {
 
 function createUpdateSql(param){
     // fullname=?, studentNo=?, profession=?, school=?, brief=? 
-    var sql = "";
+    console.log(param);
+
+    var retval = {sql:"", params:[]};
+
     if (param.fullname) {
-        sql += "fullname=?, "
+        retval.sql += "fullname=?, ";
+        retval.params[retval.params.length] = param.fullname;
     }
     if (param.studentNo) {
-        sql += "studentNo=?, ";
+        retval.sql += "studentNo=?, ";
+        retval.params[retval.params.length] = param.studentNo;
     }
     if (param.profession) {
-        sql += "profession=?, ";
+        retval.sql += "profession=?, ";
+        retval.params[retval.params.length] = param.profession;
     }
     if (param.school) {
-        sql += "school=?, ";
+        retval.sql += "school=?, ";
+        retval.params[retval.params.length] = param.school;
     }
     if (param.brief) {
-        sql += "brief=?, ";
+        retval.sql += "brief=?, ";
+        retval.params[retval.params.length] = param.brief;
     }
 
-    sql = sql.substr(0, sql.length - 1);
+    retval.sql = retval.sql.substr(0, retval.sql.length - 2);
+
+    return retval;
 }
 
 module.exports = {
@@ -68,9 +78,9 @@ module.exports = {
                         var userId = result[0].id;
                         // update user
                         // TODO: 如果有定义值则更新
-                        var sql = "update user set " + createUpdateSql(param) + " where openID=?";
+                        var sql = "update user set nickname=?, photo=?, sex=?,city=? where openID=?";
                         console.log(sql);
-                        connection.query(sql, [param.username, param.password, param.fullname, param.studentNo,param.openID], function(err, result) {
+                        connection.query(sql, [param.nickname, param.photo, param.sex, param.city, param.openID], function(err, result) {
                             result.insertId = userId;
                             callback(err, result);
                             // 释放连接 
@@ -110,12 +120,14 @@ module.exports = {
                 callback(err);
                 return;
             }
+
+            var sqlParams = createUpdateSql(param);
+            sqlParams.params[sqlParams.params.length] = param.id;
             
-            var sql = "update user set " + createUpdateSql(param) + " where id=?";
+            console.log(sqlParams.sql);
             // update user set fullname=?, studentNo=?, profession=?, school=?, brief=? where id=?
-            connection.query($user.update, 
-                [param.fullname, param.studentNo, param.profession, 
-                     param.school, param.brief, param.id], function(err, result) {
+            connection.query("update user set " + sqlParams.sql + " where id=?", 
+                sqlParams.params, function(err, result) {
                 callback(err, result);
                 connection.release();
             });
