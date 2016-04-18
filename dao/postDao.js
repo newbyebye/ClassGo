@@ -12,8 +12,8 @@ var $sql = {
     insert:'INSERT INTO post(id, title, body, address, time, authorId) VALUES(0,?,?,?,?,?)',
     update:'update post set title=?, body=? where id=?',
     delete: 'delete from post where id=?',
-    queryById: 'select post.id, title, authorId, post.createAt, post.updateAt, post.body, user.photo, user.profession, user.fullname, user.nickname from post,user where post.authorId = user.id and post.id=?',
-    queryAll: 'select post.id, title, authorId, post.createAt, post.updateAt, post.body, user.photo, user.fullname, user.nickname from post,user where post.authorId = user.id'
+    queryById: 'select post.id, title, authorId, time, address,post.createAt, post.updateAt, post.body, user.photo, user.profession, user.fullname, user.nickname from post,user where post.authorId = user.id and post.id=?',
+    queryAll: 'select post.id, title, authorId, time, address,post.createAt, post.updateAt, post.body, user.photo, user.fullname, user.nickname from post,user where post.authorId = user.id'
 };
 
 module.exports = {
