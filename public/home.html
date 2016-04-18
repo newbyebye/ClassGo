@@ -13,7 +13,7 @@
 
 <div class="header out" data-role="header">
     <h1>ClassGo</h1>
-    <a href="#pageAddClass" class="icon-add" data-ajax="false">添加</a>
+    <a href="javascript:void(0)" onclick="newPost()" class="icon-add" data-ajax="false">添加</a>
     <a href="../index.html" class="icon-search" data-ajax="false">搜索</a>
 </div>
 
@@ -32,6 +32,7 @@
     </div>
     <div class="content">
         <div class="wechat-detail">
+            <input type="hidden" id="create_id">
             <div class="weui_cells weui_cells_form">
                 <div class="weui_cell">
                     <div class="weui_cell_hd"><label class="weui_label">课程名称</label></div>
@@ -66,7 +67,7 @@
 
                 <div class="weui_cells_tips"></div>
                 <div class="weui_btn_area">
-                    <a class="weui_btn weui_btn_primary" href="javascript:void(0)" onclick="postCreate()" id="showTooltips">确定</a>
+                    <a class="weui_btn weui_btn_primary" href="javascript:void(0)" onclick="savePost()" id="showTooltips">确定</a>
                 </div>
             </div>        
         </div>
@@ -84,7 +85,13 @@
             <input type="hidden" id="detail_id">
             <input type="hidden" id="detail_lesson_id">
             <div class="weui_panel weui_panel_access">
-                <div class="weui_panel_hd"><span id="detail_author"></span></div>
+                <div class="weui_cell weui_panel_hd">
+                    <div class="weui_cell_bd weui_cell_primary">
+                        <span id="detail_author"</span>
+                    </div>
+                    <div class="weui_cell_ft"><a href="javascript:;" onclick="editPost()" class="weui_btn weui_btn_mini weui_btn_primary">修改</a></div>
+                </div>
+
                 <div class="weui_panel_bd">
                     <div class="weui_media_box weui_media_appmsg">
                         <div class="weui_media_hd">
@@ -101,7 +108,7 @@
                 <div class="weui_tab" id="detail_other">
                     <div class="weui_navbar">
                         <div class="weui_navbar_item ">
-                            <a href="javascript:;" class="weui_btn weui_btn_mini weui_btn_primary">关注</a>
+                            <a href="javascript:;" class="weui_btn weui_btn_mini weui_btn_primary">注册</a>
                         </div>
                         <div class="weui_navbar_item">
                             <a href="javascript:;" class="weui_btn weui_btn_mini weui_btn_primary">点赞</a>
@@ -322,12 +329,41 @@ FastClick.attach(document.body);
         $('#' + view +'_school').text(data.school);
     }
 
-    function postCreate(){
+    // new post
+    function newPost(){
+        $('#create_id').val('');
+        window.location = '#pageAddClass';
+    }
+
+    function savePost(){
+        var id = $('#create_id').val();
         var data = {title:$(create_title).val(), body:$(create_body).val(), time: $(create_time).val(), address: $(create_address).val()};
-        
-        CG.PostController.submit(data, function(err, result){   
-                window.location = "./home.html";
+
+
+        if (id == ''){
+                    
+            CG.PostController.submit(data, function(err, result){   
+                    window.location = "./home.html";
+                });
+        }
+        else{
+            CG.PostController.put('/v1/post/'+id, data, function(err, result){
+                viewHomeDetail(id);
             });
+        }
+        
+    }
+
+    function editPost(){
+        var id = $('#detail_id').val();
+        $('#create_id').val(id);
+        CG.PostController.get('/v1/post/'+id, function(err, data){
+            $('#create_title').val(data.title);
+            $('#create_body').val(data.body);
+            $('#time').val(data.time);
+            $('#address').val(data.address);
+            window.location = '#pageAddClass';
+        });  
     }
 
     function saveUserInfo(){
@@ -358,6 +394,8 @@ FastClick.attach(document.body);
     }
 
     function viewHomeDetail(id){
+        $('#detail_info').text("");
+        $('#detail_lesson_id').val("");
         loadTodayLesson(id);
         CG.PostController.get('/v1/post/'+id, function(err, data){
             $('#detail_id').val(id);

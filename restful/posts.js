@@ -97,6 +97,7 @@ router.put('/post/:id', checkToken, function(req, res, next){
       }
 
       req.body.id = req.params.id;
+      console.log(req.body);
       postDao.update(req.body, function(err, result){
           if (err) {
             next(err);

@@ -10,7 +10,7 @@ var pool  = mysql.createPool($conf.mysql);
 // CRUD SQL语句
 var $sql = {
     insert:'INSERT INTO post(id, title, body, address, time, authorId) VALUES(0,?,?,?,?,?)',
-    update:'update post set title=?, body=? where id=?',
+    update:'update post set title=?, body=?, time=?, address=? where id=?',
     delete: 'delete from post where id=?',
     queryById: 'select post.id, title, authorId, time, address,post.createAt, post.updateAt, post.body, user.photo, user.profession, user.fullname, user.nickname from post,user where post.authorId = user.id and post.id=?',
     queryAll: 'select post.id, title, authorId, time, address,post.createAt, post.updateAt, post.body, user.photo, user.fullname, user.nickname from post,user where post.authorId = user.id'
@@ -51,7 +51,7 @@ module.exports = {
         
         pool.getConnection(function(err, connection) {
             connection.query($sql.update, 
-                [param.title, param.body, param.id], function(err, result) {
+                [param.title, param.body, param.time, param.address, param.id], function(err, result) {
                 callback(err, result);
                 connection.release();
             });
