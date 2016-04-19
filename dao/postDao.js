@@ -61,6 +61,8 @@ module.exports = {
     queryById: function (param, callback) {
         pool.getConnection(function(err, connection) {
             connection.query($sql.queryById, param.id, function(err, result) {
+                console.log("postDao.js");
+                console.log(err);
                 callback(err, result);
                 connection.release();
             });

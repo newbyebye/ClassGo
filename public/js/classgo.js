@@ -205,6 +205,9 @@ Date.prototype.ValueNoTime = function(){
 }
 
 
+if (window.Mobilebone)
+{
+
 Mobilebone.onpagefirstinto = function(pageinto) {
 	// image size
 	var ele_screen_shot = null, src_screen_shot = '';
@@ -266,3 +269,4 @@ Mobilebone.callback = function(pageinto, pageout) {
 		}
 	}
 };
+}

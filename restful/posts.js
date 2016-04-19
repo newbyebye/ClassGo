@@ -9,6 +9,7 @@ var accessTokenDao = require('../dao/accessTokenDao');
 var postDao = require('../dao/postDao');
 var lessonDao = require('../dao/lessonDao');
 var signDao = require('../dao/signDao');
+var postUserDao = require('../dao/postUserDao');
 
 
 /* 
@@ -149,9 +150,10 @@ router.delete('/post/:id', checkToken, function(req, res, next){
 * success: {"id":1, "status":1}
 */
 router.get('/post/:id/lesson', function(req, res, next){
-    lessonDao.queryLessonByPostId({id: req.params.id}, function(err, result){
-      console.log(result);
+    var data = {id: req.params.id, date:new Date()};
+    lessonDao.queryLessonByPostId(data, function(err, result){
       if (err || result.length == 0) {
+          console.log(err);
           var err = new Error('not found');
           err.status = 501;
           next(err);
@@ -273,6 +275,238 @@ router.post('/post/lesson/:id/sign', checkToken, function(req, res, next){
       });
     });
 });
+
+/**
+*  register class
+*  POST /v1/post/:id/register
+*  BODY: {"isAssistant": 1, "userId":1} 
+*  success: {"id":1}
+*/
+router.post('/post/:id/register', checkToken, function(req, res, next){
+    postDao.queryById({id: req.params.id}, function(err, result){
+      console.log(err);
+      if (err || result.length == 0) {
+          var err = new Error('not found');
+          err.status = 501;
+          next(err);
+          return
+      }
+
+      // add assistant check authorId
+      if (req.body.isAssistant == 1){
+          if (req.api_user.userId != result[0].authorId) {
+            var err = new Error('deny access');
+            err.status = 401;
+            next(err);
+            return
+          }
+      }
+      else{
+          req.body.userId = req.api_user.userId;
+          req.body.isAssistant = 0;
+      }
+      
+
+      req.body.postId = req.params.id;
+      postUserDao.add(req.body, function(err, result){
+          console.log(err);
+          if (err) {
+            next(err);
+            return;
+          }
+
+          res.status(200).json({
+            id: result.insertId
+          });
+      });
+    });
+});
+
+/**
+*  delete class
+*  DELETE /v1/post/:id/register
+*  BODY: {"isAssistant": 1, "userId":1} 
+*  success: {"id":1}
+*/
+router.delete('/post/:id/register', checkToken, function(req, res, next){
+    postDao.queryById({id: req.params.id}, function(err, result){
+      if (err || result.length == 0) {
+          var err = new Error('not found');
+          err.status = 501;
+          next(err);
+          return
+      }
+
+      // add assistant check authorId
+      if (req.body.isAssistant == 1){
+          if (req.api_user.userId != result[0].authorId) {
+            var err = new Error('deny access');
+            err.status = 401;
+            next(err);
+            return
+          }
+      }
+      else{
+          req.body.userId = req.api_user.userId;
+          eq.body.isAssistant = 0;
+      }
+
+      req.body.postId = req.params.id;
+      postUserDao.delete(req.body, function(err, result){
+          if (err) {
+            next(err);
+            return;
+          }
+
+          res.status(200).json({
+            id: result.insertId
+          });
+      });
+    });
+});
+
+
+/*
+*   get register info
+*   GET /v1/post/:id/register
+*
+*/
+router.get('/post/:id/register', checkToken, function(req, res, next){
+  postUserDao.queryById({postId: req.params.id, userId: req.api_user.userId}, function(err, result){
+      if (err || result.length == 0) {
+          console.log(err);
+          var err = new Error('not found');
+          err.status = 501;
+          next(err);
+
+          return
+      }
+
+      res.status(200).json(result[0]);
+  });
+
+});
+
+/*
+*   get all register info
+*   GET /v1/post/:id/registerall
+*
+*/
+router.get('/post/:id/registerall', checkToken, function(req, res, next){
+  postDao.queryById({id: req.params.id}, function(err, result){
+      if (err || result.length == 0) {
+          var err = new Error('not found');
+          err.status = 501;
+          next(err);
+          return
+      }
+
+      // add assistant check authorId     
+      if (req.api_user.userId != result[0].authorId) {
+        var err = new Error('deny access');
+        err.status = 401;
+        next(err);
+        return
+      }
+
+      postUserDao.queryAll({postId: req.params.id}, function(err, result){
+          if (err || result.length == 0) {
+              console.log(err);
+              var err = new Error('not found');
+              err.status = 501;
+              next(err);
+
+              return
+          }
+        res.status(200).json(result);
+      });
+      
+    });
+});
+
+//queryAllInfo
+
+/*
+*   get all register info
+*   GET /v1/post/:id/registerallInfo?filter={"where":{"date":"2016-05-17"}}
+*   
+*/
+router.get('/post/:id/registerallInfo', checkToken, function(req, res, next){
+  
+  var filter = JSON.parse(req.query.filter);
+  console.log(filter);
+  lessonDao.queryLessonByPostId({id: req.params.id, date:filter.where.date}, function(err, result){
+      if (err || result.length == 0) {
+          console.log(err);
+          var err = new Error('not found');
+          err.status = 501;
+          next(err);
+          return
+      }
+
+      // add assistant check authorId     
+      if (req.api_user.userId != result[0].authorId) {
+        var err = new Error('deny access');
+        err.status = 401;
+        next(err);
+        return
+      }
+
+      var data = {postId:req.params.id, lessonId:result[0].id};
+      postUserDao.queryAllInfo(data, function(err, result){
+          if (err || result.length == 0) {
+              console.log(err);
+              var err = new Error('not found');
+              err.status = 501;
+              next(err);
+
+              return
+          }
+        res.status(200).json(result);
+      });
+      
+    });
+});
+
+/*
+*   get all register info
+*   GET /v1/post/:id/registerall
+*
+*/
+router.get('/post/:id/registersum', checkToken, function(req, res, next){
+  postDao.queryById({id: req.params.id}, function(err, result){
+      console.log(err);
+      if (err || result.length == 0) {
+          var err = new Error('not found');
+          err.status = 501;
+          next(err);
+          return
+      }
+
+      // add assistant check authorId     
+      if (req.api_user.userId != result[0].authorId) {
+        var err = new Error('deny access');
+        err.status = 401;
+        next(err);
+        return
+      }
+
+      postUserDao.querySum({postId: req.params.id}, function(err, result){
+          console.log(err);
+          if (err || result.length == 0) {
+              console.log(err);
+              var err = new Error('not found');
+              err.status = 501;
+              next(err);
+
+              return
+          }
+        res.status(200).json(result[0]);
+      });
+      
+    });
+});
+
 
 
 module.exports = router;

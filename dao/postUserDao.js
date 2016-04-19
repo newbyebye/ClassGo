@@ -1,28 +1,30 @@
  "use strict";
-// dao/lessonDao.js
+// dao/postUserDao.js
 // 实现与MySQL交互
 var mysql = require('mysql');
 var $conf = require('../conf/db');
 
 
-/* table lesson (
+/*  table postUser (
     id BIGINT NOT NULL PRIMARY KEY AUTO_INCREMENT,
     postId          BIGINT NOT NULL,
-    status      numeric,
-    starttime   TIMESTAMP, AMP,
-    updateAt    TIMESTAMP NOT NULL ON UPDATE CURRENT_TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    userId    BIGINT NOT NULL,
+    isAssistant  boolean,
+    createAt     TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updateAt     TIMESTAMP NOT NULL 
+)ENGINE=InnoDB DEFAULT CHARSET=utf8;
 */
 // 使用连接池，提升性能
 var pool  = mysql.createPool($conf.mysql);
 
 // CRUD SQL语句
 var $sql = { 
-    insert:'INSERT INTO lesson(id, postId, status, starttime, timeout, lng, lat) VALUES(0,?,?,?,?,?,?)',
-    update:'update lesson set status=?, lng=?, lat=? where id=?',
-    delete: 'delete from lesson where id=?',
-    queryById: 'select * from lesson where id=?',
-    queryAll: 'select * from lesson',
-    queryLessonByPostId: 'select lesson.id,postId,status,authorId,starttime from lesson,post where lesson.postId=postId and date(starttime) = date(?) and postId = ?'
+    insert:'INSERT INTO postUser(id, postId, userId, isAssistant) VALUES(0,?,?,?)',
+    delete: 'delete from postUser where postId=? and userId=?',
+    queryById: 'select * from postUser where postId=? and userId=?',
+    queryAll: 'select postUser.*,user.fullname,user.studentNo from postUser,user where postId=? and user.id = postUser.userId',
+    querySum: 'select count(*) as sum from postUser where postId=?',
+    queryAllInfo:'select username,nickname,fullname,lessonId,postId,studentNo,sign.updateAt as signAt from user,postUser left join sign on postUser.userId = sign.userId where user.id = postUser.userId and postId=? and (lessonId= ? or lessonId is null)',
 };
 
 module.exports = {
@@ -35,7 +37,7 @@ module.exports = {
             }
 
             // 建立连接，向表中插入值
-            connection.query($sql.insert, [param.postId, param.status, param.starttime, param.timeout, param.lng, param.lat], function(err, result) {
+            connection.query($sql.insert, [param.postId, param.userId, param.isAssistant], function(err, result) {
 
                 callback(err, result);
 
@@ -48,18 +50,7 @@ module.exports = {
     delete: function (param, callback) {
         // delete by Id
         pool.getConnection(function(err, connection) {
-            connection.query($sql.delete, param.id, function(err, result) {
-                callback(err, result);
-                connection.release();
-            });
-        });
-    },
-
-    update: function (param, callback) {
-        
-        pool.getConnection(function(err, connection) {
-            connection.query($sql.update, 
-                [param.status, param.lng, param.lat, param.id], function(err, result) {
+            connection.query($sql.delete, [param.postId, param.userId], function(err, result) {
                 callback(err, result);
                 connection.release();
             });
@@ -68,7 +59,7 @@ module.exports = {
     
     queryById: function (param, callback) {
         pool.getConnection(function(err, connection) {
-            connection.query($sql.queryById, param.id, function(err, result) {
+            connection.query($sql.queryById, [param.postId, param.userId], function(err, result) {
                 callback(err, result);
                 connection.release();
             });
@@ -76,21 +67,28 @@ module.exports = {
     },
     queryAll: function (param, callback) {
         pool.getConnection(function(err, connection) {
-            connection.query($sql.queryAll, function(err, result) {
+            connection.query($sql.queryAll, param.postId, function(err, result) {
                 callback(err, result);
                 connection.release();
             });
         });
     },
-    queryLessonByPostId: function(param, callback) {
+    querySum: function(param, callback) {
         pool.getConnection(function(err, connection) {
-            console.log(err);
-            console.log($sql.queryLessonByPostId + param.id + param.date);
-            connection.query($sql.queryLessonByPostId, [param.date, param.id], function(err, result) {
+            console.log($sql.querySum);
+            connection.query($sql.querySum, param.postId, function(err, result) {
                 callback(err, result);
                 connection.release();
             });
         });
-    }
+    },
+    queryAllInfo: function (param, callback) {
+        pool.getConnection(function(err, connection) {
+            connection.query($sql.queryAllInfo, [param.postId, param.lessonId], function(err, result) {
+                callback(err, result);
+                connection.release();
+            });
+        });
+    },
     
 };

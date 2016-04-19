@@ -20,6 +20,7 @@ create table user (
     school     varchar(64),
     brief     varchar(256),
     openID    varchar(64),
+    role     int,
     createAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updateAt TIMESTAMP NOT NULL 
 )ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -58,16 +59,19 @@ create table post (
 CREATE TRIGGER `update_post_trigger` BEFORE UPDATE ON `post`
  FOR EACH ROW SET NEW.`updateAt` = NOW();
 
-create table assistant (
+create table postUser (
     id BIGINT NOT NULL PRIMARY KEY AUTO_INCREMENT,
     postId          BIGINT NOT NULL,
-    assistantId    BIGINT NOT NULL,
+    userId    BIGINT NOT NULL,
+    CONSTRAINT CST_postUser UNIQUE(postId, userId),
+    isAssistant  boolean,
     createAt     TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updateAt     TIMESTAMP NOT NULL 
 )ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-CREATE TRIGGER `update_assistant_trigger` BEFORE UPDATE ON `assistant`
+CREATE TRIGGER `update_postUser_trigger` BEFORE UPDATE ON `postUser`
  FOR EACH ROW SET NEW.`updateAt` = NOW();
+
 
 create table tag (
     id BIGINT NOT NULL PRIMARY KEY AUTO_INCREMENT,

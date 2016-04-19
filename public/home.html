@@ -13,7 +13,15 @@
 
 <div id="pageHome" class="page out" data-title="ClassGo">          
     <div class="content no-header">    
-        <div id="scroller">
+        <div id="scrollerHome">
+        </div>
+    </div>
+</div>
+
+<div id="pageStudents" class="page out" data-title="ClassGo">          
+    <div class="content no-header">    
+        <div id="scrollerStatudtes">
+        
         </div>
     </div>
 </div>
@@ -81,12 +89,12 @@
             <div class="weui_panel weui_panel_access">
                 <div class="weui_cell weui_panel_hd">
                     <div class="weui_cell_bd weui_cell_primary">
-                        <span id="detail_author"</span>
+                        <span id="detail_author"></span>   已注册<span id="detail_sum"></span>人
                     </div>
                     <div class="weui_cell_ft"><a href="javascript:;" onclick="editPost()" class="weui_btn weui_btn_mini weui_btn_primary">修改</a></div>
                 </div>
 
-                <div class="weui_panel_bd">
+                <div>
                     <div class="weui_media_box weui_media_appmsg">
                         <div class="weui_media_hd">
                             <img class="weui_media_appmsg_thumb" id="detail_photo" src="" alt="">
@@ -102,7 +110,7 @@
                 <div class="weui_tab" id="detail_other">
                     <div class="weui_navbar">
                         <div class="weui_navbar_item ">
-                            <a href="javascript:;" class="weui_btn weui_btn_mini weui_btn_primary">注册</a>
+                            <a href="javascript:void(0)" onclick="registerClass()" class="weui_btn weui_btn_mini weui_btn_primary">注册</a>
                         </div>
                         <div class="weui_navbar_item">
                             <a href="javascript:;" class="weui_btn weui_btn_mini weui_btn_primary">点赞</a>
@@ -122,7 +130,7 @@
                             <a href="javascript:void(0)" onclick="startSignIn()" class="weui_btn weui_btn_mini weui_btn_primary">开启签到</a>
                         </div>
                         <div class="weui_navbar_item">
-                            <a href="javascript:;" class="weui_btn weui_btn_mini weui_btn_primary">查看签到</a>
+                            <a href="javascript:void(0)" onclick="viewSign()" class="weui_btn weui_btn_mini weui_btn_primary">查看签到</a>
                         </div>
                         <div class="weui_navbar_item">
                             <a href="javascript:;" class="weui_btn weui_btn_mini weui_btn_primary">添加游戏</a>
@@ -372,7 +380,7 @@ FastClick.attach(document.body);
     function loadHomeData(skip, limit){
         CG.PostController.get('/v1/post?filter={"order":"createAt","skip":'+skip+',"limit":'+limit+'}', function(err, data){
             data.forEach(function(e){
-                $(scroller).append('\
+                $(scrollerHome).append('\
                     <a href="javascript:void(0)" onclick="viewHomeDetail('+ e.id +')" class="wechat-list" >\
                         <img src="'+ e.photo +'">\
                         <div class="cell">\
@@ -386,10 +394,59 @@ FastClick.attach(document.body);
         });
     }
 
+    function loadStudentsData(skip, limit) {
+
+        CG.PostController.get('/v1/post/'+$('#detail_id').val()+'/registerallInfo?filter={"where":{"date":"2016-04-19"},"skip":'+skip+',"limit":'+limit+'}', function(err, data){
+            if (err){
+                return;
+            }
+            data.forEach(function(e){
+                //username,fullname,lessonId,postId,studentNo,sign.updateAt as signAt
+                var str1 = "";
+                if (e.fullname){
+                    str1 += e.fullname;
+                }
+                else if (e.nickname){
+                    str1 += e.nickname;
+                }
+                if (e.studentNo){
+                    str1 += "  "+ e.studentNo;
+                }
+
+                var str2 = "未签到";
+                if (e.signAt){
+                    str2 = $.timeago(e.signAt);
+                }
+
+                $(scrollerStatudtes).append('\
+                    <div class="sign-list">\
+                        <div class="cell">\
+                            <div class="wechat-h-time"><h5>'+str1+'</h5><time>'+str2+'</time></div>\
+                        </div>\
+                    </div>');
+            });
+            //Mobilebone.IScroll.refresh();
+        });
+    }
+
+    function viewSign(){
+        loadStudentsData(0, 40);
+        window.location = "./home.html#&pageStudents";
+    }
+
+    function getRegisterSum(postId) {
+        CG.PostController.get('/v1/post/'+postId+'/registersum', function(err, data){
+            if (!err){
+                $('#detail_sum').text(data.sum);
+            }
+        });
+    }
+
     function viewHomeDetail(id){
         $('#detail_info').text("");
         $('#detail_lesson_id').val("");
         loadTodayLesson(id);
+        getRegisterSum(id);
         CG.PostController.get('/v1/post/'+id, function(err, data){
             $('#detail_id').val(id);
             $('#detail_author').text(data.fullname + '-'+data.profession);
@@ -447,6 +504,14 @@ FastClick.attach(document.body);
         });
     }
 
+    function registerClass() {
+        CG.PostController.post('/v1/post/'+$('#detail_id').val()+'/register', {}, function(err, data){
+            if (!err){
+                $('#detail_info').text("注册成功");
+            }
+        });
+    }
+
     function loadTodayLesson(postId) {
         CG.PostController.get('/v1/post/'+postId+'/lesson', function(err, data){
             if (!err){
@@ -459,6 +524,9 @@ FastClick.attach(document.body);
             }
         });
     }
+
+
+
 
     $(function(){ 
         loadHomeData(g_skip, page);
