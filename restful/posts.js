@@ -473,7 +473,7 @@ router.get('/post/:id/registerallInfo', checkToken, function(req, res, next){
 *   GET /v1/post/:id/registerall
 *
 */
-router.get('/post/:id/registersum', checkToken, function(req, res, next){
+router.get('/post/:id/registersum', function(req, res, next){
   postDao.queryById({id: req.params.id}, function(err, result){
       console.log(err);
       if (err || result.length == 0) {
@@ -481,14 +481,6 @@ router.get('/post/:id/registersum', checkToken, function(req, res, next){
           err.status = 501;
           next(err);
           return
-      }
-
-      // add assistant check authorId     
-      if (req.api_user.userId != result[0].authorId) {
-        var err = new Error('deny access');
-        err.status = 401;
-        next(err);
-        return
       }
 
       postUserDao.querySum({postId: req.params.id}, function(err, result){
