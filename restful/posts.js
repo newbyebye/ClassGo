@@ -44,11 +44,12 @@ router.post('/post', checkToken, function(req, res, next) {
 router.get('/post/owner', checkToken, function(req, res, next){
   var data = {authorId:req.api_user.userId};
   postDao.queryOwner(data, function(err, result){
-      if (err || result.length == 0) {
+      if (err){
           console.log(err);
           next(err);
           return
-      }     
+      }
+ 
       res.status(200).json(result);
   });
 });
@@ -60,7 +61,7 @@ router.get('/post/owner', checkToken, function(req, res, next){
 router.get('/post/register', checkToken, function(req, res, next){
   var data = {userId:req.api_user.userId};
   postDao.queryRegister(data, function(err, result){
-      if (err || result.length == 0) {
+      if (err) {
           console.log(err);
           next(err);
           return
@@ -98,7 +99,7 @@ router.get('/post/:id', function(req, res, next){
 router.get('/post', function(req, res, next){
 
   postDao.queryAll(JSON.parse(req.query.filter), function(err, result){
-      if (err || result.length == 0) {
+      if (err) {
           console.log(err);
           next(err);
           return
@@ -285,27 +286,38 @@ router.post('/post/lesson/:id/sign', checkToken, function(req, res, next){
           return
       }
 
-    /*
-      if (req.api_user.userId != result[0].authorId) {
-        var err = new Error('deny access');
-        err.status = 401;
-        next(err);
-        return
-      }
-    */
-
       req.body.lessonId = req.params.id;
       req.body.userId = req.api_user.userId;
-      signDao.add(req.body, function(err, result){
-          if (err) {
-            next(err);
-            return;
-          }
+      signDao.queryById(req.body, function(err, result){
+          if (err || result.length == 0) {
+              signDao.add(req.body, function(err, result){
+                  if (err) {
+                    next(err);
+                    return;
+                  }
 
-          res.status(200).json({
-            id: result.insertId
-          });
+                  res.status(200).json({
+                    id: result.insertId
+                  });
+              });
+              return;
+          }
+          else{
+              var id = result[0].id;
+              signDao.update(req.body, function(err, result){
+                  if (err) {
+                    next(err);
+                    return;
+                  }
+
+                  res.status(200).json({
+                    id: id
+                  });
+              });
+              return;
+          }
       });
+      
     });
 });
 
@@ -487,10 +499,8 @@ router.get('/post/:id/registerallInfo', checkToken, function(req, res, next){
 
       var data = {postId:req.params.id, lessonId:result[0].id};
       postUserDao.queryAllInfo(data, function(err, result){
-          if (err || result.length == 0) {
+          if (err ) {
               console.log(err);
-              var err = new Error('not found');
-              err.status = 501;
               next(err);
 
               return

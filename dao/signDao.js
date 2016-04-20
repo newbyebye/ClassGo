@@ -21,9 +21,9 @@ var pool  = mysql.createPool($conf.mysql);
 // CRUD SQL语句
 var $sql = { 
     insert:'INSERT INTO sign(id, lessonId, userId, lng, lat) VALUES(0,?,?,?,?)',
-    update:'update sign set lng=?, lat=? where id=?',
+    update:'update sign set lng=?, lat=? where lessonId=? and userId=?',
     delete: 'delete from sign where id=?',
-    queryById: 'select * from sign where id=?',
+    queryById: 'select * from sign where lessonId=? and userId=?',
     queryAll: 'select * from sign',
 };
 
@@ -61,7 +61,7 @@ module.exports = {
         
         pool.getConnection(function(err, connection) {
             connection.query($sql.update, 
-                [param.lng, param.lat], function(err, result) {
+                [param.lng, param.lat, param.lessonId, param.userId], function(err, result) {
                 callback(err, result);
                 connection.release();
             });
@@ -70,7 +70,7 @@ module.exports = {
     
     queryById: function (param, callback) {
         pool.getConnection(function(err, connection) {
-            connection.query($sql.queryById, param.id, function(err, result) {
+            connection.query($sql.queryById, [param.lessonId, param.userId], function(err, result) {
                 callback(err, result);
                 connection.release();
             });

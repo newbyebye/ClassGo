@@ -122,6 +122,7 @@ create table sign (
     id BIGINT NOT NULL PRIMARY KEY AUTO_INCREMENT,
     lessonId          BIGINT NOT NULL,
     userId            BIGINT NOT NULL,
+    CONSTRAINT CST_sign UNIQUE(lessonId, userId),
     lng                decimal(10, 7),
     lat             decimal(10, 7),
     createAt         TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
