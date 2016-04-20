@@ -18,8 +18,12 @@
     </div>
 </div>
 
-<div id="pageStudents" class="page out" data-title="ClassGo">          
-    <div class="content no-header">    
+<div id="pageStudents" class="page out" data-title="ClassGo"> 
+    <div class="header" data-role="header">
+        <a href="#pageDetail" class="icon-back" data-rel="back">返回</a>
+        <h1>签到信息</h1>
+    </div>         
+    <div class="content">    
         <div id="scrollerStatudtes">
         
         </div>
@@ -91,7 +95,7 @@
                     <div class="weui_cell_bd weui_cell_primary">
                         <span id="detail_author"></span>   已注册<span id="detail_sum"></span>人
                     </div>
-                    <div class="weui_cell_ft"><a id="detail_edit" href="javascript:;" onclick="editPost()" class="weui_btn weui_btn_mini weui_btn_primary">修改</a></div>
+                    <div class="weui_cell_ft" id="detail_edit"><a  href="javascript:;" onclick="editPost()" class="weui_btn weui_btn_mini weui_btn_primary">修改</a><a href="javascript:;" onclick="deletePost()" class="weui_btn weui_btn_mini weui_btn_primary">删除</a></div>
                 </div>
 
                 <div>
@@ -360,6 +364,16 @@ FastClick.attach(document.body);
         });  
     }
 
+    function deletePost(){
+        var id = $('#detail_id').val();
+ 
+        CG.PostController.delete('/v1/post/'+id, {}, function(err, data){
+            $(scrollerHome).html("");
+            loadHomeData(0, 40);
+            window.location = '#pageHome';
+        });  
+    }
+
     function saveUserInfo(){
         var data = {fullname:$(me_edit_fullname).val(), studentNo:$(me_edit_studentNo).val(), profession: $(me_edit_profession).val(), school: $(me_edit_school).val()};
         
@@ -389,7 +403,7 @@ FastClick.attach(document.body);
 
     function loadStudentsData(skip, limit) {
 
-        CG.PostController.get('/v1/post/'+$('#detail_id').val()+'/registerallInfo?filter={"where":{"date":"2016-04-19"},"skip":'+skip+',"limit":'+limit+'}', function(err, data){
+        CG.PostController.get('/v1/post/'+$('#detail_id').val()+'/registerallInfo?filter={"where":{"date":"'+new Date().Format("yyyy-MM-dd")+'"},"skip":'+skip+',"limit":'+limit+'}', function(err, data){
             if (err){
                 return;
             }
@@ -413,7 +427,7 @@ FastClick.attach(document.body);
 
                 $(scrollerStatudtes).append('<a  class="wechat-list" >\
                         <div class="cell">\
-                            <div class="wechat-h-time"><h5>'+e.title+'</h5><time>'+$.timeago(e.createAt)+'</time></div>\
+                            <div class="wechat-h-time"><h5>'+str1+'</h5><time>'+str2+'</time></div>\
                         </div>\
                     </a>');
             });
