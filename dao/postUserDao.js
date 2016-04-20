@@ -14,6 +14,8 @@ var $conf = require('../conf/db');
     updateAt     TIMESTAMP NOT NULL 
 )ENGINE=InnoDB DEFAULT CHARSET=utf8;
 */
+//select post.*,count(postId) as sum from post left join postUser on post.id = postUser.postId group by postId;
+
 // 使用连接池，提升性能
 var pool  = mysql.createPool($conf.mysql);
 

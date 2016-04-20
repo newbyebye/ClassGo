@@ -153,18 +153,11 @@
     <div class="content no-header">
         <div>
             <h5 class="contact-h">我创建的</h5>
-            <div class="contact-group">
-                <div class="contact-list">
-                    <img src="img/head/contact-1.png">
-                    <nickname>新的朋友</nickname>
-                </div>
+            <a href="javascript:void(0)" onclick="newPost()" class="weui_btn weui_btn_mini weui_btn_primary right">新建</a>
+            <div class="owner-group" id="scrollerOwner">
             </div>
             <h5 class="contact-h">我的关注</h5>
-            <div class="contact-group">
-                <div class="contact-list">
-                    <img src="img/head/contact-5.png">
-                    <nickname>腾讯企业号</nickname>
-                </div>
+            <div class="contact-group" id="scrollerRegister">
             </div>
         </div>
     </div>
@@ -418,12 +411,11 @@ FastClick.attach(document.body);
                     str2 = $.timeago(e.signAt);
                 }
 
-                $(scrollerStatudtes).append('\
-                    <div class="sign-list">\
+                $(scrollerStatudtes).append('<a  class="wechat-list" >\
                         <div class="cell">\
-                            <div class="wechat-h-time"><h5>'+str1+'</h5><time>'+str2+'</time></div>\
+                            <div class="wechat-h-time"><h5>'+e.title+'</h5><time>'+$.timeago(e.createAt)+'</time></div>\
                         </div>\
-                    </div>');
+                    </a>');
             });
             //Mobilebone.IScroll.refresh();
         });
@@ -527,14 +519,52 @@ FastClick.attach(document.body);
         });
     }
 
+    function loadOwnerData(photo){
+        CG.PostController.get('/v1/post/owner', function(err, data){
+            if (err){
 
+                return;
+            }
+            data.forEach(function(e){
+                $(scrollerOwner).append('\
+                    <a href="javascript:void(0)" onclick="viewHomeDetail('+ e.id +')" class="wechat-list" >\
+                        <img src="'+ photo +'">\
+                        <div class="cell">\
+                            <div class="wechat-h-time"><h5>'+e.title+'</h5><time>'+$.timeago(e.createAt)+'</time></div>\
+                            <p>'+e.body+'</p>\
+                        </div>\
+                    </a>');
+            });
+        });
+    }
 
+    function loadRegistData(){
+        CG.PostController.get('/v1/post/register', function(err, data){
+            if (err) {
+                return;
+            }
+            data.forEach(function(e){
+                $(scrollerRegister).append('\
+                    <a href="javascript:void(0)" onclick="viewHomeDetail('+ e.id +')" class="wechat-list" >\
+                        <img src="'+ e.photo +'">\
+                        <div class="cell">\
+                            <div class="wechat-h-time"><h5>'+e.title+'</h5><time>'+$.timeago(e.createAt)+'</time></div>\
+                            <p>'+e.body+'</p>\
+                        </div>\
+                    </a>');
+            });
+
+            //Mobilebone.IScroll.refresh();
+        });
+    }
 
     $(function(){ 
         loadHomeData(g_skip, page);
+        loadRegistData();
         CG.MyController.load(function(data){
             updateMeView('me_edit', data);
             updateMeView('me_show', data);
+            loadOwnerData(data.photo);
         });
     });
 

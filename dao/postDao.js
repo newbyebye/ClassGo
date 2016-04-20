@@ -13,7 +13,9 @@ var $sql = {
     update:'update post set title=?, body=?, time=?, address=? where id=?',
     delete: 'delete from post where id=?',
     queryById: 'select post.id, title, authorId, time, address,post.createAt, post.updateAt, post.body, user.photo, user.profession, user.fullname, user.nickname from post,user where post.authorId = user.id and post.id=?',
-    queryAll: 'select post.id, title, authorId, time, address,post.createAt, post.updateAt, post.body, user.photo, user.fullname, user.nickname from post,user where post.authorId = user.id'
+    queryAll: 'select post.id, title, authorId, time, address,post.createAt, post.updateAt, post.body, user.photo, user.fullname, user.nickname from post,user where post.authorId = user.id',
+    queryOwner: 'select post.*, count(postId) as sum from post left join postUser on post.id = postUser.postId and authorId = ? group by post.id ',
+    queryRegister: 'select post.id, title, authorId, time, address,post.createAt, post.updateAt, post.body, user.photo, user.fullname, user.nickname,postUser.userId from post,user,postUser where post.authorId = user.id and post.id = postUser.postId and postUser.userId=?',
 };
 
 module.exports = {
@@ -74,6 +76,26 @@ module.exports = {
         console.log(param.order, param.skip, param.limit);
         pool.getConnection(function(err, connection) {
             connection.query($sql.queryAll + " order by createAt desc limit ?, ?", [param.skip, param.limit], function(err, result) {
+                callback(err, result);
+                connection.release();
+            });
+        });
+    },
+
+    // 
+    queryOwner: function(param, callback) {
+        console.log($sql.queryOwner, param.authorId);
+        pool.getConnection(function(err, connection) {
+            connection.query($sql.queryOwner + " order by createAt desc", param.authorId, function(err, result) {
+                callback(err, result);
+                connection.release();
+            });
+        });
+    },
+
+    queryRegister: function(param, callback) {
+        pool.getConnection(function(err, connection) {
+            connection.query($sql.queryRegister + " order by createAt desc", param.userId, function(err, result) {
                 callback(err, result);
                 connection.release();
             });

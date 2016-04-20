@@ -37,6 +37,38 @@ router.post('/post', checkToken, function(req, res, next) {
 });
 
 
+/**
+*
+* queryOwner
+*/
+router.get('/post/owner', checkToken, function(req, res, next){
+  var data = {authorId:req.api_user.userId};
+  postDao.queryOwner(data, function(err, result){
+      if (err || result.length == 0) {
+          console.log(err);
+          next(err);
+          return
+      }     
+      res.status(200).json(result);
+  });
+});
+
+/**
+*
+* queryOwner
+*/
+router.get('/post/register', checkToken, function(req, res, next){
+  var data = {userId:req.api_user.userId};
+  postDao.queryRegister(data, function(err, result){
+      if (err || result.length == 0) {
+          console.log(err);
+          next(err);
+          return
+      }     
+      res.status(200).json(result);
+  });
+});
+
 /*
 *   get class info
 *  	GET /v1/post/:id
@@ -75,6 +107,7 @@ router.get('/post', function(req, res, next){
       res.status(200).json(result);
   });
 });
+
 
 /**
 *   update class info
