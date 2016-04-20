@@ -91,7 +91,7 @@
                     <div class="weui_cell_bd weui_cell_primary">
                         <span id="detail_author"></span>   已注册<span id="detail_sum"></span>人
                     </div>
-                    <div class="weui_cell_ft"><a href="javascript:;" onclick="editPost()" class="weui_btn weui_btn_mini weui_btn_primary">修改</a></div>
+                    <div class="weui_cell_ft"><a id="detail_edit" href="javascript:;" onclick="editPost()" class="weui_btn weui_btn_mini weui_btn_primary">修改</a></div>
                 </div>
 
                 <div>
@@ -465,11 +465,13 @@ FastClick.attach(document.body);
 
             if (data.authorId == window.localStorage.getItem("userId")){
                 $('#detail_owner').show();
+                $('#detail_edit').show();
                 $('#detail_other').hide();
             }
             else{
                 $('#detail_owner').hide();
                 $('#detail_other').show();
+                $('#detail_edit').hide();
             }
 
             window.location = "./home.html#&pageDetail";
