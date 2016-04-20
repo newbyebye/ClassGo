@@ -41,7 +41,9 @@ $(function() {
 				url : path,
 				dataType : 'json',
 				async : isAsyncLoad,
-				headers : {"x-access-token":window.localStorage.getItem("token")},
+				headers : {"x-access-token":window.localStorage.getItem("token"),
+							"Cache-Control":"no-cache",
+							"If-Modified-Since":"0"},
 				/*
 				dataFilter : function(data, type) {
 					return data;
