@@ -18,7 +18,10 @@
 <script type="text/javascript">
 var token = "{{token}}";
 var userId = "{{userId}}";
-
+var role = 0;
+{{#if role}}
+	role = {{role}};
+{{/if}}
 function login(){
 	var data = $('form').serializeObject();
 
@@ -29,9 +32,10 @@ function login(){
 				$('#alert').show();
 				return;
 			}
-			// success {"token":"sadfasdf", "ttl":1209600, userId:1}
+			
 			window.localStorage.setItem("token", result.token);
 			window.localStorage.setItem("userId", result.userId);
+			window.localStorage.setItem("role", result.role);
 			window.location = "./home.html";
 		}
 	);
@@ -41,6 +45,7 @@ $(function(){
 	if (token.length > 0) {
 		window.localStorage.setItem("token", token);
 		window.localStorage.setItem("userId", userId);
+		window.localStorage.setItem("role", role);
 
 		{{#if update}}
 			window.location = "./home.html";

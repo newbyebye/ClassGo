@@ -14,7 +14,7 @@ var $user = {
     update:'update user set fullname=?, studentNo=?, profession=?, school=?, brief=? where id=?',
     delete: 'delete from user where id=?',
     login: 'select * from user where username=? and password=?',
-    queryById: 'select id, username, profession, sex, photo, fullname, mobile, nickname, studentNo, city, school, brief, createAt, updateAt from user where id=?',
+    queryById: 'select id, username, profession, sex, photo, fullname, mobile, nickname, studentNo, city, school, brief, createAt, updateAt, role from user where id=?',
     //queryAll: 'select id, username, profession, sex, photo, fullname, mobile, nickname, studentNo, city, school, brief, createAt, updateAt from user',
     queryByOpenID: 'select * from user where openID=?',
 };

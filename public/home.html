@@ -156,9 +156,11 @@
 <div id="pageContacts" class="page out">
     <div class="content no-header">
         <div>
-            <h5 class="contact-h">我创建的课程</h5>
-            <a href="javascript:void(0)" onclick="newPost()" class="weui_btn weui_btn_mini weui_btn_primary right">新建</a>
-            <div class="owner-group" id="scrollerOwner">
+            <div id='mycreate_view'>
+                <h5 class="contact-h">我创建的课程</h5>
+                <a href="javascript:void(0)" onclick="newPost()" class="weui_btn weui_btn_mini weui_btn_primary right">新建</a>
+                <div class="owner-group" id="scrollerOwner">
+                </div>
             </div>
             <h5 class="contact-h">我选修的课程</h5>
             <div class="contact-group" id="scrollerRegister">
@@ -577,6 +579,11 @@ FastClick.attach(document.body);
     $(function(){ 
         loadHomeData(g_skip, page);
         loadRegistData();
+
+        $('#mycreate_view').hide();
+        if (window.localStorage.getItem("role") == 1){
+            $('#mycreate_view').show();
+        }
         CG.MyController.load(function(data){
             updateMeView('me_edit', data);
             updateMeView('me_show', data);

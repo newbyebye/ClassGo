@@ -75,7 +75,8 @@ router.post('/user/login', function(req, res, next){
       }
 
       var userId = result[0].id;
-      var token = jwt.sign({userId: userId}, process.env.JWT_SECRET);
+      var role = result[0].role;
+      var token = jwt.sign({userId: userId, role: role}, process.env.JWT_SECRET);
       accessTokenDao.add({userId: userId, ttl: 1209600, token: token, ipAddr:req.connection.remoteAddress}, function(err, result){
         if (err) {
           next(err);
@@ -85,7 +86,8 @@ router.post('/user/login', function(req, res, next){
         res.status(200).json({
           token: token,
           ttl: 1209600,
-          userId: userId
+          userId: userId,
+          role: role,
         });
       });
   });

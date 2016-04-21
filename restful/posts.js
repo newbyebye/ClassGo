@@ -21,6 +21,14 @@ var postUserDao = require('../dao/postUserDao');
 *  fail {"error":{"name":"Error", "status":500, "message":"login failed", "statusCode":401}}
 */
 router.post('/post', checkToken, function(req, res, next) {
+    // 1 teacher
+    if (req.api_user.role != 1) {
+      var err = new Error('deny access');
+      err.status = 401;
+      next(err);
+      return
+    }
+
     req.body.authorId = req.api_user.userId;
     console.log(req.body);
   	postDao.add(req.body, function(err, result){
