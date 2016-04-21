@@ -403,6 +403,7 @@ FastClick.attach(document.body);
 
     function loadStudentsData(skip, limit) {
 
+        $(scrollerStatudtes).html("");
         CG.PostController.get('/v1/post/'+$('#detail_id').val()+'/registerallInfo?filter={"where":{"date":"'+new Date().Format("yyyy-MM-dd")+'"},"skip":'+skip+',"limit":'+limit+'}', function(err, data){
             if (err){
                 return;
@@ -425,7 +426,7 @@ FastClick.attach(document.body);
                     str2 = $.timeago(e.createAt);
                 }
 
-                $(scrollerStatudtes).html("");
+
                 $(scrollerStatudtes).append('<a  class="wechat-list" >\
                         <div class="cell">\
                             <div class="wechat-h-time"><h5>'+str1+'</h5><time>'+str2+'</time></div>\
