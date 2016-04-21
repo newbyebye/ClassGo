@@ -114,13 +114,13 @@
                 <div class="weui_tab" id="detail_other">
                     <div class="weui_navbar">
                         <div class="weui_navbar_item ">
-                            <a href="javascript:void(0)" onclick="registerClass()" class="weui_btn weui_btn_mini weui_btn_primary">注册</a>
+                            <a id="detail_registerBtn" href="javascript:void(0)" onclick="registerClass()" class="weui_btn weui_btn_mini  weui_btn_primary ">注册</a>
                         </div>
                         <div class="weui_navbar_item">
-                            <a href="javascript:;" class="weui_btn weui_btn_mini weui_btn_primary">点赞</a>
+                            <a href="javascript:;" class="weui_btn weui_btn_mini weui_btn_primary"></a>
                         </div>
                         <div class="weui_navbar_item">
-                            <a href="javascript:void(0)" onclick="signIn()" class="weui_btn weui_btn_mini weui_btn_primary">签到</a>
+                            <a id="detail_signBtn" href="javascript:void(0)" onclick="signIn()" class="weui_btn weui_btn_mini weui_btn_primary">签到</a>
                         </div>
                     </div>
                     <div class="weui_tab_bd">
@@ -478,11 +478,27 @@ FastClick.attach(document.body);
         });
     }
 
+    function getMyRegisterStatus(postId) {
+        $('#detail_registerBtn').html("注册");
+        $('#detail_registerBtn').attr('class',"weui_btn weui_btn_mini  weui_btn_primary");
+        $('#detail_signBtn').hide();
+        CG.PostController.get('/v1/post/'+postId+'/register', function(err, data){
+            if (!err){
+                $('#detail_registerBtn').html("已注册");
+                $('#detail_registerBtn').attr('class',"weui_btn weui_btn_mini weui_btn_disabled weui_btn_default");
+                $('#detail_signBtn').show();
+            }
+        });
+    }
+
     function viewHomeDetail(id){
         $('#detail_info').text("");
         $('#detail_lesson_id').val("");
+        stopRefreshDetail();
+        startRefreshDetail(id);
         loadTodayLesson(id);
         getRegisterSum(id);
+        getMyRegisterStatus(id);
         CG.PostController.get('/v1/post/'+id, function(err, data){
             $('#detail_id').val(id);
             $('#detail_author').text(data.fullname + '-'+data.profession);
@@ -538,6 +554,7 @@ FastClick.attach(document.body);
         CG.PostController.post('/v1/post/lesson/'+$('#detail_lesson_id').val()+'/sign', data, function(err, data){
             if (!err){
                 $('#detail_info').text("恭喜今日签到成功");
+                $('#detail_signBtn').html("已签到");
             }
         });
     }
@@ -546,6 +563,9 @@ FastClick.attach(document.body);
         CG.PostController.post('/v1/post/'+$('#detail_id').val()+'/register', {}, function(err, data){
             if (!err){
                 $('#detail_info').text("注册成功");
+                $('#detail_registerBtn').html("已注册");
+                $('#detail_registerBtn').attr('class',"weui_btn weui_btn_mini weui_btn_disabled weui_btn_default");
+                $('#detail_signBtn').show();
             }
         });
     }
@@ -600,6 +620,21 @@ FastClick.attach(document.body);
 
             //Mobilebone.IScroll.refresh();
         });
+    }
+
+    var detailTimer;
+
+    function startRefreshDetail(id){
+        detailTimer = setInterval(function() {
+            loadTodayLesson(id);
+            getRegisterSum(id);
+        },  60000);
+    }
+
+    function stopRefreshDetail(){
+        if (detailTimer){
+            clearTimeout(detailTimer);
+        }
     }
 
     $(function(){ 
