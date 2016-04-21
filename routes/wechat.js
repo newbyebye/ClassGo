@@ -162,7 +162,7 @@ module.exports = {
         }).link(function (message, req, res, next) {
           // TODO
         }).event(function (message, req, res, next) {
-            if (message.Event == subscribe){
+            //if (message.Event == 'subscribe'){
                 res.reply([
                   {
                     title: '欢迎使用ClassGo',
@@ -176,7 +176,7 @@ module.exports = {
                     url: 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxf4802f2b0504b7b3&redirect_uri=https%3a%2f%2fclassgo.newbyebye.com%2fwelogin&response_type=code&scope=snsapi_userinfo&state=111#wechat_redirect'
                   }    
                 ]);
-            }
+            //}
           // TODO
         }).device_text(function (message, req, res, next) {
           // TODO
