@@ -8,11 +8,11 @@ var accessTokenDao = require('../dao/accessTokenDao');
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  res.render('index', {});
+  res.render('index', {wechat:false});
 });
 
 router.get('/app', function(req, res, next) {
-	res.render('app', {});
+	res.render('app', {wechat:true});
 });
 
 /* Get wechat login */
@@ -50,6 +50,7 @@ router.get('/welogin', function(req, res, next){
 				        }
 
 				        res.render('index', {
+				        	wechat: true,
 				          	token: token,
 				          	ttl: 1209600,
 				          	userId: userId,

@@ -298,13 +298,39 @@
 FastClick.attach(document.body);
 </script>-->
 <script src="js/mobilebone.js"></script>
-<script src="lib/jquery/jquery-1.10.2.js"></script> 
-<script src="lib/jquery/jquery.json-2.4.js"></script>
-<script src="lib/jquery/jquery.timeago.js"></script> 
+<script src="//cdn.bootcss.com/jquery/2.2.1/jquery.min.js"></script> 
+<script src="//cdn.bootcss.com/jquery-json/2.5.1/jquery.json.min.js"></script>
+<script src="//cdn.bootcss.com/jquery-timeago/1.5.2/jquery.timeago.min.js"></script> 
 
 <script src="js/classgo.js"></script>
 
 <script type="text/javascript">
+
+    $.timeago.settings = {
+      refreshMillis: 60000,
+      allowFuture: false,
+      allowPast: true,
+      strings: {
+        prefixAgo: null,
+        prefixFromNow: "从现在开始",
+        suffixAgo: "前",
+        suffixFromNow: null,
+        seconds: "不到 1 分钟",
+        minute: "大约 1 分钟",
+        minutes: "%d 分钟",
+        hour: "大约 1 小时",
+        hours: "大约 %d 小时",
+        day: "1 天",
+        days: "%d 天",
+        month: "大约 1 个月",
+        months: "%d 个月",
+        year: "大约 1 年",
+        years: "%d 年",
+        numbers: [],
+        wordSeparator: ""
+      }
+    };
+
     var g_skip = 0;
     var page = 20;
 
