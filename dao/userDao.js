@@ -76,6 +76,7 @@ module.exports = {
                     }
                     else{
                         var userId = result[0].id;
+                        var role = result[0].role
                         // update user
                         // TODO: 如果有定义值则更新
                         var sql = "update user set nickname=?, photo=?, sex=?,city=? where openID=?";
@@ -83,6 +84,7 @@ module.exports = {
                         connection.query(sql, [param.nickname, param.photo, param.sex, param.city, param.openID], function(err, result) {
                             result.insertId = userId;
                             result.update = true;
+                            result.role = role;
                             callback(err, result);
                             // 释放连接 
                             connection.release();
