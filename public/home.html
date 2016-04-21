@@ -421,8 +421,8 @@ FastClick.attach(document.body);
                 }
 
                 var str2 = "未签到";
-                if (e.signAt){
-                    str2 = $.timeago(e.signAt);
+                if (e.createAt){
+                    str2 = $.timeago(e.createAt);
                 }
 
                 $(scrollerStatudtes).append('<a  class="wechat-list" >\

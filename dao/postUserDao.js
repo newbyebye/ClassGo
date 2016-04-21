@@ -15,7 +15,7 @@ var $conf = require('../conf/db');
 )ENGINE=InnoDB DEFAULT CHARSET=utf8;
 */
 //select post.*,count(postId) as sum from post left join postUser on post.id = postUser.postId group by postId;
-
+//select username,nickname,fullname,lessonId,postId,studentNo, sign.updateAt, sign.createAt, sign.id from user,postUser left join sign on postUser.userId = sign.userId where user.id = postUser.userId and postId=3 and (lessonId= 13 or lessonId is null) group by id;
 // 使用连接池，提升性能
 var pool  = mysql.createPool($conf.mysql);
 
@@ -26,7 +26,7 @@ var $sql = {
     queryById: 'select * from postUser where postId=? and userId=?',
     queryAll: 'select postUser.*,user.fullname,user.studentNo from postUser,user where postId=? and user.id = postUser.userId',
     querySum: 'select count(*) as sum from postUser where postId=?',
-    queryAllInfo:'select username,nickname,fullname,lessonId,postId,studentNo,sign.updateAt as signAt from user,postUser left join sign on postUser.userId = sign.userId where user.id = postUser.userId and postId=? and (lessonId= ? or lessonId is null)',
+    queryAllInfo:'select sign.id, username,nickname,fullname,lessonId,postId,studentNo,sign.updateAt, sign.createAt from user,postUser left join sign on postUser.userId = sign.userId where user.id = postUser.userId and postId=? and (lessonId= ? or lessonId is null) group by id',
 };
 
 module.exports = {
