@@ -499,6 +499,7 @@ FastClick.attach(document.body);
         loadTodayLesson(id);
         getRegisterSum(id);
         getMyRegisterStatus(id);
+
         CG.PostController.get('/v1/post/'+id, function(err, data){
             $('#detail_id').val(id);
             $('#detail_author').text(data.fullname + '-'+data.profession);
@@ -559,6 +560,20 @@ FastClick.attach(document.body);
         });
     }
 
+    function getMySignInStatus() {
+        if ($('#detail_lesson_id').val().length == 0){
+            return;
+        }
+
+        CG.PostController.get('/v1/post/lesson/'+$('#detail_lesson_id').val()+'/sign', function(err, data){
+            if (!err){
+                if (data.id != 0) {
+                    $('#detail_signBtn').html("已签到");
+                }            
+            }
+        });
+    }
+
     function registerClass() {
         CG.PostController.post('/v1/post/'+$('#detail_id').val()+'/register', {}, function(err, data){
             if (!err){
@@ -575,6 +590,7 @@ FastClick.attach(document.body);
             if (!err){
                 if (data.status == 1) {
                     $('#detail_lesson_id').val(data.id);
+                    getMySignInStatus();
                 }
                 else{
                     $('#detail_lesson_id').val("");

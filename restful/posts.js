@@ -292,6 +292,27 @@ router.put('/post/lesson/:id', checkToken, function(req, res, next){
 });
 
 
+/**
+* student sign
+* GET /v1/post/lesson/:id/sign
+* 
+* id = 0 unsigned
+*/
+router.get('/post/lesson/:id/sign', checkToken, function(req, res, next){
+      req.body.lessonId = req.params.id;
+      req.body.userId = req.api_user.userId;
+      signDao.queryById(req.body, function(err, result){
+          if (err || result.length == 0) {
+              res.status(200).json({id:0});
+              return;
+          }
+          else{
+              res.status(200).json(result[0]);
+              return;
+          }
+      });
+});
+
 
 
 /**
