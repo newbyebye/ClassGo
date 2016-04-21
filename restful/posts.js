@@ -218,20 +218,33 @@ router.post('/post/:id/lesson', checkToken, function(req, res, next){
         next(err);
         return
       }
+
+      var data = {id: req.params.id, date:new Date()};
+      lessonDao.queryLessonByPostId(data, function(err, result){
+        if (err || result.length == 0) {
+            console.log(err);
+            
+            req.body.starttime = new Date();
+            req.body.postId = req.params.id;
+            lessonDao.add(req.body, function(err, result){
+                if (err) {
+                  next(err);
+                  return;
+                }
+
+                res.status(200).json({
+                  id: result.insertId
+                });
+            });
+            return
+        }
+
+
+        res.status(200).json({id: result[0].id});
+      });
       
       // "starttime": "2010-10-05",
-      req.body.starttime = new Date();
-      req.body.postId = req.params.id;
-      lessonDao.add(req.body, function(err, result){
-          if (err) {
-            next(err);
-            return;
-          }
-
-          res.status(200).json({
-            id: result.insertId
-          });
-      });
+      
     });
 });
 
