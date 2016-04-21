@@ -138,29 +138,18 @@ module.exports = {
 
     middleware: wechat(config).text(function (message, req, res, next) {
         console.log(message);
-
-        if (!req.wxsession.user){
-            defaultRegistUser({"username":message.FromUserName, "openID": message.FromUserName}, req, function(err, result){
-                console.log(err);
-            });
-        }
-
-        // 账号注册
-        if ((message.Content.indexOf('0 ') == 0) && (message.Content.indexOf(',') > 0)) {
-            registUser(message, req, res);
-        }
-        else if (message.Content === '1') {
-            createNumberGame(message, req, res);
-        }
-        else if (message.Content === 'e') {
-            endGame(message, req, res);
-        }
-        else if (message.Content === 's') {
-            statusGame(message, req, res);
-        }
-        else {
-              res.wait('help');
-            }
+            res.reply([
+              {
+                title: '欢迎使用ClassGo',
+                description: '课程正在进行，赶快加入吧',
+                picurl: 'http://www.lib.hust.edu.cn/upload/ckfinder/images/nandamen.jpg',
+                url: 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxf4802f2b0504b7b3&redirect_uri=https%3a%2f%2fclassgo.newbyebye.com%2fwelogin&response_type=code&scope=snsapi_userinfo&state=111#wechat_redirect'
+              },
+              {
+                description:'分享给小伙伴',
+                picurl:'https://mp.weixin.qq.com/misc/getqrcode?fakeid=3215266775&token=731215823&style=1&action=download'
+              }  
+            ]);
         }).image(function (message, req, res, next) {
           
         }).voice(function (message, req, res, next) {
@@ -172,6 +161,20 @@ module.exports = {
         }).link(function (message, req, res, next) {
           // TODO
         }).event(function (message, req, res, next) {
+            if (message.Event == subscribe){
+                res.reply([
+                  {
+                    title: '欢迎使用ClassGo',
+                    description: '课程正在进行，赶快加入吧',
+                    picurl: 'http://www.lib.hust.edu.cn/upload/ckfinder/images/nandamen.jpg',
+                    url: 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxf4802f2b0504b7b3&redirect_uri=https%3a%2f%2fclassgo.newbyebye.com%2fwelogin&response_type=code&scope=snsapi_userinfo&state=111#wechat_redirect'
+                  },
+                  {
+                    description:'分享给小伙伴',
+                    picurl:'https://mp.weixin.qq.com/misc/getqrcode?fakeid=3215266775&token=731215823&style=1&action=download'
+                  }  
+                ]);
+            }
           // TODO
         }).device_text(function (message, req, res, next) {
           // TODO
