@@ -146,8 +146,9 @@ module.exports = {
                 url: 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxf4802f2b0504b7b3&redirect_uri=https%3a%2f%2fclassgo.newbyebye.com%2fwelogin&response_type=code&scope=snsapi_userinfo&state=111#wechat_redirect'
               },
               {
-                description:'分享给小伙伴',
-                picurl:'https://mp.weixin.qq.com/misc/getqrcode?fakeid=3215266775&token=731215823&style=1&action=download'
+                title:'课程正在进行，赶快加入吧',
+                picurl:'http://classgo.newbyebye.com/img/qrcode.jpg',
+                url: 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxf4802f2b0504b7b3&redirect_uri=https%3a%2f%2fclassgo.newbyebye.com%2fwelogin&response_type=code&scope=snsapi_userinfo&state=111#wechat_redirect'
               }  
             ]);
         }).image(function (message, req, res, next) {
@@ -170,9 +171,10 @@ module.exports = {
                     url: 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxf4802f2b0504b7b3&redirect_uri=https%3a%2f%2fclassgo.newbyebye.com%2fwelogin&response_type=code&scope=snsapi_userinfo&state=111#wechat_redirect'
                   },
                   {
-                    description:'分享给小伙伴',
-                    picurl:'https://mp.weixin.qq.com/misc/getqrcode?fakeid=3215266775&token=731215823&style=1&action=download'
-                  }  
+                    title:'课程正在进行，赶快加入吧',
+                    picurl:'http://classgo.newbyebye.com/img/qrcode.jpg',
+                    url: 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxf4802f2b0504b7b3&redirect_uri=https%3a%2f%2fclassgo.newbyebye.com%2fwelogin&response_type=code&scope=snsapi_userinfo&state=111#wechat_redirect'
+                  }    
                 ]);
             }
           // TODO
