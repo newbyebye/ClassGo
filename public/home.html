@@ -25,7 +25,91 @@
     </div>         
     <div class="content">    
         <div id="scrollerStatudtes">
-        
+            <a  class="wechat-list" >
+                <div class="cell">
+                    <div class="wechat-h-time"><h5>阿萨德发</h5><time>阿萨德发生地方 </time></div>\
+                </div>
+            </a>
+            <a  class="wechat-list" >
+                <div class="cell">
+                    <div class="wechat-h-time"><h5>阿萨德发</h5><time>阿萨德发生地方 </time></div>\
+                </div>
+            </a>
+            <a  class="wechat-list" >
+                <div class="cell">
+                    <div class="wechat-h-time"><h5>阿萨德发</h5><time>阿萨德发生地方 </time></div>\
+                </div>
+            </a>
+            <a  class="wechat-list" >
+                <div class="cell">
+                    <div class="wechat-h-time"><h5>阿萨德发</h5><time>阿萨德发生地方 </time></div>\
+                </div>
+            </a>
+            <a  class="wechat-list" >
+                <div class="cell">
+                    <div class="wechat-h-time"><h5>阿萨德发</h5><time>阿萨德发生地方 </time></div>\
+                </div>
+            </a>
+            <a  class="wechat-list" >
+                <div class="cell">
+                    <div class="wechat-h-time"><h5>阿萨德发</h5><time>阿萨德发生地方 </time></div>\
+                </div>
+            </a>
+            <a  class="wechat-list" >
+                <div class="cell">
+                    <div class="wechat-h-time"><h5>阿萨德发</h5><time>阿萨德发生地方 </time></div>\
+                </div>
+            </a>
+            <a  class="wechat-list" >
+                <div class="cell">
+                    <div class="wechat-h-time"><h5>阿萨德发</h5><time>阿萨德发生地方 </time></div>\
+                </div>
+            </a>
+            <a  class="wechat-list" >
+                <div class="cell">
+                    <div class="wechat-h-time"><h5>阿萨德发</h5><time>阿萨德发生地方 </time></div>\
+                </div>
+            </a>
+            <a  class="wechat-list" >
+                <div class="cell">
+                    <div class="wechat-h-time"><h5>阿萨德发</h5><time>阿萨德发生地方 </time></div>\
+                </div>
+            </a>
+            <a  class="wechat-list" >
+                <div class="cell">
+                    <div class="wechat-h-time"><h5>阿萨德发</h5><time>阿萨德发生地方 </time></div>\
+                </div>
+            </a>
+            <a  class="wechat-list" >
+                <div class="cell">
+                    <div class="wechat-h-time"><h5>阿萨德发</h5><time>阿萨德发生地方 </time></div>\
+                </div>
+            </a>
+            <a  class="wechat-list" >
+                <div class="cell">
+                    <div class="wechat-h-time"><h5>阿萨德发</h5><time>阿萨德发生地方 </time></div>\
+                </div>
+            </a>
+            <a  class="wechat-list" >
+                <div class="cell">
+                    <div class="wechat-h-time"><h5>阿萨德发</h5><time>阿萨德发生地方 </time></div>\
+                </div>
+            </a>
+            <a  class="wechat-list" >
+                <div class="cell">
+                    <div class="wechat-h-time"><h5>阿萨德发</h5><time>阿萨德发生地方 </time></div>\
+                </div>
+            </a>
+            <a  class="wechat-list" >
+                <div class="cell">
+                    <div class="wechat-h-time"><h5>阿萨德发</h5><time>阿萨德发生地方 </time></div>\
+                </div>
+            </a>
+            <a  class="wechat-list" >
+                <div class="cell">
+                    <div class="wechat-h-time"><h5>阿萨德发</h5><time>阿萨德发生地方 </time></div>\
+                </div>
+            </a>
         </div>
     </div>
 </div>
@@ -153,7 +237,7 @@
     </div>
 </div>
 
-<div id="pageContacts" class="page out">
+<div id="pageMyFavourite" class="page out">
     <div class="content no-header">
         <div>
             <div id='mycreate_view'>
@@ -279,7 +363,7 @@
     <a href="#pageHome" data-rel="auto">
         <i class="icon-wechat"></i>首页
     </a>
-    <a href="#pageContacts" data-rel="auto">
+    <a href="#pageMyFavourite" data-rel="auto">
         <i class="icon-contacts"></i>发现
     </a>
 
@@ -425,13 +509,17 @@ FastClick.attach(document.body);
                     </a>');
             });
             g_skip += data.length;
-            Mobilebone.IScroll.refresh();
+            if (Mobilebone.pages["pageHome"]){
+                console.log("refresh home");
+                Mobilebone.pages["pageHome"].refresh();
+            }
+            
         });
     }
 
     function loadStudentsData(skip, limit) {
 
-        $(scrollerStatudtes).html("");
+        //$(scrollerStatudtes).html("");
         CG.PostController.get('/v1/post/'+$('#detail_id').val()+'/registerallInfo?filter={"where":{"date":"'+new Date().Format("yyyy-MM-dd")+'"},"skip":'+skip+',"limit":'+limit+'}', function(err, data){
             if (err){
                 return;
@@ -461,8 +549,11 @@ FastClick.attach(document.body);
                         </div>\
                     </a>');
             });
-            //Mobilebone.IScroll.refresh();
+            
         });
+        if (Mobilebone.pages["pageStudents"]){
+                Mobilebone.pages["pageStudents"].refresh();
+            }
     }
 
     function viewSign(){
@@ -615,6 +706,9 @@ FastClick.attach(document.body);
                         </div>\
                     </a>');
             });
+            if (Mobilebone.pages["pageMyFavourite"]){
+                Mobilebone.pages["pageMyFavourite"].refresh();
+            }
         });
     }
 
@@ -634,17 +728,20 @@ FastClick.attach(document.body);
                     </a>');
             });
 
-            //Mobilebone.IScroll.refresh();
+            if (Mobilebone.pages["pageMyFavourite"]){
+                Mobilebone.pages["pageMyFavourite"].refresh();
+            }
+            
         });
     }
 
     var detailTimer;
 
     function startRefreshDetail(id){
-        detailTimer = setInterval(function() {
+        /*detailTimer = setInterval(function() {
             loadTodayLesson(id);
             getRegisterSum(id);
-        },  60000);
+        },  60000);*/
     }
 
     function stopRefreshDetail(){
