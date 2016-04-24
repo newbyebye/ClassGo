@@ -796,6 +796,7 @@ FastClick.attach(document.body);
         CG.MyController.load(function(data){
             updateMeView('me_edit', data);
             updateMeView('me_show', data);
+            updateMeView('me_step', data);
             loadOwnerData(data.photo);
         });
     });
