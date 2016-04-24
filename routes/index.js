@@ -41,7 +41,12 @@ router.get('/welogin', function(req, res, next){
         			var userId = result.insertId;
         			var update = result.update;
         			var role = result.role;
-			      	var token = jwt.sign({userId: userId, role:role}, process.env.JWT_SECRET);
+        			var verify = 0;
+        			if (result.verify){
+        				verify = result.verify;
+        			}
+        			
+			      	var token = jwt.sign({userId: userId, role:role, verify:verify}, process.env.JWT_SECRET);
 
 			      	accessTokenDao.add({userId: userId, ttl: 1209600, token: token, ipAddr:req.connection.remoteAddress}, function(err, result){
 				        if (err) {

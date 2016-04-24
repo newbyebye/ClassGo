@@ -9,14 +9,14 @@ var role = 0;
 
 $(function(){
 	if (token.length > 0) {
-		window.localStorage.setItem("token", token);
-		window.localStorage.setItem("userId", userId);
-		window.localStorage.setItem("role", role);
+		window.sessionStorage.setItem("token", token);
+		window.sessionStorage.setItem("userId", userId);
+		window.sessionStorage.setItem("role", role);
 
 		{{#if update}}
 			window.location = "./home.html";
 		{{else}}
-			window.location = "./home.html#&pageMeEdit";
+			window.location = "./home.html#&pageStep1";
 		{{/if}}
 	} 
 });

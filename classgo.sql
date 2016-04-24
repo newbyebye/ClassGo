@@ -21,6 +21,7 @@ create table user (
     brief     varchar(256),
     openID    varchar(64),
     role     int,
+    verify     int,
     createAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updateAt TIMESTAMP NOT NULL 
 )ENGINE=InnoDB DEFAULT CHARSET=utf8;

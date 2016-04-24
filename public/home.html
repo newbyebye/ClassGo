@@ -220,6 +220,102 @@
     </div>
 </div>
 
+
+<div id="pageStep1" class="page out">
+    <div class="header" data-role="header">    
+        <h1>注册个人信息1/2</h1>
+    </div>
+    <div style="position: absolute;top: 48px;left: 0; right: 0; overflow: hidden;">
+        <div>
+            <div class="me-group">
+                <div class="me-header">
+                    <img class="me-head" src="" id="me_step_photo">
+                    <div class="me-detail">
+                        <h6><span id="me_step_nickname"></span></h6>
+                    </div>
+                </div>
+            </div>
+
+            
+            <div class="weui_cells weui_cells_checkbox">
+                <h5 class="contact-h">请选择学生还是老师，其中老师需要通过审核才能注册</h5>
+                <label class="weui_cell weui_check_label" for="me_step_check1">
+                    <div class="weui_cell_hd">
+                        <input type="radio" name="checkbox1" class="weui_check" value="0" id="me_step_check1"  checked="checked">
+                        <i class="weui_icon_checked"></i>
+                    </div>
+                    <div class="weui_cell_bd weui_cell_primary">
+                        <p>我是学生</p>
+                    </div>
+                </label>
+                <label class="weui_cell weui_check_label" for="me_step_check2">
+                    <div class="weui_cell_hd">
+                        <input type="radio" name="checkbox1" class="weui_check" value="1" id="me_step_check2">
+                        <i class="weui_icon_checked"></i>
+                    </div>
+                    <div class="weui_cell_bd weui_cell_primary">
+                        <p>我是老师</p>
+                    </div>
+                </label>
+            </div> 
+            
+            <div class="weui_cells weui_cells_form">
+                
+                <div class="weui_cells_tips"></div>
+                <div class="weui_btn_area">
+                    <a class="weui_btn weui_btn_primary" href="javascript:void(0)" onclick="step1()" data-ajax="false">下一步</a>
+                </div>
+            </div>   
+        </div>
+    </div>
+</div>
+
+<div id="pageStep2" class="page out">
+    <div class="header" data-role="header">    
+        <h1>注册个人信息2/2</h1>
+    </div>
+    <div style="position: absolute;top: 48px;left: 0; right: 0; overflow: hidden;">
+        <div>
+            
+            <div class="weui_cells weui_cells_form">
+                <h5 class="contact-h">为了便于统计成绩请注册真实个人信息</h5>
+                <div class="weui_cell">
+                    <div class="weui_cell_hd"><label class="weui_label">姓名</label></div>
+                    <div class="weui_cell_bd weui_cell_primary">
+                        <input id="me_step_fullname" class="weui_input"  placeholder="请输入姓名"/>
+                    </div>
+                </div>
+
+                <div class="weui_cell" id="me_step_studentNo_view">
+                    <div class="weui_cell_hd"><label class="weui_label">学号</label></div>
+                    <div class="weui_cell_bd weui_cell_primary">
+                        <input id="me_step_studentNo" class="weui_input"  placeholder="请输入学号"/>
+                    </div>
+                </div>
+
+                <div class="weui_cell">
+                    <div class="weui_cell_hd"><label class="weui_label">院系</label></div>
+                    <div class="weui_cell_bd weui_cell_primary">
+                        <input id="me_step_profession"  class="weui_input"  placeholder="请输入专业"/>
+                    </div>
+                </div>
+                <div class="weui_cell">
+                    <div class="weui_cell_hd"><label class="weui_label">学校</label></div>
+                    <div class="weui_cell_bd weui_cell_primary">
+                        <input id="me_step_school"  class="weui_input"  placeholder="请输入学校"/>
+                    </div>
+                </div>
+
+                <div class="weui_cells_tips"></div>
+                <div class="weui_btn_area">
+                    <a class="weui_btn weui_btn_primary" href="javascript:void(0)" onclick="saveStepInfo()" data-ajax="false">确定</a>
+                </div>
+            </div>  
+
+        </div>
+    </div>
+</div>
+
 <div id="pageMeEdit" class="page out">
     <div class="header" data-role="header">
         <a href="#pageMe" class="icon-back" data-rel="back">返回</a>
@@ -402,6 +498,29 @@ FastClick.attach(document.body);
         });  
     }
 
+    function step1(){
+        if ($("input[name='checkbox1']:checked").val() == "0"){
+            $("#me_step_studentNo_view").show();           
+        }
+        else{
+            $("#me_step_studentNo_view").hide();
+        }
+        window.location = '#pageStep2';
+    }
+
+    function saveStepInfo(){
+        var data = {fullname:$(me_step_fullname).val(), 
+                    studentNo:$(me_step_studentNo).val(), 
+                    profession: $(me_step_profession).val(), 
+                    school: $(me_step_school).val(),
+                    role: $("input[name='checkbox1']:checked").val()};
+
+        CG.MyController.update(data, function(err, result){
+                updateMeView('me_show', data);   
+                window.location = "./home.html";
+        });
+    }
+
     function saveUserInfo(){
         var data = {fullname:$(me_edit_fullname).val(), studentNo:$(me_edit_studentNo).val(), profession: $(me_edit_profession).val(), school: $(me_edit_school).val()};
         
@@ -523,7 +642,7 @@ FastClick.attach(document.body);
             $('#detail_address').text(addr);
             $('#detail_body').text(data.body);
 
-            if (data.authorId == window.localStorage.getItem("userId")){
+            if (data.authorId == window.sessionStorage.getItem("userId")){
                 $('#detail_owner').show();
                 $('#detail_edit').show();
                 $('#detail_other').hide();
@@ -671,7 +790,7 @@ FastClick.attach(document.body);
         loadRegistData();
 
         $('#mycreate_view').hide();
-        if (window.localStorage.getItem("role") == 1){
+        if (window.sessionStorage.getItem("role") == 1){
             $('#mycreate_view').show();
         }
         CG.MyController.load(function(data){

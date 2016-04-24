@@ -22,7 +22,7 @@ var postUserDao = require('../dao/postUserDao');
 */
 router.post('/post', checkToken, function(req, res, next) {
     // 1 teacher
-    if (req.api_user.role != 1) {
+    if (req.api_user.role != 1 || req.api_user.verify != 1) {
       var err = new Error('deny access');
       err.status = 401;
       next(err);

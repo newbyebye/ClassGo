@@ -11,10 +11,10 @@ var pool  = mysql.createPool($conf.mysql);
 // CRUD SQL语句{"username":"demo", "password":"demo", "fullname":"fullname", "openID": "openID"}
 var $user = {
     insert:'INSERT INTO user(id, username, password, openID, fullname, nickname, studentNo, city, photo) VALUES(0,?,?,?,?,?,?,?,?)',
-    update:'update user set fullname=?, studentNo=?, profession=?, school=?, brief=? where id=?',
+    update:'update user set fullname=?, studentNo=?, profession=?, school=?, brief=?, role=? where id=?',
     delete: 'delete from user where id=?',
     login: 'select * from user where username=? and password=?',
-    queryById: 'select id, username, profession, sex, photo, fullname, mobile, nickname, studentNo, city, school, brief, createAt, updateAt, role from user where id=?',
+    queryById: 'select id, username, profession, sex, photo, fullname, mobile, nickname, studentNo, city, school, brief, createAt, updateAt, role, verify from user where id=?',
     //queryAll: 'select id, username, profession, sex, photo, fullname, mobile, nickname, studentNo, city, school, brief, createAt, updateAt from user',
     queryByOpenID: 'select * from user where openID=?',
 };
@@ -44,6 +44,10 @@ function createUpdateSql(param){
     if (param.brief) {
         retval.sql += "brief=?, ";
         retval.params[retval.params.length] = param.brief;
+    }
+    if (param.role) {
+        retval.sql += "role=?, ";
+        retval.params[retval.params.length] = param.role;
     }
 
     retval.sql = retval.sql.substr(0, retval.sql.length - 2);
@@ -76,7 +80,8 @@ module.exports = {
                     }
                     else{
                         var userId = result[0].id;
-                        var role = result[0].role
+                        var role = result[0].role;
+                        var verify = result[0].verify;
                         // update user
                         // TODO: 如果有定义值则更新
                         var sql = "update user set nickname=?, photo=?, sex=?,city=? where openID=?";
@@ -85,6 +90,7 @@ module.exports = {
                             result.insertId = userId;
                             result.update = true;
                             result.role = role;
+                            result.verify = verify;
                             callback(err, result);
                             // 释放连接 
                             connection.release();

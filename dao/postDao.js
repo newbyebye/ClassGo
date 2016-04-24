@@ -28,7 +28,6 @@ module.exports = {
             }
 
             // 建立连接，向表中插入值
-            connection.query("set names utf8;");
             connection.query($sql.insert, [param.title, param.body, param.address, param.time, param.authorId], function(err, result) {
 
                 callback(err, result);

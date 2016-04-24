@@ -41,7 +41,7 @@ $(function() {
 				url : path,
 				dataType : 'json',
 				async : isAsyncLoad,
-				headers : {"x-access-token":window.localStorage.getItem("token"),
+				headers : {"x-access-token":window.sessionStorage.getItem("token"),
 							"Cache-Control":"no-cache",
 							"If-Modified-Since":"0"},
 				/*
@@ -81,7 +81,7 @@ $(function() {
 				data : self.createSubmitData(data),
 				dataType : "json",
 				contentType : "application/json;charset=UTF-8",
-				headers : {"x-access-token":window.localStorage.getItem("token")},
+				headers : {"x-access-token":window.sessionStorage.getItem("token")},
 				success : function(result) {	
 					callback(null, result);	
 				},
@@ -162,7 +162,7 @@ $(function(){
 	});
 
 	CG.MyController = CG.SingleObjController.extend({
-		objName: "./v1/user/" +window.localStorage.getItem('userId')
+		objName: "./v1/user/" +window.sessionStorage.getItem('userId')
 	});
 
 });
@@ -214,7 +214,10 @@ Mobilebone.onpagefirstinto = function(pageinto) {
 	console.log("on page firstInfo ", pageinto);
 
 	// bind custom scroll events for content
-	Mobilebone.pages[pageinto.id] = new IScroll(pageinto.querySelector(".content"), { mouseWheel: true, click: true, scrollX: true, freeScroll: true  });
+	if (pageinto.querySelector(".content")){
+		Mobilebone.pages[pageinto.id] = new IScroll(pageinto.querySelector(".content"), { mouseWheel: true, click: true, scrollX: true, freeScroll: true  });
+	}
+	
 	/Android/i.test(navigator.userAgent) && pageinto.addEventListener('tap', Mobilebone.handleTapEvent, false);
 
 };
