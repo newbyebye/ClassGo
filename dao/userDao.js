@@ -83,7 +83,8 @@ module.exports = {
                         var role = result[0].role;
                         var verify = result[0].verify;
                         var update = true;
-                        if (result[0].fullname || result[0].fullname.length == 0){
+
+                        if (result[0].fullname == ""){
                             update = false;
                         }
                         // update user
