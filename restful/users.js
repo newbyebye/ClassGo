@@ -6,7 +6,36 @@ var jwt = require('jsonwebtoken');
 var checkToken = require('../routes/checkToken')
 var userDao = require('../dao/userDao');
 var accessTokenDao = require('../dao/accessTokenDao');
+var crypto = require('crypto');
+var wechat = require('../routes/wechat');
 
+
+
+/**
+* body {noncestr:"",timestamp:"",url:""}
+参与签名的字段包括noncestr（随机字符串）, 有效的jsapi_ticket, timestamp（时间戳）, url（当前网页的URL，不包含#及其后面部分）
+jsapi_ticket=cfrz4c560WS25l5Lhi3rfi_tWY4uxqVWoTFRcpj9oa_1h961Z30eJcF_ElpoSukUuPkPWvFo8ELG2OGQmGPPSs3kOTJcMebQCI8fSgTr-oo-KAhkcloaT29kg1wFQGrLMGJdACASMP&noncestr=2nDgiWM7gCxhL8v087&timestamp=1461507879&url=http://localhost:3000/home.html
+*/
+router.post('/wechat/signature', function(req, res, next){
+  console.log("###########################");
+    wechat.getTicket(function(err, ticket){
+      console.log(err);
+      if (err){
+        console.log(err);
+        var err = new Error(err.errmsg);
+        next(err);
+      return;
+      }
+
+        var tmp = ["noncestr="+req.body.noncestr, "timestamp="+req.body.timestamp, "url="+req.body.url, "jsapi_ticket="+ticket].sort().join('&');
+        
+        var signature = crypto.createHash('sha1').update(tmp).digest('hex');
+        console.log(tmp, signature);
+
+        res.status(200).json({signature:signature});
+        return;
+    });
+});
 
 /* 
 *  regist new user

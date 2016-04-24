@@ -4,6 +4,8 @@ var wechat = require('./wechat');
 var userDao = require('../dao/userDao');
 var jwt = require('jsonwebtoken');
 var accessTokenDao = require('../dao/accessTokenDao');
+var crypto = require('crypto');
+var checkToken = require('../routes/checkToken')
 
 
 /* GET home page. */
@@ -14,6 +16,7 @@ router.get('/', function(req, res, next) {
 router.get('/app', function(req, res, next) {
 	res.render('app', {wechat:true});
 });
+
 
 /* Get wechat login */
 router.get('/welogin', function(req, res, next){

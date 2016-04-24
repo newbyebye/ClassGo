@@ -14,6 +14,8 @@ var config = {
     encodingAESKey: process.env.WECHAT_AESKEY
 };
 
+var CACHE = {};
+
 function defaultRegistUser(data, req, callback){
     userDao.add(data, function(err, result){
         if (err) {
@@ -212,6 +214,10 @@ module.exports = {
 
     getToken: function(callback) {
         var tokenUrl = 'https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appId=' + process.env.WECHAT_APPID + '&secret=' + process.env.WECHAT_SCRET;
+        if (CACHE.token){
+            callback(null, CACHE.token);
+            return;
+        }
 
         request.get(tokenUrl, function(error, response, body) {
             if (error) {
@@ -221,6 +227,10 @@ module.exports = {
 
                 try {
                     var token = JSON.parse(body).access_token;
+                    CACHE.token = token;
+                    setTimeout(function(){
+                        CACHE.token = null;
+                    }, 7200*1000);
                     callback(null, token);
                 }
                 catch (e) {
@@ -228,6 +238,41 @@ module.exports = {
                 }
             }
         });
+    },
+
+    getTicket: function(callback) {
+        if (CACHE.ticket) {
+            callback(null, CACHE.ticket);
+            return;
+        }
+
+        this.getToken(function(err, token){
+            var url = "https://api.weixin.qq.com/cgi-bin/ticket/getticket?access_token="+token+"&type=jsapi";
+            request.get(url, function(error, response, body) {
+                if (error) {
+                    callback(error);
+                }
+                else {
+                    try {
+                        console.log(body);
+                        var response = JSON.parse(body);
+                        if (response.errcode == 0) {
+                            var ticket = response.ticket;
+                            CACHE.ticket = ticket;
+                            setTimeout(function(){
+                                CACHE.token = null;
+                            }, response.expires_in*1000);
+                            callback(null, ticket);
+                            return;
+                        }
+                        callback(response);
+                    }
+                    catch (e) {
+                        callback(e);
+                    }
+                }
+            });
+        })    
     },
 
     getAccessToken: function(code, callback) {
