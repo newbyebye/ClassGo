@@ -44,7 +44,7 @@ $(function(){
 </form>
 <script type="text/javascript">
 function login(){
-	var data = $('form').serializeObject();
+	var data = {username:$("#username").val(), password: $("#password").val()}
 
 	data.password = CryptoJS.SHA256(data.password).toString();
 	
@@ -54,9 +54,9 @@ function login(){
 				return;
 			}
 			
-			window.localStorage.setItem("token", result.token);
-			window.localStorage.setItem("userId", result.userId);
-			window.localStorage.setItem("role", result.role);
+			window.sessionStorage.setItem("token", result.token);
+			window.sessionStorage.setItem("userId", result.userId);
+			window.sessionStorage.setItem("role", result.role);
 			window.location = "./home.html";
 		}
 	);

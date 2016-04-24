@@ -24,7 +24,7 @@ var $sql = {
     update:'update sign set lng=?, lat=? where lessonId=? and userId=?',
     delete: 'delete from sign where id=?',
     queryById: 'select * from sign where lessonId=? and userId=?',
-    queryAll: 'select * from sign',
+    queryAll: 'select * from sign where lessonId=?',
 };
 
 module.exports = {
@@ -78,7 +78,7 @@ module.exports = {
     },
     queryAll: function (param, callback) {
         pool.getConnection(function(err, connection) {
-            connection.query($sql.queryAll, function(err, result) {
+            connection.query($sql.queryAll, param.lessonId, function(err, result) {
                 callback(err, result);
                 connection.release();
             });

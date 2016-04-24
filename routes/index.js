@@ -36,7 +36,6 @@ router.get('/welogin', function(req, res, next){
 			        if (req.session){
             			req.session.user = {id:result.insertId, openID: data.openID};
         			}
-        			console.log(req.session);
 
         			var userId = result.insertId;
         			var update = result.update;

@@ -214,8 +214,8 @@ Mobilebone.onpagefirstinto = function(pageinto) {
 	console.log("on page firstInfo ", pageinto);
 
 	// bind custom scroll events for content
-	if (pageinto.querySelector(".content")){
-		Mobilebone.pages[pageinto.id] = new IScroll(pageinto.querySelector(".content"), { mouseWheel: true, click: true, scrollX: true, freeScroll: true  });
+	if (pageinto.querySelector(".scroll")){
+		Mobilebone.pages[pageinto.id] = new IScroll(pageinto.querySelector(".scroll"), { mouseWheel: true, click: true, scrollX: true, freeScroll: true  });
 	}
 	
 	/Android/i.test(navigator.userAgent) && pageinto.addEventListener('tap', Mobilebone.handleTapEvent, false);

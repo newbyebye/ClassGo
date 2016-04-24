@@ -191,6 +191,24 @@ router.delete('/post/:id', checkToken, function(req, res, next){
 * GET /v1/post/:id/lesson
 * success: {"id":1, "status":1}
 */
+router.get('/post/:id/lesson/all', function(req, res, next){
+    var data = {id: req.params.id};
+    lessonDao.queryAll(data, function(err, result){
+      if (err) {
+          var err = new Error('not found');
+          err.status = 501;
+          next(err);
+          return
+      }
+      res.status(200).json(result);
+    });
+});
+
+/**
+* get post today lesson
+* GET /v1/post/:id/lesson
+* success: {"id":1, "status":1}
+*/
 router.get('/post/:id/lesson', function(req, res, next){
     var data = {id: req.params.id, date:new Date()};
     lessonDao.queryLessonByPostId(data, function(err, result){
@@ -204,6 +222,8 @@ router.get('/post/:id/lesson', function(req, res, next){
       res.status(200).json(result[0]);
     });
 });
+
+
 
 /**
 *  start lesson
@@ -522,7 +542,6 @@ router.get('/post/:id/registerall', checkToken, function(req, res, next){
 router.get('/post/:id/registerallInfo', checkToken, function(req, res, next){
   
   var filter = JSON.parse(req.query.filter);
-  console.log(filter);
   lessonDao.queryLessonByPostId({id: req.params.id, date:filter.where.date}, function(err, result){
       if (err || result.length == 0) {
           console.log(err);
@@ -545,10 +564,29 @@ router.get('/post/:id/registerallInfo', checkToken, function(req, res, next){
           if (err ) {
               console.log(err);
               next(err);
-
               return
           }
-        res.status(200).json(result);
+
+          var registerUsers = result;
+          signDao.queryAll(data, function(err, result){
+              if (err ) {
+                console.log(err);
+                res.status(200).json(registerUsers);
+                return
+              }
+
+              for (var i = 0; i < registerUsers.length; i++){
+                  for (var j = 0; j < result.length; j++){
+                      if (registerUsers[i].userId == result[j].userId){
+                          registerUsers[i].signAt = result[j].createAt;
+                          registerUsers[i].lat = result[j].lat;
+                          registerUsers[i].lng = result[j].lng;
+                      }
+                  }
+              }
+              res.status(200).json(registerUsers);
+          });
+        
       });
       
     });

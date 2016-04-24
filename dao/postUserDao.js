@@ -26,7 +26,7 @@ var $sql = {
     queryById: 'select * from postUser where postId=? and userId=?',
     queryAll: 'select postUser.*,user.fullname,user.studentNo from postUser,user where postId=? and user.id = postUser.userId',
     querySum: 'select count(*) as sum from postUser where postId=?',
-    queryAllInfo:'select sign.id, username,nickname,fullname,lessonId,postId,studentNo,sign.updateAt, sign.createAt from user,postUser left join sign on postUser.userId = sign.userId where user.id = postUser.userId and postId=? and (lessonId= ? or lessonId is null) group by id',
+    queryAllInfo:'select username,nickname,fullname,postId,studentNo from postUser,user where postUser.userId = user.id and postId=? ',
 };
 
 module.exports = {
@@ -86,6 +86,7 @@ module.exports = {
     },
     queryAllInfo: function (param, callback) {
         pool.getConnection(function(err, connection) {
+            console.log($sql.queryAllInfo, [param.postId, param.lessonId]);
             connection.query($sql.queryAllInfo, [param.postId, param.lessonId], function(err, result) {
                 callback(err, result);
                 connection.release();

@@ -82,13 +82,17 @@ module.exports = {
                         var userId = result[0].id;
                         var role = result[0].role;
                         var verify = result[0].verify;
+                        var update = true;
+                        if (result[0].fullname || result[0].fullname.length == 0){
+                            update = false;
+                        }
                         // update user
                         // TODO: 如果有定义值则更新
                         var sql = "update user set nickname=?, photo=?, sex=?,city=? where openID=?";
                         console.log(sql);
                         connection.query(sql, [param.nickname, param.photo, param.sex, param.city, param.openID], function(err, result) {
                             result.insertId = userId;
-                            result.update = true;
+                            result.update = update;
                             result.role = role;
                             result.verify = verify;
                             callback(err, result);

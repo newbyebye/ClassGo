@@ -22,10 +22,23 @@
     <div class="header" data-role="header">
         <a href="#pageDetail" class="icon-back" data-rel="back">返回</a>
         <h1>签到信息</h1>
-    </div>       
-    <div class="content">    
+    </div>
+   
+    <div class="content">
+        <div class="weui_cells_title">选择日期</div>
+        <div class="weui_cells">
+            <div class="weui_cell weui_cell_select">
+                <div class="weui_cell_bd weui_cell_primary">
+                    <select class="weui_select" name="students_date" id="students_date">
+                        <option selected="" value="1">今天</option>
+                    </select>
+                </div>
+            </div>
+        </div> 
+        <div class="scroll">   
         <div id="scrollerStatudtes">
             
+        </div>
         </div>
     </div>
 </div>
@@ -276,7 +289,6 @@
     </div>
     <div style="position: absolute;top: 48px;left: 0; right: 0; overflow: hidden;">
         <div>
-            
             <div class="weui_cells weui_cells_form">
                 <h5 class="contact-h" id="me_step_info">为了便于统计成绩请注册真实个人信息</h5>
                 <div class="weui_cell">
@@ -317,12 +329,7 @@
 </div>
 
 <div id="pageMeEdit" class="page out">
-    <div class="header" data-role="header">
-        <a href="#pageMe" class="icon-back" data-rel="back">返回</a>
-        <h1>修改个人信息</h1>
-        <a href="#" class="icon-add" data-ajax="false">添加</a>
-    </div>
-    <div class="content">
+    <div class="content no-header">
         <div>
             <div class="me-group">
                 <div class="me-header">
@@ -385,19 +392,26 @@
 </div>
 
 <script src="js/iscroll-lite.js"></script>
-
-<script src="js/zepto-docs.js"></script>
+<!--
+<script src="js/zepto-docs.js"></script> 
+-->
 <!--zepto或者fastclick都是可以的
 -->
 <!--<script src="js/fastclick.js"></script>
 <script>
 FastClick.attach(document.body);
 </script>-->
-<script src="js/mobilebone.js"></script>
+<!--
 <script src="//cdn.bootcss.com/jquery/2.2.1/jquery.min.js"></script> 
 <script src="//cdn.bootcss.com/jquery-json/2.5.1/jquery.json.min.js"></script>
 <script src="//cdn.bootcss.com/jquery-timeago/1.5.2/jquery.timeago.min.js"></script> 
+-->
 
+<script src="lib/jquery/jquery-1.10.2.js"></script>
+
+<script src="lib/jquery/jquery.timeago.js"></script>
+
+<script src="js/mobilebone.js"></script>
 <script src="js/classgo.js"></script>
 
 <script type="text/javascript">
@@ -554,10 +568,9 @@ FastClick.attach(document.body);
         });
     }
 
-    function loadStudentsData(skip, limit) {
-
-        //$(scrollerStatudtes).html("");
-        CG.PostController.get('/v1/post/'+$('#detail_id').val()+'/registerallInfo?filter={"where":{"date":"'+new Date().Format("yyyy-MM-dd")+'"},"skip":'+skip+',"limit":'+limit+'}', function(err, data){
+    function _getStudentsData(date) {
+        $(scrollerStatudtes).html("");
+        CG.PostController.get('/v1/post/'+$('#detail_id').val()+'/registerallInfo?filter={"where":{"date":"'+date+'"}}', function(err, data){
             if (err){
                 return;
             }
@@ -570,13 +583,17 @@ FastClick.attach(document.body);
                 else if (e.nickname){
                     str1 += e.nickname;
                 }
+
+                if (str1 == ""){
+                    str1 += e.username;
+                } 
                 if (e.studentNo){
                     str1 += "  "+ e.studentNo;
                 }
 
                 var str2 = "未签到";
                 if (e.createAt){
-                    str2 = $.timeago(e.createAt);
+                    str2 = "已签到";
                 }
 
 
@@ -591,6 +608,22 @@ FastClick.attach(document.body);
                 Mobilebone.pages["pageStudents"].refresh();
             }
         });
+    }
+
+    function loadStudentsData(skip, limit) {
+        $('#students_date').html("");
+        CG.PostController.get('/v1/post/'+$('#detail_id').val()+'/lesson/all', function(err, data){
+            if (err){
+                return;
+            }
+            data.forEach(function(e){
+                var date = new Date(e.startdate).Format('yyyy-MM-dd');
+                $('#students_date').append('<option value="'+date+'">'+date+'</option>')
+                console.log(date);
+            });
+
+            _getStudentsData($('#students_date').val());
+        });        
     }
 
     function viewSign(){
@@ -802,6 +835,14 @@ FastClick.attach(document.body);
             loadOwnerData(data.photo);
         });
     });
+
+    $(document).ready(function(){ 
+        $('#students_date').change(function(){
+            _getStudentsData($('#students_date').val());
+        });
+ 
+    });
+
 
     function loadmore() {
         loadHomeData(g_skip, page);
