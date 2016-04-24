@@ -84,7 +84,7 @@ module.exports = {
                         var verify = result[0].verify;
                         var update = true;
 
-                        if (result[0].fullname == ""){
+                        if (result[0].fullname == "" || result[0].fullname == null){
                             update = false;
                         }
                         // update user
