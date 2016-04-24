@@ -278,7 +278,7 @@
         <div>
             
             <div class="weui_cells weui_cells_form">
-                <h5 class="contact-h">为了便于统计成绩请注册真实个人信息</h5>
+                <h5 class="contact-h" id="me_step_info">为了便于统计成绩请注册真实个人信息</h5>
                 <div class="weui_cell">
                     <div class="weui_cell_hd"><label class="weui_label">姓名</label></div>
                     <div class="weui_cell_bd weui_cell_primary">
@@ -500,10 +500,12 @@ FastClick.attach(document.body);
 
     function step1(){
         if ($("input[name='checkbox1']:checked").val() == "0"){
-            $("#me_step_studentNo_view").show();           
+            $("#me_step_studentNo_view").show();
+            $("#me_step_info").show();           
         }
         else{
             $("#me_step_studentNo_view").hide();
+            $("#me_step_info").hide();
         }
         window.location = '#pageStep2';
     }
@@ -796,6 +798,7 @@ FastClick.attach(document.body);
         CG.MyController.load(function(data){
             updateMeView('me_edit', data);
             updateMeView('me_show', data);
+            updateMeView('me_step', data);
             loadOwnerData(data.photo);
         });
     });
