@@ -16,23 +16,16 @@
     
     <link href="css/signin.css" rel="stylesheet">
     {{/if}}
-
-    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-    <script src="//cdn.bootcss.com/jquery/2.2.1/jquery.min.js"></script>
-    <!-- Include all compiled plugins (below), or include individual files as needed -->
-    {{#if wechat}}
-    {{else}}
-    <script src="//cdn.bootcss.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
-    {{/if}}
-
+<!--
 	<script src="lib/jquery/jquery-1.10.2.js"></script>
   <script src="lib/jquery/jquery.timeago.js"></script>
 	<script src="lib/jquery/jquery.json-2.4.js"></script>
-	<script src="js/classgo.js"></script>
+	<script src="js/classgo.js"></script>-->
+  <script src="js/classgo.mini.js"></script>
   {{#if wechat}}
     {{else}}
-    <script src="js/crypto-js.js"></script>
-  {{/if}}
+    <script src="//cdn.bootcss.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+    {{/if}}
   </head>
   <body>
     <div class="container">
