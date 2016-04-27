@@ -5,6 +5,7 @@ var crypto = require('crypto');
 var request = require('request');
 var userDao = require('../dao/userDao');
 var gameDao  = require('../dao/gameDao');
+var cache    = require('memory-cache');
 
 // wechat 
 var wechat = require('wechat');
@@ -13,8 +14,6 @@ var config = {
     appid: process.env.WECHAT_APPID,
     encodingAESKey: process.env.WECHAT_AESKEY
 };
-
-var CACHE = {};
 
 function defaultRegistUser(data, req, callback){
     userDao.add(data, function(err, result){
@@ -214,8 +213,8 @@ module.exports = {
 
     getToken: function(callback) {
         var tokenUrl = 'https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appId=' + process.env.WECHAT_APPID + '&secret=' + process.env.WECHAT_SCRET;
-        if (CACHE.token){
-            callback(null, CACHE.token);
+        if (cache.get("WECHAT_TOKEN")){
+            callback(null, cache.get("WECHAT_TOKEN"));
             return;
         }
 
@@ -227,10 +226,8 @@ module.exports = {
 
                 try {
                     var token = JSON.parse(body).access_token;
-                    CACHE.token = token;
-                    setTimeout(function(){
-                        CACHE.token = null;
-                    }, 7200*1000);
+                    cache.put("WECHAT_TOKEN", token, 7100*1000);
+                    
                     callback(null, token);
                 }
                 catch (e) {
@@ -241,11 +238,12 @@ module.exports = {
     },
 
     getTicket: function(callback) {
-        if (CACHE.ticket) {
-            callback(null, CACHE.ticket);
+        if (cache.get("WECHAT_TICKET")) {
+            callback(null, cache.get("WECHAT_TICKET"));
             return;
         }
 
+        console.log("************ ticket is timeout **************");
         this.getToken(function(err, token){
             var url = "https://api.weixin.qq.com/cgi-bin/ticket/getticket?access_token="+token+"&type=jsapi";
             request.get(url, function(error, response, body) {
@@ -258,10 +256,8 @@ module.exports = {
                         var response = JSON.parse(body);
                         if (response.errcode == 0) {
                             var ticket = response.ticket;
-                            CACHE.ticket = ticket;
-                            setTimeout(function(){
-                                CACHE.token = null;
-                            }, response.expires_in*1000);
+                            cache.put("WECHAT_TICKET", ticket, 7100*1000);
+                            
                             callback(null, ticket);
                             return;
                         }
