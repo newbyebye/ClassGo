@@ -4,7 +4,9 @@ Interactive Class for Teacher and Students
 # Requried 
 node  
 express  
-mysql    
+mysql  
+
+  
 
 # Schedule
 version 0.1 2016-04-30  
