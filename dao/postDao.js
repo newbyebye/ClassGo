@@ -93,7 +93,8 @@ module.exports = {
 
     queryRegister: function(param, callback) {
         pool.getConnection(function(err, connection) {
-            connection.query($sql.queryRegister + " order by createAt desc", param.userId, function(err, result) {
+            console.log($sql.queryRegister + " order by createAt desc limit ?, ?");
+            connection.query($sql.queryRegister + " order by createAt desc limit ?, ?", [param.userId, param.skip, param.limit], function(err, result) {
                 callback(err, result);
                 connection.release();
             });

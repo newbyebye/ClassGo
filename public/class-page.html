@@ -1,0 +1,114 @@
+<div class="class-page" data-role="page" id="pageMyClass" >
+    <div data-role="header">
+      <a data-iconpos="notext" href="#home" data-role="button" data-icon="home" title="Home">Home</a>
+      <h1>我的课程</h1>
+      <a data-iconpos="notext" href="javascript:void(0)" onclick="newPost()" data-role="button" data-icon="flat-plus"></a>
+    </div>
+
+    <div data-iscroll="" data-role="content" data-theme="c">
+               
+        <div class="iscroll-pulldown">
+          <span class="iscroll-pull-icon"></span><span class="iscroll-pull-label"></span>
+        </div>
+
+        <ul data-role="listview" data-inset="true">
+        
+        </ul>        
+        <div class="iscroll-pullup">
+          <span class="iscroll-pull-icon"></span><span class="iscroll-pull-label" data-iscroll-loading-text="Custom loading text" data-iscroll-pulled-text="Custom pulled text">Custom reset text</span>
+        </div>
+    </div>
+
+    <div data-id="footer" data-position="fixed" data-role="footer" data-tap-toggle="false" data-transition="none">
+        <div data-role="navbar">
+          <ul>
+            <li>
+              <a class="ui-btn ui-icon-flat-eye ui-btn-icon-top" href="#home">首页</a>
+            </li>
+            <li>
+              <a class="ui-btn ui-icon-flat-heart ui-btn-icon-top" href="#pageMyFavourite">关注</a>
+            </li>
+            <li>
+              <a class="ui-btn ui-icon-flat-bubble ui-btn-icon-top ui-btn-b" href="#pageMyClass">我的课程</a>
+            </li>
+            <li>
+              <a class="ui-btn ui-icon-flat-man ui-btn-icon-top" href="#pageMe">我</a>
+            </li>
+          </ul>
+        </div>
+    </div>
+  </div>
+
+
+<div data-role="page" id="pageAddClass">
+    <div data-role="header">
+      <a data-iconpos="notext" data-role="button" href="javascript:void(0)" onclick="back()" data-icon="back" title="Home">返回</a>
+      <h1>新建课程</h1>
+      <a data-iconpos="notext" data-role="button" data-icon="flat-checkround" href="javascript:void(0)" onclick="savePost()"></a>
+    </div>
+
+    <div data-role="content" role="main">
+        <input type="hidden" id="create_id">
+        <div data-role="fieldcontain">
+          <label for="create_title">课程名称</label>
+          <input id="create_title"   placeholder="请输入课程名称"/>
+        </div>
+
+        <div data-role="fieldcontain">
+          <label for="create_time">上课时间</label>     
+          <input id="create_time" placeholder="请输入上课时间"/>
+        </div>
+
+        <div data-role="fieldcontain">
+          <label for="create_address">上课地点</label>
+          <input id="create_address" placeholder="请输入上课地点"/>
+        </div>
+
+        <h4 >课程简介</h4>
+        <textarea id="create_body" placeholder="请输入课程简介" rows="10"></textarea>
+        
+
+        <div data-role="fieldcontain">
+          <button data-icon="flat-checkround" data-theme="g" href="javascript:void(0)" onclick="savePost()" >提交</button>
+        </div>
+    </div>
+  </div>
+
+<div data-role="page" id="pageDetail">
+    <div class="header" data-role="header">
+        <a data-iconpos="notext" data-role="button" href="javascript:void(0)" onclick="home()" data-icon="back" title="Home">返回</a>
+        <h1>课程详情</h1>
+        <a data-iconpos="notext" href="javascript:void(0)" onclick="editPost()" data-role="button" data-icon="flat-new"></a>
+    </div>
+    <div class="content">
+        <input type="hidden" id="detail_id">
+        <input type="hidden" id="detail_lesson_id">
+
+        <ul data-role="listview" data-inset="true" data-theme="c">       
+          <li data-icon="false"><a>授课老师:<img id="detail_photo" src="" alt=""><span id="detail_author"></span></a></li>
+          <li>课程名称: <span id="detail_title"></span></li>
+          <li>注册人数: <span id="detail_sum"></span></li>
+          
+          <li>上课时间: <span id="detail_time"></span></li>
+          <li>上课地点: <span id="detail_address"></span></li>
+          <li data-role="list-divider" >课程简介</li>
+          <li><span id="detail_body"></span></li>
+        </ul>
+
+        <fieldset class="ui-grid-b" id="detail_other">
+          <div class="ui-block-b"><button data-icon="flat-settings" data-theme="g" onclick="registerClass()">注册</button></div>
+          <div class="ui-block-b"><button data-icon="flat-new" data-theme="f" onclick="signIn()">签到</button></div>
+          <div class="ui-block-b"><button data-icon="flat-new" data-theme="g" onclick="viewGame()">游戏</button></div>
+        </fieldset>
+
+        <fieldset class="ui-grid-b" id="detail_owner">
+          <div class="ui-block-b"><button data-icon="flat-settings" data-theme="g" onclick="startSignIn()">开启签到</button></div>
+          <div class="ui-block-b"><button data-icon="flat-new" data-theme="f" onclick="viewSign()">查看签到</button></div>
+          <div class="ui-block-b"><button data-icon="flat-new" data-theme="g" onclick="viewGame()">游戏</button></div>
+        </fieldset>
+
+        <div class="weui_panel_hd"><span id="detail_info" style="color: #f43530;"></span></div>
+
+    </div>
+
+  </div>

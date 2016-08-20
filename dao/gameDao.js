@@ -11,14 +11,60 @@ var pool  = mysql.createPool($conf.mysql);
 /*
     type: 
         1: 猜数字游戏
+
+create table gameTemplate (
+    id BIGINT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+         
+    name           varchar(32) NOT NULL,
+    type           int,
+    subtype        int DEFAULT '0',
+    subname        varchar(32),
+
+    ruleLabel      text,
+
+    var1Label       varchar(128),
+    var1Help        varchar(128),
+    var1Type        int,
+    var1Range       varchar(32),
+    var1Select      varchar(256),
+
+    var2Label       varchar(128),
+    var2Help        varchar(128),
+    var2Type        int,
+    var2Select      varchar(256),
+    var2Range       varchar(32),
+
+    createAt       TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updateAt       TIMESTAMP NOT NULL
+)ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+create table game (
+    id BIGINT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    userId          BIGINT NOT NULL,
+    postId          BIGINT NOT NULL,
+    gameTemplateId  BIGINT NOT NULL,
+
+    status         int,
+    reward         int,
+    gameTime       int,
+    playerNum      int,
+    showResult     boolean,
+
+    createAt       TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updateAt       TIMESTAMP NOT NULL 
+)ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 */
+
 
 // CRUD SQL语句
 var $sql = {
-    insert:'INSERT INTO game(id, postId, userId, status, code, type) VALUES(0,?,?,1,?,?)',
-    update:'update game set status=? where id=?',
-    queryById: 'select * from game where id=?',
-    queryUniqueCode: 'select * from game where status = 1 and code = ?',
+    insert:'INSERT INTO game(id, status, postId, userId, gameTemplateId, reward, gameTime, playerNum, showResult) VALUES(0,1,?,?,?,?,?,?,?)',
+    queryGameTemplate: 'select id,name, type from gameTemplate group by type order by id desc',
+    queryGameTemplateId: 'select * from gameTemplate where id=?',
+    queryGameTemplateType: 'select * from gameTemplate where type=?',
+    queryGameByPostId: 'select * from game,gameTemplate where postId=? and game.gameTemplateId = gameTemplate.id'
 };
 
 function getRandomCode(connection, callback){
@@ -60,23 +106,12 @@ module.exports = {
                 return;
             }
 
-            getRandomCode(connection, function(err, code){
-                if (err) {
-                    console.log('[INSERT ERROR] - ', err.message);
-                    callback(err);
-                    return;
-                }
+            // 建立连接，向表中插入值
+            connection.query($sql.insert, [param.postId, param.userId, param.templateId, param.reward, param.gameTime, param.playerNum, param.showResult], function(err, result) {
+                callback(err, result);
 
-                // 建立连接，向表中插入值
-                connection.query($sql.insert, [param.postId, param.userId, code, param.type], function(err, result) {
-                    if (result){
-                        result.code = code;
-                    }
-                    callback(err, result);
-
-                    // 释放连接 
-                    connection.release();
-                });
+                // 释放连接 
+                connection.release();
             });
         });
     },
@@ -92,18 +127,36 @@ module.exports = {
         });
     },
     
-    queryById: function (param, callback) {
+    queryGameTemplateId: function (param, callback) {
         pool.getConnection(function(err, connection) {
-            connection.query($sql.queryById, param.id, function(err, result) {
+            connection.query($sql.queryGameTemplateId, param.id, function(err, result) {
                 callback(err, result);
                 connection.release();
             });
         });
     },
 
-    queryUniqueCode: function (param, callback) {
+    queryGameTemplate: function(callback){
         pool.getConnection(function(err, connection) {
-            connection.query($sql.queryUniqueCode, param.code, function(err, result) {
+            connection.query($sql.queryGameTemplate, function(err, result) {
+                callback(err, result);
+                connection.release();
+            });
+        });
+    },
+
+    queryGameTemplateType: function(param, callback){
+        pool.getConnection(function(err, connection) {
+            connection.query($sql.queryGameTemplateType, param.type, function(err, result) {
+                callback(err, result);
+                connection.release();
+            });
+        });
+    },
+
+    queryGameByPostId: function(param, callback){
+        pool.getConnection(function(err, connection) {
+            connection.query($sql.queryGameByPostId, param.postId, function(err, result) {
                 callback(err, result);
                 connection.release();
             });

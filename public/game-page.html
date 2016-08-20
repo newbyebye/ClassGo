@@ -1,0 +1,130 @@
+<div class="game-page" data-role="page" id="pageGame">
+    <div class="header" data-role="header">
+        <a data-iconpos="notext" data-role="button" href="javascript:void(0)" onclick="home()" data-icon="back" title="Home">返回</a>
+        <h1>游戏</h1>
+        <a data-iconpos="notext" href="#pageNewGame" data-role="button" data-icon="flat-plus"></a>
+    </div>
+    <div data-role="content"  data-theme="c">
+       
+        <ul data-role="listview" data-inset="true">
+        
+        </ul> 
+        
+    </div>
+
+</div>
+
+
+<div class="newgame-page" data-role="page" id="pageNewGame">
+    <div class="header" data-role="header">
+        <a data-iconpos="notext" data-role="button" href="javascript:void(0)" onclick="home()" data-icon="back" title="Home">返回</a>
+        <h1>激活游戏</h1>
+    </div>
+    <div data-role="content"  data-theme="c">
+       
+        <ul data-role="listview" data-inset="true">
+        
+        </ul> 
+        
+    </div>
+
+</div>
+
+
+
+<div class="game-detail-page" data-role="page" id="pageGameDetail">
+    <div class="header" data-role="header">
+        <a data-iconpos="notext" data-role="button" href="javascript:void(0)" onclick="viewGame()" data-icon="back" title="Home">返回</a>
+        <h1>游戏详情</h1>
+    </div>
+    <div data-role="content"  data-theme="c">
+        <input type="hidden" id="game_template_id">
+        <input type="hidden" id="game_type">
+
+        <h1 id="game_name">猜数字游戏</h1>
+
+        <fieldset class="fieldcontain" id="game_subtype_field">
+          <label for="game_subtype">游戏类型</label>
+          <select name="game_subtype" id="game_subtype">
+          </select>
+        </fieldset>
+
+        <div data-role="fieldcontain" id="game_playerNum_field">
+          <label for="game_playerNum">参与游戏人数</label>
+          <input id="game_playerNum"  placeholder="输入为空，默认为参与游戏的所有人"/>
+        </div>
+        
+        <div data-role="fieldcontain">
+          <label for="game_time">游戏时长(s)</label>
+          <input id="game_time"  value="120" placeholder="请输入游戏时长,单位秒"/>
+        </div>
+        <div data-role="fieldcontain" id="game_reward_field">
+          <label for="game_reward">获胜奖励</label>
+          <input id="game_reward"  placeholder="请输入奖励分数"/>
+        </div>
+
+        <fieldset class="fieldcontain">
+          <label for="game_showResult">游戏结果统计表是否可见</label>
+          <select name="game_showResult" id="game_showResult">
+            <option value="0">否</option>
+            <option value="1">是</option>
+          </select>
+        </fieldset>
+
+        <div data-role="fieldcontain">
+        <button data-icon="flat-checkround" data-theme="g" href="javascript:void(0)" onclick="activateGame()" >激活游戏</button>
+        </div>
+        
+    </div>
+
+</div>
+
+  
+<div  data-role="page" id="pagePlayer">
+    <div class="header" data-role="header">
+        <a data-iconpos="notext" data-role="button" href="javascript:void(0)" onclick="viewGame()" data-icon="back" title="Home">返回</a>
+        <h1>游戏详情</h1>
+    </div>
+    <div data-role="content"  data-theme="c">
+        <input type="hidden" id="game_template_id">
+        <input type="hidden" id="game_type">
+
+        <h1 id="player_game_name">猜数字游戏</h1>
+
+        <fieldset class="fieldcontain">
+          <label for="game_subtype">剩余时间</label>
+          <label id="player_game_time" />
+        </fieldset>
+
+        <div data-role="fieldcontain" >
+          <label for="player_game_rule">规则</label>
+          <label id="player_game_rule" />
+        </div>
+        
+        <div data-role="fieldcontain" id="player_game_var1_field">
+          <label for="player_game_var1"></label>
+          <input id="player_game_var1"  value="120" placeholder="请输入游戏时长,单位秒"/>
+        </div>
+
+        <div data-role="fieldcontain" id="player_game_var1help_field">
+          <label for="player_game_var1help"></label>
+          <label id="player_game_var1help" />
+        </div>
+
+        <div data-role="fieldcontain" id="player_game_var1_field">
+          <label for="player_game_var2"></label>
+          <input id="player_game_var2"  value="120" placeholder="请输入游戏时长,单位秒"/>
+        </div>
+
+        <div data-role="fieldcontain" id="player_game_var2help_field">
+          <label for="player_game_var2help"></label>
+          <label id="player_game_var2help" />
+        </div>
+
+        <div data-role="fieldcontain">
+        <button data-icon="flat-checkround" data-theme="g" href="javascript:void(0)" onclick="activateGame()" >激活游戏</button>
+        </div>
+        
+    </div>
+
+  </div>

@@ -1,0 +1,48 @@
+<div data-role="page" id="pageStep1" >
+    <div data-role="header">
+      <h1>注册个人信息1/2</h1>
+    </div>
+
+    <div data-role="content" role="main">
+        <h4>请选择学生还是老师，其中老师需要通过审核才能注册</h4>
+        <div data-role="fieldcontain">
+      
+          <input type="radio" name="checkbox1" data-theme="f" id="radio-choice-1-a" value="0" checked="checked" />
+          <label for="radio-choice-1-a">我是学生</label>
+
+          <input type="radio" name="checkbox1" data-theme="f" id="radio-choice-1-b" value="1"  />
+          <label for="radio-choice-1-b">我是老师</label>
+
+        <button data-icon="flat-checkround" data-theme="g" href="javascript:void(0)" onclick="step1()" >下一步</button>
+      </div>
+    </div>
+  </div>
+
+  <div data-role="page" id="pageStep2" >
+    <div data-role="header">
+      <h1>注册个人信息2/2</h1>
+    </div>
+
+    <div data-role="content" role="main">
+        <h4>请注册真实个人信息</h4>
+        <div data-role="fieldcontain">
+          <label for="me_step_fullname">姓名</label>
+          <input id="me_step_fullname"  placeholder="请输入姓名"/>
+        </div>
+        <div data-role="fieldcontain">
+          <label for="me_step_studentNo">学号</label>
+          <input id="me_step_studentNo"   placeholder="请输入学号"/>
+        </div>
+        <div data-role="fieldcontain">
+          <label for="me_step_profession">院系</label>
+          <input id="me_step_profession"   placeholder="请输入专业"/>
+        </div>
+        <div data-role="fieldcontain">
+          <label for="me_step_school">学校</label>
+          <input id="me_step_school"  placeholder="请输入学校"/>
+        </div>
+        <div data-role="fieldcontain">
+        <button data-icon="flat-checkround" data-theme="g" href="javascript:void(0)" onclick="saveStepInfo()" >提交</button>
+        </div>
+    </div>
+  </div>

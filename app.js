@@ -21,7 +21,7 @@ var wechat   = require('./routes/wechat');
 // restful api
 var users = require('./restful/users');
 var posts = require('./restful/posts');
-
+var game  = require('./restful/game');
 
 
 
@@ -54,6 +54,7 @@ app.use('/wechat', wechat.middleware);
 app.use('/', routes);
 app.use('/v1', users);
 app.use('/v1', posts);
+app.use('/v1', game);
 
 
 // catch 404 and forward to error handler

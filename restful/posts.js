@@ -10,6 +10,7 @@ var postDao = require('../dao/postDao');
 var lessonDao = require('../dao/lessonDao');
 var signDao = require('../dao/signDao');
 var postUserDao = require('../dao/postUserDao');
+var gameDao  = require('../dao/gameDao');
 
 
 /* 
@@ -50,7 +51,8 @@ router.post('/post', checkToken, function(req, res, next) {
 * queryOwner
 */
 router.get('/post/owner', checkToken, function(req, res, next){
-  var data = {authorId:req.api_user.userId};
+  var data = JSON.parse(req.query.filter);
+  data.authorId = req.api_user.userId;
   postDao.queryOwner(data, function(err, result){
       if (err){
           console.log(err);
@@ -67,7 +69,8 @@ router.get('/post/owner', checkToken, function(req, res, next){
 * queryOwner
 */
 router.get('/post/register', checkToken, function(req, res, next){
-  var data = {userId:req.api_user.userId};
+  var data = JSON.parse(req.query.filter);
+  data.userId = req.api_user.userId;
   postDao.queryRegister(data, function(err, result){
       if (err) {
           console.log(err);
@@ -212,12 +215,17 @@ router.get('/post/:id/lesson/all', function(req, res, next){
 router.get('/post/:id/lesson', function(req, res, next){
     var data = {id: req.params.id, date:new Date()};
     lessonDao.queryLessonByPostId(data, function(err, result){
-      if (err || result.length == 0) {
+      if (err ) {
           console.log(err);
           var err = new Error('not found');
           err.status = 501;
           next(err);
           return
+      }
+
+      if (result.length == 0){
+          res.status(200).json({});
+          return;
       }
       res.status(200).json(result[0]);
     });
@@ -481,13 +489,18 @@ router.delete('/post/:id/register', checkToken, function(req, res, next){
 */
 router.get('/post/:id/register', checkToken, function(req, res, next){
   postUserDao.queryById({postId: req.params.id, userId: req.api_user.userId}, function(err, result){
-      if (err || result.length == 0) {
+      if (err ) {
           console.log(err);
           var err = new Error('not found');
           err.status = 501;
           next(err);
 
-          return
+          return;
+      }
+
+      if (result.length == 0){
+          res.status(200).json({});
+          return;
       }
 
       res.status(200).json(result[0]);
@@ -622,7 +635,6 @@ router.get('/post/:id/registersum', function(req, res, next){
       
     });
 });
-
 
 
 module.exports = router;
