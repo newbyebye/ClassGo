@@ -57,14 +57,19 @@ create table game (
 
 */
 
-
 // CRUD SQL语句
 var $sql = {
     insert:'INSERT INTO game(id, status, postId, userId, gameTemplateId, reward, gameTime, playerNum, showResult) VALUES(0,1,?,?,?,?,?,?,?)',
+    insertUserGame: 'INSERT INTO userGame(id, gameId, userId, var1, var2) VALUES(0, ?, ?, ?, ?)',
     queryGameTemplate: 'select id,name, type from gameTemplate group by type order by id desc',
     queryGameTemplateId: 'select * from gameTemplate where id=?',
     queryGameTemplateType: 'select * from gameTemplate where type=?',
-    queryGameByPostId: 'select * from game,gameTemplate where postId=? and game.gameTemplateId = gameTemplate.id'
+    queryGameByPostId: 'select game.*, gameTime - time_to_sec(timediff(now(),game.createAt)) as restTime, gameTemplate.name, gameTemplate.type, gameTemplate.subname, gameTemplate.subtype, gameTemplate.ruleLabel,\
+                   gameTemplate.var1Label, gameTemplate.var1Help, gameTemplate.var1Type, gameTemplate.var1Range, gameTemplate.var1Select, \
+                   gameTemplate.var2Label, gameTemplate.var2Help, gameTemplate.var2Type, gameTemplate.var2Range, gameTemplate.var2Select from game,gameTemplate where postId=? and game.gameTemplateId = gameTemplate.id',
+    queryGameById: 'select game.*, gameTime - time_to_sec(timediff(now(),game.createAt)) as restTime, gameTemplate.name, gameTemplate.type, gameTemplate.subname, gameTemplate.subtype, gameTemplate.ruleLabel,\
+                   gameTemplate.var1Label, gameTemplate.var1Help, gameTemplate.var1Type, gameTemplate.var1Range, gameTemplate.var1Select, \
+                   gameTemplate.var2Label, gameTemplate.var2Help, gameTemplate.var2Type, gameTemplate.var2Range, gameTemplate.var2Select from game,gameTemplate where game.id=? and game.gameTemplateId = gameTemplate.id',
 };
 
 function getRandomCode(connection, callback){
@@ -116,6 +121,26 @@ module.exports = {
         });
     },
 
+    addUserData: function(param, callback){
+        pool.getConnection(function(err, connection) {
+            if (err) {
+                console.log('[INSERT ERROR] - ', err.message);
+                callback(err);
+                return;
+            }
+
+            // 建立连接，向表中插入值
+            connection.query($sql.insertUserGame, [param.gameId, param.userId, param.var1, param.var2], function(err, result) {
+                callback(err, result);
+
+                // 释放连接 
+                connection.release();
+            });
+        });
+    },
+
+    
+
     update: function (param, callback) {
         
         pool.getConnection(function(err, connection) {
@@ -161,6 +186,15 @@ module.exports = {
                 connection.release();
             });
         });
-    }
+    },
+
+    queryGameById: function(param, callback){
+        pool.getConnection(function(err, connection) {
+            connection.query($sql.queryGameById, param.id, function(err, result) {
+                callback(err, result);
+                connection.release();
+            });
+        });
+    },
     
 };

@@ -1,6 +1,11 @@
 function viewGame(){
+        $("div.game-page ul.ui-listview").html("");
         $.mobile.changePage("#pageGame");
-    }
+}
+
+function viewResult(){
+    $.mobile.changePage("#pageGameResult");
+}
 
 function activateGame(){
     //{"templateId":1, "reward":5, "gameTime":120, "playerNum":10,  "showResult":1}
@@ -13,56 +18,149 @@ function activateGame(){
     var data = {"templateId":templateId, "reward":$('#game_reward').val(), "gameTime":$('#game_time').val(), "playerNum":$('#game_playerNum').val(), "showResult":$('#game_showResult').val()};
     CG.PostController.post('/v1/post/' + postId + '/game', data, function(err, data){
         if (!err){
-            
+            viewGame();
         }
     });
 }
 
-function viewGameDetail(id){   
-        CG.PostController.get('/v1/game/template/'+id, function(err, data){
-            var size = data.length;
-            if (size > 0){
-                var game1 = data[0];
+function submitPlayGame(){
+   var gameId = $("#player_game_id").val();
 
-                $('#game_name').text(game1.name);
-                $('#game_type').text(game1.type);
-                $('#game_reward').val("");
-                $('#game_playerNum').val("");
+   var data = {"var1":$('#player_game_var1').val(), "var2":$('#player_game_var2').val()};
+   if ($("#player_game_var3_field").attr("style") === "display: block;"){
+      data.var1 = $('#player_game_var3_select').val();
+   } 
 
-                if (game1.type == 2 || game1.type == 3 || game1.type == 4 || game1.type == 5 || game1.type == 6){
-                    $('#game_subtype_field').show();
-                    $('#game_template_id').val(0);
-                }
-                else{
-                    $('#game_subtype_field').hide();
-                    $('#game_template_id').val(id);
-                }
-                
-                if (game1.type == 1){
-                    $('#game_playerNum_field').show();
-                }
-                else{
-                    $('#game_playerNum_field').hide();
-                }
+   CG.PostController.post('/v1/game/' + gameId , data, function(err, data){
+      if (!err){
+          viewResult();
+      }
+   });
+}
 
-                if (game1.type == 1 || game1.type == 3 || game1.type == 4 || game1.type == 5 || game1.type == 6){
-                    $('#game_reward_field').show();
-                }
-                else{
-                    $('#game_reward_field').hide();
-                }
+function newGameDetail(id){   
+    CG.PostController.get('/v1/game/template/'+id, function(err, data){
+        var size = data.length;
+        if (size > 0){
+            var game1 = data[0];
+
+            $('#game_name').text(game1.name);
+            $('#game_type').text(game1.type);
+            $('#game_reward').val("");
+            $('#game_playerNum').val("");
+
+            if (game1.type == 2 || game1.type == 3 || game1.type == 4 || game1.type == 5 || game1.type == 6){
+                $('#game_subtype_field').show();
+                $('#game_template_id').val(0);
+            }
+            else{
+                $('#game_subtype_field').hide();
+                $('#game_template_id').val(id);
+            }
+            
+            if (game1.type == 1){
+                $('#game_playerNum_field').show();
+            }
+            else{
+                $('#game_playerNum_field').hide();
             }
 
-            if (size > 1){
-                $('#game_subtype').html("");
-                $("#game_subtype-button span").html("<span>&nbsp;"+data[0].subname+"</span>");
-                for (var i = 0; i < size; i++){
-                    $('#game_subtype').append('<option value="'+ data[i].id+'" >'+data[i].subname+'</option>');
-                }
-                 
+            if (game1.type == 1 || game1.type == 3 || game1.type == 4 || game1.type == 5 || game1.type == 6){
+                $('#game_reward_field').show();
             }
-        });
-    }
+            else{
+                $('#game_reward_field').hide();
+            }
+        }
+
+        if (size > 1){
+            $('#game_subtype').html("");
+            $("#game_subtype-button span").html("<span>&nbsp;"+data[0].subname+"</span>");
+            for (var i = 0; i < size; i++){
+                $('#game_subtype').append('<option value="'+ data[i].id+'" >'+data[i].subname+'</option>');
+            }
+             
+        }
+    });
+}
+
+function viewActivateGame(id, status) {
+  CG.PostController.get('/v1/game/'+id, function(err, data){
+      console.log(data);
+      if (!err){
+          var name = data.name;
+          if (data.subname){
+             name += " - "+data.subname;
+          }
+          $("#player_game_var1").val("");
+          $("#player_game_var2").val("");
+          // if teacher or game is over redirect to result
+          if (checkCurrentUserId(data.userId) || data.status != 1){
+             $.mobile.changePage("#pageGameResult?id="+id);
+          }
+          else{
+             // title
+             $("#player_game_name").text(name);
+             $("#player_game_id").val(id);
+             $("#player_game_time").text(data.restTime);
+             // rule
+             $("#player_game_rule").text(data.ruleLabel);
+             $("#player_game_var1help").text(data.var1Help);
+             $("#player_game_var1").attr("placeholder", data.var1Help);
+             $("#player_game_var2help").text(data.var2Help);
+             $("#player_game_var2").attr("placeholder", data.var2Help);
+             if(data.var1Label){
+                $("#player_game_var1label").text(data.var1Label);
+             }
+             else{
+                $("#player_game_var1label").text("");
+             }
+             if(data.var2Label){
+                $("#player_game_var2label").text(data.var2Label);
+             }
+             else{
+                $("#player_game_var2label").text("");
+             }
+
+             $("#player_game_var1_field").show();
+             $("#player_game_var3_field").hide();
+
+             if ((data.type == 2 && data.subtype == 3) ){
+                $("#player_game_var2_field").show();
+                $("#player_game_var1help_field").hide();
+                $("#player_game_var2help_field").hide();
+             }
+             else if (data.type == 3){
+                $("#player_game_var1help_field").show();
+                $("#player_game_var2help_field").hide();
+                $("#player_game_var2_field").hide();
+             }
+             else if ((data.type == 4 && data.subtype == 3) || (data.type == 6 && data.subtype == 2) || (data.type == 5 && data.subtype == 2)){
+                $("#player_game_var1help_field").hide();
+                $("#player_game_var2help_field").hide();
+                $("#player_game_var1_field").hide();
+                $("#player_game_var2_field").hide();
+                $("#player_game_var3_field").show();
+
+ 
+                $('#player_game_var3_select').html("");
+                var addrs = data.var1Select.split(",");
+                $("#player_game_var3_select span").html("<span>&nbsp;"+addrs[0].split(":")[1]+"</span>");
+                $('#player_game_var3_select').val("0");
+                for (var i = 0; i < addrs.length; i++){
+                  $('#player_game_var3_select').append('<option value="'+ addrs[i].split(":")[0]+'" >'+addrs[i].split(":")[1]+'</option>');
+                }
+             }
+             else{
+                $("#player_game_var1help_field").hide();
+                $("#player_game_var2_field").hide();
+                $("#player_game_var2help_field").hide();
+             }
+             $.mobile.changePage("#pagePlayer?id="+id);
+          }
+      } 
+  });
+}
 
 // pageGame
 (function pullPagePullImplementation($) {
@@ -87,7 +185,7 @@ function viewGameDetail(id){
     }
     
     function initGameTemplate(){
-        var listSelector = "div.newgame-page ul.ui-listview";
+        var listSelector = "div.newgamelist-page ul.ui-listview";
         if ($(listSelector) && $(listSelector).html() && $(listSelector).html().length > 0){
             ;
         }
@@ -96,7 +194,7 @@ function viewGameDetail(id){
                 if (!err){
                     var i, newContent = "";
                     content.forEach(function(e){
-                        var html = '<li data-icon="false"><a href="#pageGameDetail?id='+ e.id +'">';
+                        var html = '<li data-icon="false"><a href="#pageNewGame?id='+ e.id +'">';
                         html += '<h2>' + e.name + '</h2>';
                         html += '</a></li>'
                         newContent = html + newContent;
@@ -108,8 +206,8 @@ function viewGameDetail(id){
         }
     }
 
-    function initGameData() {
-        if ($(listSelector) && $(listSelector).html() && $(listSelector).html().length > 0){
+    function initGameData() {  
+      if ($(listSelector) && $(listSelector).html() && $(listSelector).html().length > 0){
             ;
         }
         else {
@@ -118,7 +216,7 @@ function viewGameDetail(id){
                     gotPullDownData(null, null, content);
                 }
             });
-        }
+        }      
     }
     
   /* For this example, I prepend three rows to the list with the pull-down, and append
@@ -131,17 +229,28 @@ function viewGameDetail(id){
   function gotPullDownData(event, data, content) {
     var i,
         newContent = "";
-        
+
     content.forEach(function(e){
-        var html = '<li data-icon="false"><a href="#pageGameDetail?id='+ e.id +'">';
-        html += '<h2>' + e.name + '</h2>';
-        html += '</a></li>'
+        var html = '<li data-icon="false"><a href="javascript:void(0)" onclick="viewActivateGame('+ e.id +','+e.status+')">';
+        var name = e.name;
+        if (e.subname){
+           name += " - " + e.subname;
+        }
+        html += '<h2>' + name + '</h2>';
+        if (e.status == 1){
+            html += '<p><strong>正在进行中</strong></p>';
+        }else{
+            html += '<p><strong>已结束</strong></p>';
+        }
+        
+        html += '<p class="ui-li-aside"><strong>'+$.timeago(e.createAt)+'</strong></p>';
+        html += '</a></li>';
         newContent = html + newContent;
     }); 
 
     pullDownGeneratedCount += content.length;
     
-    $(listSelector).prepend(newContent).listview("refresh");  // Prepend new content and refresh listview
+    $(listSelector).html(newContent).listview("refresh");  // Prepend new content and refresh listview
         if (data) {
             data.iscrollview.refresh();    // Refresh the iscrollview
         }
@@ -175,21 +284,12 @@ function viewGameDetail(id){
   //
   // For demo, we just use timeout to simulate the time required to complete the operation.
   function onPullDown (event, data) {
-    gotHomeData(pullDownGeneratedCount, function(err, content){
-        if (err){
-            return;
-        }
-        gotPullDownData(event, data, content);
-    });
+    
   }    
 
   // Called when the user completes the pull-up gesture.
   function onPullUp (event, data) { 
-    setTimeout(function fakeRetrieveDataTimeout() {
-      gotPullUpData(event, data);
-      }, 
-      1500); 
-    }    
+  }    
   
   // Set-up jQuery event callbacks
   $(document).delegate("div.game-page", "pageinit", 
@@ -207,18 +307,23 @@ function viewGameDetail(id){
 
     if (hash === "#pageGame"){
         initGameData();
-        console.log("pageGame pagebeforechange");
-    }
-    else if (hash === "#pageGameDetail"){
-      if (search){
-        var id = search.split("=")[1];
-        viewGameDetail(id);
-      }
-      console.log("pageGameDetail pagebeforechange");
     }
     else if (hash === "#pageNewGame"){
+      if (search){
+        var id = search.split("=")[1];
+        newGameDetail(id);
+      }
+    }
+    else if (hash === "#pageNewGamelist"){
        initGameTemplate();
     }
+    else if (hash === "pageViewGame"){
+      if (search){
+        var id = search.split("=")[1];
+        viewGame(id);
+      }
+    }
+
   });
 
 }(jQuery));

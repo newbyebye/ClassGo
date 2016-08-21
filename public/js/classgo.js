@@ -167,30 +167,38 @@ $(function(){
 
 });
 
-  function back(){
+function checkCurrentUserId(userId) {
+    if (userId == window.sessionStorage.getItem("userId")){
+        return true;
+    }
+
+    return false;
+}
+
+function back(){
     $.mobile.back();
-  }
+}
 
-  function home(){
+function home(){
     $.mobile.changePage("#home");
-  }
+}
 
-  function savePost(){
-        var id = $('#create_id').val();
-        var data = {title:$(create_title).val(), body:$(create_body).val(), time: $(create_time).val(), address: $(create_address).val()};
-        if (id == ''){ 
-            CG.PostController.submit(data, function(err, result){   
-                    back();
-                });
-        }
-        else{
-            CG.PostController.put('/v1/post/'+id, data, function(err, result){
-                viewHomeDetail(id);
+function savePost(){
+    var id = $('#create_id').val();
+    var data = {title:$(create_title).val(), body:$(create_body).val(), time: $(create_time).val(), address: $(create_address).val()};
+    if (id == ''){ 
+        CG.PostController.submit(data, function(err, result){   
                 back();
             });
-        }
-        
-  }
+    }
+    else{
+        CG.PostController.put('/v1/post/'+id, data, function(err, result){
+            viewHomeDetail(id);
+            back();
+        });
+    }
+    
+}
 
   function newPost(){
         $('#create_id').val('');

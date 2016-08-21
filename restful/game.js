@@ -72,6 +72,46 @@ router.get('/post/:id/game', function(req, res, next){
       });
 });
 
+/*
+* get game by id
+* GET /v1/game/:id
+*/
+router.get('/game/:id', function(req, res, next){
+  gameDao.queryGameById({id: req.params.id}, function(err, result){
+          if (err || result.length == 0) {
+              console.log(err);
+              var err = new Error('not found');
+              err.status = 501;
+              next(err);
+              return
+          }
+          res.status(200).json(result[0]);
+      });
+});
+
+/**
+*  post game 
+*  POST /v1/game/:id
+*  {var1: "", var2: ""}
+*/
+router.post('/game/:id', checkToken, function(req, res, next){
+
+  req.body.gameId = req.params.id;
+  console.log(req.api_user);
+  req.body.userId = req.api_user.userId;
+  gameDao.addUserData(req.body, function(err, result){
+      if (err) {
+        next(err);
+        return;
+      }
+
+      res.status(200).json({});
+  });
+
+});
+
+
+
 
 /*
 * new game

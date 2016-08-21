@@ -165,19 +165,19 @@ INSERT INTO gameTemplate(id, name, type, subtype,ruleLabel, var1Type, var1Help, 
 -- 添加最后通牒
 INSERT INTO gameTemplate(id, name, type, subtype, subname, ruleLabel, var1Type, var1Help, var1Range) VALUES(0,'最后通牒',2,1,'提议者','现在有两人分100元，你作为提议者愿意拿出多少分给对方。如果对方接受你的方案，则按照该方案分配收益，如果对方不接收，双方收益都为0。',1,'请输入0-100之间的整数', '[0-100]');
 INSERT INTO gameTemplate(id, name, type, subtype, subname, ruleLabel, var1Type, var1Help, var1Range) VALUES(0,'最后通牒',2,2,'接受者','现在有两人分100元，你作为接受者愿意接受对方给你多少收益。如果你接受对方的方案，则按照该方案分配收益，如果你不接收，双方收益都为0。',1,'请输入0-100之间的整数', '[0-100]');
-INSERT INTO gameTemplate(id, name, type, subtype, subname, ruleLabel, var1Label, var1Type, var1Range,var2Label, var2Type, var2Help, var2Range) VALUES(0,'最后通牒',2,3,'提议者和接受者','现在有两人分100元，你作为接受者和接受者分别愿意分给对方多少收益或接受对方分给你多少收益。','提议者',1,'[0-100]','接受者',1,'请输入0-100之间的整数','[0-100]');
+INSERT INTO gameTemplate(id, name, type, subtype, subname, ruleLabel, var1Label, var1Type, var1Help, var1Range,var2Label, var2Type, var2Help, var2Range) VALUES(0,'最后通牒',2,3,'提议者和接受者','现在有两人分100元，你作为接受者和接受者分别愿意分给对方多少收益或接受对方分给你多少收益。','提议者','请输入0-100之间的整数', 1,'[0-100]','接受者',1,'请输入0-100之间的整数','[0-100]');
 -- 强制性拍卖
 INSERT INTO gameTemplate(id, name, type, subtype, subname, ruleLabel, var1Type, var1Help, var1Range) VALUES(0,'强制性拍卖',3,1,'出价高获胜','你将付出的成绩来拍卖这本书（价值25元），出价高的获胜',1,'请输入0-100之间的整数，未获胜者将在最终成绩中扣除该数', '[0-100]');
 INSERT INTO gameTemplate(id, name, type, subtype, subname, ruleLabel, var1Type, var1Help, var1Range) VALUES(0,'强制性拍卖',3,2,'收益高获胜','你将付出的成绩来拍卖这本书（价值25元），收益高的获胜',1,'请输入0-100之间的整数，未获胜者将在最终成绩中扣除该数', '[0-100]');
 -- 均衡多重性
-INSERT INTO gameTemplate(id, name, type, subtype, subname, ruleLabel, var1Type, var1Help, var1Range) VALUES(0,'均衡多重性',4,1,'分钱游戏','随机抽取两人，数字相加为100即可获胜',1,'请输入0-100之间的整数，未获胜者将在最终成绩中扣除该数', '[0-100]');
-INSERT INTO gameTemplate(id, name, type, subtype, subname, ruleLabel, var1Type, var1Help, var1Range) VALUES(0,'均衡多重性',4,2,'数字游戏','随机抽取两人，数字相同即可获胜',1,'请输入0-100之间的整数，未获胜者将在最终成绩中扣除该数', '[0-100]');
+INSERT INTO gameTemplate(id, name, type, subtype, subname, ruleLabel, var1Type, var1Help, var1Range) VALUES(0,'均衡多重性',4,1,'分钱游戏','随机抽取两人，数字相加为100即可获胜',1,'请输入0-100之间的整数', '[0-100]');
+INSERT INTO gameTemplate(id, name, type, subtype, subname, ruleLabel, var1Type, var1Help, var1Range) VALUES(0,'均衡多重性',4,2,'数字游戏','随机抽取两人，数字相同即可获胜',1,'请输入0-100之间的整数', '[0-100]');
 INSERT INTO gameTemplate(id, name, type, subtype, subname, ruleLabel, var1Type, var1Select, var1Range) VALUES(0,'均衡多重性',4,3,'地点游戏','随机抽取两人，地点相同即可获胜',3,'0:东九,1:西十二,2:主校区图书管,3:科技楼,4:青年园,5:醉晚亭,6:东校区图书馆,7:南一楼,8:韵苑大酒店,9:爱因斯坦广场', '[0-9]');
 -- 多数派游戏
-INSERT INTO gameTemplate(id, name, type, subtype, subname, ruleLabel, var1Type, var1Help, var1Range) VALUES(0,'多数派游戏',5,1,'数字游戏','填写出现次数最多数字的学生获胜',1,'请输入0-100之间的整数，未获胜者将在最终成绩中扣除该数', '[0-100]');
+INSERT INTO gameTemplate(id, name, type, subtype, subname, ruleLabel, var1Type, var1Help, var1Range) VALUES(0,'多数派游戏',5,1,'数字游戏','填写出现次数最多数字的学生获胜',1,'请输入0-100之间的整数', '[0-100]');
 INSERT INTO gameTemplate(id, name, type, subtype, subname, ruleLabel, var1Type, var1Select, var1Range) VALUES(0,'多数派游戏',5,2,'地点游戏','填写出现次数最多地点的学生获胜',3,'0:东九,1:西十二,2:主校区图书管,3:科技楼,4:青年园,5:醉晚亭,6:东校区图书馆,7:南一楼,8:韵苑大酒店,9:爱因斯坦广场', '[0-9]');
 -- 少数派游戏
-INSERT INTO gameTemplate(id, name, type, subtype, subname, ruleLabel, var1Type, var1Help, var1Range) VALUES(0,'少数派游戏',6,1,'数字游戏','填写出现次数最少数字的学生获胜',1,'请输入0-100之间的整数，未获胜者将在最终成绩中扣除该数', '[0-100]');
+INSERT INTO gameTemplate(id, name, type, subtype, subname, ruleLabel, var1Type, var1Help, var1Range) VALUES(0,'少数派游戏',6,1,'数字游戏','填写出现次数最少数字的学生获胜',1,'请输入0-100之间的整数', '[0-100]');
 INSERT INTO gameTemplate(id, name, type, subtype, subname, ruleLabel, var1Type, var1Select, var1Range) VALUES(0,'少数派游戏',6,2,'地点游戏','填写出现次数最少地点的学生获胜',3,'0:东九,1:西十二,2:主校区图书管,3:科技楼,4:青年园,5:醉晚亭,6:东校区图书馆,7:南一楼,8:韵苑大酒店,9:爱因斯坦广场', '[0-9]');
 
 
