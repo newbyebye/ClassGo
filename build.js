@@ -14,6 +14,7 @@ module.exports = function(){
   "public/js/iscroll.js",
   "public/lib/jquery/jquery.mobile.iscrollview.js",
   "public/lib/bootstrap/bootstrap-table.js",
+  "public/lib/bootstrap/bootstrap-table-filter-control.js",
   "public/js/jweixin-1.0.0.js",
   "public/js/classgo.js",
   "public/js/game.js",

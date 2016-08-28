@@ -206,6 +206,7 @@ create table userGame (
 
     var1         int,
     var2         int,
+    isWin        boolean,
 
     createAt       TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updateAt       TIMESTAMP NOT NULL 

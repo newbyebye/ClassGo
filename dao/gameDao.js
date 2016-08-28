@@ -55,12 +55,28 @@ create table game (
     updateAt       TIMESTAMP NOT NULL 
 )ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+create table userGame (
+    id BIGINT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    userId          BIGINT NOT NULL,
+    gameId          BIGINT NOT NULL,
+
+    var1         int,
+    var2         int,
+    isWin        boolean,
+
+    createAt       TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updateAt       TIMESTAMP NOT NULL 
+)ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 */
 
 // CRUD SQL语句
 var $sql = {
     insert:'INSERT INTO game(id, status, postId, userId, gameTemplateId, reward, gameTime, playerNum, showResult) VALUES(0,1,?,?,?,?,?,?,?)',
+    updateStatus:'update game set status=0 where id=?',
     insertUserGame: 'INSERT INTO userGame(id, gameId, userId, var1, var2) VALUES(0, ?, ?, ?, ?)',
+    updateUserGame: 'update userGame set var1=?, var2=? where id=?',
+    queryUserGame: 'select * from userGame where gameId=? and userId=?',
     queryGameTemplate: 'select id,name, type from gameTemplate group by type order by id desc',
     queryGameTemplateId: 'select * from gameTemplate where id=?',
     queryGameTemplateType: 'select * from gameTemplate where type=?',
@@ -70,6 +86,16 @@ var $sql = {
     queryGameById: 'select game.*, gameTime - time_to_sec(timediff(now(),game.createAt)) as restTime, gameTemplate.name, gameTemplate.type, gameTemplate.subname, gameTemplate.subtype, gameTemplate.ruleLabel,\
                    gameTemplate.var1Label, gameTemplate.var1Help, gameTemplate.var1Type, gameTemplate.var1Range, gameTemplate.var1Select, \
                    gameTemplate.var2Label, gameTemplate.var2Help, gameTemplate.var2Type, gameTemplate.var2Range, gameTemplate.var2Select from game,gameTemplate where game.id=? and game.gameTemplateId = gameTemplate.id',
+    updateWin: 'update userGame set isWin = 1 where id=?',
+
+    win: 'select userId,var1,fullname as name,studentNo from userGame,user where gameId = ? and isWin = 1 and user.id = userGame.userId',
+
+    statisticsVar1: 'select var1,count(var1) as count from userGame where gameId = ? group by var1',
+    statisticsVar2: 'select var2,count(var2) as count from userGame where gameId = ? group by var2',
+
+
+    // 猜数字游戏
+    calcRusultGame1:'select * from userGame where gameId =? and var1 = (select max(var1) from userGame where gameId = ? and var1 <(select sum(var1)*0.7/count(*) from userGame where gameId = ?));',
 };
 
 function getRandomCode(connection, callback){
@@ -121,6 +147,49 @@ module.exports = {
         });
     },
 
+    updateStatus: function(param, callback) {
+        pool.getConnection(function(err, connection) {
+            connection.query($sql.updateStatus, param.id, function(err, result) {
+                
+                callback(err, result);
+    
+                connection.release();
+            });
+        });
+    },
+
+    updateWin: function(param, callback) {
+        pool.getConnection(function(err, connection) {
+            connection.query($sql.updateWin, param.id, function(err, result) {
+                
+                callback(err, result);
+    
+                connection.release();
+            });
+        });
+    },
+
+    updateUserGame: function(param, callback){
+        pool.getConnection(function(err, connection) {
+            connection.query($sql.updateUserGame, [param.var1, param.var2, param.id], function(err, result) {
+                
+                callback(err, result);
+    
+                connection.release();
+            });
+        });
+    },
+
+    // 猜数字游戏
+    calcRusultGame1: function(param, callback){
+        pool.getConnection(function(err, connection) {
+            connection.query($sql.calcRusultGame1, [param.id, param.id, param.id], function(err, result) {
+                callback(err, result);
+                connection.release();
+            });
+        });
+    },
+
     addUserData: function(param, callback){
         pool.getConnection(function(err, connection) {
             if (err) {
@@ -139,7 +208,14 @@ module.exports = {
         });
     },
 
-    
+    queryUserGame: function(param, callback){
+        pool.getConnection(function(err, connection) {
+            connection.query($sql.queryUserGame, [param.gameId, param.userId], function(err, result) {
+                callback(err, result);
+                connection.release();
+            });
+        });
+    },
 
     update: function (param, callback) {
         
@@ -196,5 +272,31 @@ module.exports = {
             });
         });
     },
+
+    statisticsVar1: function(param, callback){
+        pool.getConnection(function(err, connection) {
+            connection.query($sql.statisticsVar1, param.id, function(err, result) {
+                callback(err, result);
+                connection.release();
+            });
+        });
+    },
     
+    statisticsVar2: function(param, callback){
+        pool.getConnection(function(err, connection) {
+            connection.query($sql.statisticsVar2, param.id, function(err, result) {
+                callback(err, result);
+                connection.release();
+            });
+        });
+    },
+
+    win: function(param, callback){
+        pool.getConnection(function(err, connection) {
+            connection.query($sql.win, param.id, function(err, result) {
+                callback(err, result);
+                connection.release();
+            });
+        });
+    },
 };

@@ -99,7 +99,7 @@
         
         <div data-role="fieldcontain" id="player_game_var1_field">
           <label for="player_game_var1" id="player_game_var1label"></label>
-          <input id="player_game_var1" placeholder=""/>
+          <input id="player_game_var1" placeholder="" type="number" min="0" max="100"  required/>
         </div>
 
         <div data-role="fieldcontain" id="player_game_var3_field">
@@ -115,13 +115,18 @@
 
         <div data-role="fieldcontain" id="player_game_var2_field">
           <label for="player_game_var2" id="player_game_var2label"></label>
-          <input id="player_game_var2"   placeholder=""/>
+          <input id="player_game_var2" type="number"  placeholder="" min="0" max="100" />
         </div>
 
         <div data-role="fieldcontain" id="player_game_var2help_field">
           <label for="player_game_var2help"></label>
           <label id="player_game_var2help" />
         </div>
+
+        <div class="palette palette-carrot" id="game_error_div" style="display: none;"> 
+              <a class="close" data-dismiss="alert">×</a> 
+              <strong>Warning!</strong> <span id="game_error_msg"></span> 
+        </div> 
 
         <div data-role="fieldcontain">
         <button data-icon="flat-checkround" data-theme="g" href="javascript:void(0)" onclick="submitPlayGame()" >提交</button>
@@ -132,54 +137,43 @@
 <div  data-role="page" id="pageGameResult">
     <div class="header" data-role="header">
         <a data-iconpos="notext" data-role="button" href="javascript:void(0)" onclick="viewGame()" data-icon="back" title="Home">返回</a>
-        <h1>游戏结果</h1>
+        <h1><label id="result_game_name"></label></h1>
+        <a data-iconpos="notext" href="javascript:void(0)" onclick="refreshGame()" data-role="button" data-icon="flat-cmd"></a>
     </div>
     <div data-role="content"  data-theme="c">
-        <input type="hidden" id="game_template_id">
-        <input type="hidden" id="game_type">
+        <input type="hidden" id="result_game_id">
 
-        <h1 id="player_game_name">猜数字游戏</h1>
-
-        <fieldset class="fieldcontain">
-          <label for="game_subtype">剩余时间</label>
-          <label id="player_game_time" />
-        </fieldset>
-
-        <div data-role="fieldcontain" >
-          <label for="player_game_rule">规则</label>
-          <label id="player_game_rule" />
+        <div id="result_toolbar">
+            <h1>统计数据</h1>
         </div>
-        
-        <div data-role="fieldcontain" id="player_game_var1_field">
-          <label for="player_game_var1"></label>
-          <input id="player_game_var1"  value="120" placeholder="请输入游戏时长,单位秒"/>
-          
-        </div>
+        <table id="game_result_table"
+           data-toolbar="#result_toolbar"
+           data-toggle="game_result_table"
+           data-filter-control="true"
+           data-filter-show-clear="true">
+          <thead>
+          <tr>
+              <th data-field="var1" data-filter-control="var1">数字</th>
+              <th data-field="count" data-filter-control="count">人数</th>
+          </tr>
+          </thead>
+        </table>
 
-        <div data-role="fieldcontain" id="player_game_var3_field">
-          <label for="player_game_var3"></label>
-          <select name="player_game_var3_select" id="player_game_var3_select">
-          </select>
+        <div id="win_toolbar">
+            <h1>获胜信息</h1>
         </div>
-
-
-        <div data-role="fieldcontain" id="player_game_var1help_field">
-          <label for="player_game_var1help"></label>
-          <label id="player_game_var1help" />
-        </div>
-
-        <div data-role="fieldcontain" id="player_game_var2_field">
-          <label for="player_game_var2"></label>
-          <input id="player_game_var2"  value="120" placeholder="请输入游戏时长,单位秒"/>
-        </div>
-
-        <div data-role="fieldcontain" id="player_game_var2help_field">
-          <label for="player_game_var2help"></label>
-          <label id="player_game_var2help" />
-        </div>
-
-        <div data-role="fieldcontain">
-        <button data-icon="flat-checkround" data-theme="g" href="javascript:void(0)" onclick="activateGame()" >激活游戏</button>
-        </div>
+        <table id="game_win_table"
+           data-toolbar="#win_toolbar"
+           data-toggle="game_win_table"
+           data-filter-control="true"
+           data-filter-show-clear="true">
+          <thead>
+            <tr>
+                <th data-field="name" data-filter-control="name">获胜者姓名</th>
+                <th data-field="studentNo" data-filter-control="studentNo">学号</th>
+                <th data-field="var1" data-filter-control="var1">获胜数字</th>
+            </tr>
+          </thead>
+        </table>
     </div>
 </div>

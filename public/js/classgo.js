@@ -729,6 +729,10 @@ $(document).delegate(".fastclick", "vclick click", function(event) {
     } );  
 
   $(document).on("pagebeforechange", function(e, f){
+    if (typeof f.toPage !== "string"){
+        return;
+    }
+    
     var hashs = $.mobile.path.parseUrl(f.absUrl).hash.split("?");
     var hash = hashs[0];
 
@@ -856,6 +860,10 @@ $(document).delegate(".fastclick", "vclick click", function(event) {
   });
 
   $(document).on("pagebeforechange", function(e, f){
+    if (typeof f.toPage !== "string"){
+        return;
+    }
+
     var hashs = $.mobile.path.parseUrl(f.absUrl).hash.split("?");
     var hash = hashs[0];
 
@@ -1105,6 +1113,10 @@ var $table = $('#table'),
     }
 
   $(document).on("pagebeforechange", function(e, f){
+    if (typeof f.toPage !== "string"){
+        return;
+    }
+
     var hashs = $.mobile.path.parseUrl(f.absUrl).hash.split("?");
     var hash = hashs[0];
 
@@ -1181,6 +1193,10 @@ var $table = $('#table'),
   });
 
   $(document).on("pagebeforechange", function(e, f){
+    if (typeof f.toPage !== "string"){
+        return;
+    }
+
     var hashs = $.mobile.path.parseUrl(f.absUrl).hash.split("?");
     var hash = hashs[0];
     var search = hashs[1];
