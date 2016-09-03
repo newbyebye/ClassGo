@@ -151,6 +151,7 @@
           <div class="ui-block-b"><button data-icon="flat-settings" data-theme="g" onclick="startSignIn()">开启签到</button></div>
           <div class="ui-block-b"><button data-icon="flat-new" data-theme="f" onclick="viewSign()">查看签到</button></div>
           <div class="ui-block-b"><button data-icon="flat-new" data-theme="g" onclick="viewGame()">游戏</button></div>
+
         </fieldset>
 
         <div class="weui_panel_hd"><span id="detail_info" style="color: #f43530;"></span></div>
@@ -330,7 +331,7 @@
         <a data-iconpos="notext" href="#pageNewGamelist" data-role="button" data-icon="flat-plus"></a>
     </div>
     <div data-role="content"  data-theme="c">
-       
+        <button data-icon="flat-checkround" data-theme="g" href="javascript:void(0)" onclick="exportGame()" >导出游戏信息</button>
         <ul data-role="listview" data-inset="true">
         
         </ul> 
@@ -505,14 +506,19 @@
     <div class="header" data-role="header">
         <a data-iconpos="notext" data-role="button" href="#pageDetail" data-icon="back" title="Home">返回</a>
         <h1>签到信息</h1>
+
     </div>
     
     <div data-iscroll="" data-role="content" data-theme="c">
         <h2></h2>
-        <div id="toolbar">
+        <div id="info_toolbar">
+            <p>导入学生注册信息<span id="upload_msg"></span>
+              <input type="file" name="upload_file" id="upload_file" onchange="checkFileSize(this);" />
+              <iframe name="check_file_frame" style="display:none;"></iframe>
+            <button data-icon="flat-checkround" data-theme="g" href="javascript:void(0)" onclick="exportPost()" >导出签到信息</button>
         </div>    
-        <table id="table"
-           data-toolbar="#toolbar"
+        <table id="info_table"
+           data-toolbar="#info_toolbar"
            data-search="true"
            data-show-refresh="true"
            data-show-toggle="true"

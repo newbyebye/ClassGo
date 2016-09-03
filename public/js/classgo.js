@@ -32,6 +32,25 @@ $(function() {
 	CG.ObjController = CG.Object.extend({
 		objName : '',
 		// window.localStorage.getItem
+        download: function(path, callback, bAsync){
+            var isAsyncLoad = true;
+            if (typeof (bAsync) != 'undefined') {
+                isAsyncLoad = bAsync;
+            }
+            $.ajax({
+                url : path,
+                async : isAsyncLoad,
+                headers : {"x-access-token":window.sessionStorage.getItem("token"),
+                            "Cache-Control":"no-cache",
+                            "If-Modified-Since":"0"},
+                success : function(data) {
+                    callback(null);
+                },
+                error : function(err, textStatus) {
+                    callback(err);
+                }
+            });
+        },
 		get : function(path, callback, bAsync) {
 			var isAsyncLoad = true;
 			if (typeof (bAsync) != 'undefined') {
@@ -199,6 +218,54 @@ function savePost(){
     }
     
 }
+
+function exportPost(){
+    var postId = window.sessionStorage.getItem("postId");
+    window.location='/v1/post/'+postId+'/report'+"?token="+window.sessionStorage.getItem("token");
+}
+
+function exportGame(){
+    var postId = window.sessionStorage.getItem("postId");
+    window.location='/v1/post/'+postId+'/gamereport'+"?token="+window.sessionStorage.getItem("token");
+}
+
+var fileForm = new Object();
+function checkFileSize(fileObj) {
+    /*
+    if(fileObj.value != "") {
+        var form = document.forms['upfile_form'];
+
+        //把form的原始数据缓存起来
+        fileForm.f = form;
+        fileForm.a = form.getAttribute("action"); //form.action 为一个静态的对象，所以这里要使用getAttribute方法取值
+        fileForm.t = form.target;
+
+        //请求服务器端
+        form.target = "check_file_frame";
+        form.action = "./v1/post/"+window.sessionStorage.getItem("postId")+"/upload?token="+window.sessionStorage.getItem("token");
+        form.submit(); 
+    }
+    return false;*/
+    console.log("checkFileSize");
+    $.ajaxFileUpload({  
+            url:"./v1/post/"+window.sessionStorage.getItem("postId")+"/upload?token="+window.sessionStorage.getItem("token"),  
+            secureuri:false,
+            fileElementId:'upload_file',//file标签的id  
+            dataType: 'json',//返回数据的类型  
+            success: function (data, status) {  
+                if (data.count){
+                    $("#upload_msg").text("成功导入"+data.count+"条注册信息");
+                }
+                else{
+                    $("#upload_msg").text("导入失败，请检查文件格式是否正确");
+                }
+            },  
+            error: function (data, status, e) {  
+                console.log(e);
+                $("#upload_msg").text("导入失败，请检查文件格式是否正确");
+            }  
+        });  
+}  
 
   function newPost(){
         $('#create_id').val('');
@@ -452,7 +519,7 @@ function savePost(){
         });  
     }
 
-    
+  
 
 // The Mobile Safari Forms Assistant pushes the page up if it needs to scroll, but jQuery Mobile
 // doesn't scroll the page back down. This code corrects that.

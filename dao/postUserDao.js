@@ -5,11 +5,14 @@ var mysql = require('mysql');
 var $conf = require('../conf/db');
 
 
-/*  table postUser (
+/*  tcreate table postUser (
     id BIGINT NOT NULL PRIMARY KEY AUTO_INCREMENT,
     postId          BIGINT NOT NULL,
-    userId    BIGINT NOT NULL,
+    userId    BIGINT,
     isAssistant  boolean,
+    fullname  varchar(32),
+    studentNo  varchar(32) NOT NULL,
+    CONSTRAINT CST_postUser UNIQUE(postId, studentNo), 
     createAt     TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updateAt     TIMESTAMP NOT NULL 
 )ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -21,10 +24,11 @@ var pool  = mysql.createPool($conf.mysql);
 
 // CRUD SQL语句
 var $sql = { 
-    insert:'INSERT INTO postUser(id, postId, userId, isAssistant) VALUES(0,?,?,?)',
+    insert:'INSERT INTO postUser(id, postId, userId, studentNo, fullname) VALUES(0,?,?,?,?)',
+    update:'update postUser set userId=? where studentNo=?',
     delete: 'delete from postUser where postId=? and userId=?',
     queryById: 'select * from postUser where postId=? and userId=?',
-    queryAll: 'select postUser.*,user.fullname,user.studentNo from postUser,user where postId=? and user.id = postUser.userId',
+    queryAll: 'select * from postUser where postId=? ',
     querySum: 'select count(*) as sum from postUser where postId=?',
     queryAllInfo:'select username,nickname,fullname,postId,studentNo from postUser,user where postUser.userId = user.id and postId=? ',
 };
@@ -39,7 +43,7 @@ module.exports = {
             }
 
             // 建立连接，向表中插入值
-            connection.query($sql.insert, [param.postId, param.userId, param.isAssistant], function(err, result) {
+            connection.query($sql.insert, [param.postId, param.userId, param.studentNo, param.fullname], function(err, result) {
 
                 callback(err, result);
 
@@ -48,6 +52,18 @@ module.exports = {
             });
         });
     },
+
+    update: function (param, callback) {
+        
+        pool.getConnection(function(err, connection) {
+            connection.query($sql.update, 
+                [param.userId, param.studentNo], function(err, result) {
+                callback(err, result);
+                connection.release();
+            });
+        });
+    },
+
     
     delete: function (param, callback) {
         // delete by Id

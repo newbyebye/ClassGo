@@ -12,6 +12,7 @@ var cookieParser = require('cookie-parser');
 var session = require('express-session');
 var compression = require('compression');
 var bodyParser = require('body-parser');
+var multipart = require('connect-multiparty');
 
 var routes = require('./routes/index');
 var wechat   = require('./routes/wechat');
@@ -22,6 +23,7 @@ var wechat   = require('./routes/wechat');
 var users = require('./restful/users');
 var posts = require('./restful/posts');
 var game  = require('./restful/game');
+var xlsx  = require('./restful/xlsx');
 
 
 
@@ -47,7 +49,7 @@ app.use(session(
     }));
 
 app.use(express.static(path.join(__dirname, 'public')));
-
+app.use(multipart({uploadDir: path.join(__dirname, 'uploads')}));
 app.use('/wechat', wechat.middleware);
 
 
@@ -55,6 +57,7 @@ app.use('/', routes);
 app.use('/v1', users);
 app.use('/v1', posts);
 app.use('/v1', game);
+app.use('/v1', xlsx);
 
 
 // catch 404 and forward to error handler

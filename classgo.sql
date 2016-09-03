@@ -63,15 +63,21 @@ CREATE TRIGGER `update_post_trigger` BEFORE UPDATE ON `post`
 create table postUser (
     id BIGINT NOT NULL PRIMARY KEY AUTO_INCREMENT,
     postId          BIGINT NOT NULL,
-    userId    BIGINT NOT NULL,
-    CONSTRAINT CST_postUser UNIQUE(postId, userId),
+    userId    BIGINT,
     isAssistant  boolean,
+    fullname  varchar(32),
+    studentNo  varchar(32) NOT NULL,
+    CONSTRAINT CST_postUser UNIQUE(postId, studentNo), 
     createAt     TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updateAt     TIMESTAMP NOT NULL 
 )ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TRIGGER `update_postUser_trigger` BEFORE UPDATE ON `postUser`
  FOR EACH ROW SET NEW.`updateAt` = NOW();
+
+ALTER TABLE `classgo`.`postUser` 
+ADD COLUMN `studentNo` VARCHAR(32) NULL COMMENT '' AFTER `updateAt`,
+ADD COLUMN `fullname` VARCHAR(32) NULL COMMENT '' AFTER `studentNo`;
 
 
 create table tag (

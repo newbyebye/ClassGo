@@ -2,6 +2,7 @@
 
 var fs = require('fs');
 var uglifyjs = require('uglify-js');
+var exec = require('child_process').exec; 
 
 module.exports = function(){
 
@@ -16,11 +17,20 @@ module.exports = function(){
   "public/lib/bootstrap/bootstrap-table.js",
   "public/lib/bootstrap/bootstrap-table-filter-control.js",
   "public/js/jweixin-1.0.0.js",
+  "public/js/ajaxfileupload.js",
   "public/js/classgo.js",
   "public/js/game.js",
   "public/js/jweixin-1.0.0.js",
   "public/js/crypto-js.js",
   ];
+
+/*
+  exec("cat " + ALL_JS_FILES.join(" ") + ">public/js/classgo.mini.js", function(err, stdout, stderr){
+    if (err) throw err;
+
+    console.log("cat html success, public/js/classgo.mini.js is update.");
+  });*/
+
 
   var result = uglifyjs.minify(ALL_JS_FILES);
 
@@ -32,7 +42,7 @@ module.exports = function(){
 
 
 
-  var exec = require('child_process').exec; 
+  
 
   var ALL_CSS_FILES = [
   "public/css/jquery.mobile.flatui.css",

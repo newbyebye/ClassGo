@@ -25,6 +25,7 @@ var $sql = {
     delete: 'delete from sign where id=?',
     queryById: 'select * from sign where lessonId=? and userId=?',
     queryAll: 'select * from sign where lessonId=?',
+    report: 'select * from view_lesson_sign where postId=?',
 };
 
 module.exports = {
@@ -85,5 +86,14 @@ module.exports = {
         });
     },
 
+    report: function (param, callback) {
+        pool.getConnection(function(err, connection) {
+            connection.query($sql.report, param.postId, function(err, result) {
+                console.log($sql.report, param.postId);
+                callback(err, result);
+                connection.release();
+            });
+        });
+    },
 
 };

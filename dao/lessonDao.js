@@ -21,7 +21,7 @@ var $sql = {
     update:'update lesson set status=?, lng=?, lat=? where id=?',
     delete: 'delete from lesson where id=?',
     queryById: 'select * from lesson where id=?',
-    queryAll: 'select lesson.id,postId,status,authorId, date(starttime) as startdate from lesson,post where lesson.postId=postId and postId = ?  group by id order by startdate desc',
+    queryAll: 'select lesson.id,postId,status,authorId, date(starttime) as startdate from lesson,post where lesson.postId=postId and postId = ?  group by id order by startdate asc',
     queryLessonByPostId: 'select lesson.id,postId,status,authorId,starttime from lesson,post where lesson.postId=postId and date(starttime) = date(?) and postId = ? group by lesson.id',
 
 };
@@ -77,7 +77,7 @@ module.exports = {
     },
     queryAll: function (param, callback) {
         pool.getConnection(function(err, connection) {
-            connection.query($sql.queryAll, param.id, function(err, result) {
+            connection.query($sql.queryAll, param.postId, function(err, result) {
                 callback(err, result);
                 connection.release();
             });

@@ -20,6 +20,9 @@
     "mysql": "^2.10.2",
     "request": "^2.70.0",
     "serve-favicon": "~2.3.0",
-    "wechat": "^2.0.3"
+    "wechat": "^2.0.3",
+    "excel-export": "0.5.1",
+    "node-xlrd": "0.2.4",
+    "connect-multiparty": "2.0.0"
   }
 }

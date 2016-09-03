@@ -93,9 +93,14 @@ var $sql = {
     statisticsVar1: 'select var1,count(var1) as count from userGame where gameId = ? group by var1',
     statisticsVar2: 'select var2,count(var2) as count from userGame where gameId = ? group by var2',
 
+    report:'select userGame.*, game.postId, game.reward from userGame, game where userGame.gameId = game.id and postId = ?',
+
 
     // 猜数字游戏
     calcRusultGame1:'select * from userGame where gameId =? and var1 = (select max(var1) from userGame where gameId = ? and var1 <(select sum(var1)*0.7/count(*) from userGame where gameId = ?));',
+    // 强制性拍卖
+    calcRusultGame3_1: 'select * from userGame where gameId = ? and var1 = (select max(var1) from userGame where gameId = ?)',
+    calcRusultGame3_2: 'select * from userGame where gameId = ? and var1 = (select max(var1) from userGame where gameId = ?)',
 };
 
 function getRandomCode(connection, callback){
@@ -299,4 +304,14 @@ module.exports = {
             });
         });
     },
+
+    report: function(param, callback){
+        pool.getConnection(function(err, connection) {
+            connection.query($sql.report, param.postId, function(err, result) {
+                console.log($sql.report + param.postId);
+                callback(err, result);
+                connection.release();
+            });
+        });
+    }
 };

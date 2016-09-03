@@ -203,6 +203,21 @@ function endgame(gameId){
           }
           else if (game.type == 3){
             // 强制性拍卖
+            if (game.subtype == 1){
+              calcRusultGame3_1
+              gameDao.calcRusultGame1({id:gameId}, function(err, result){
+                  if (err || result.length == 0) {
+                      console.log(err);
+                      return
+                  }
+
+                  for (var i = 0; i < result.length; i++){
+                      console.log(result[i]);
+                      gameDao.updateWin({id:result[i].id}, function(err, result){});
+                  }
+              });
+              
+            }
           }
 
         });
