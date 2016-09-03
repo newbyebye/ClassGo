@@ -317,7 +317,7 @@ function viewActivateGame(id, status) {
         }
         
         html += '<p class="ui-li-aside"><strong>'+$.timeago(e.createAt)+'</strong></p>';
-        html += '</a></li>';
+        html += '</a><hr></li>';
         newContent = html + newContent;
     }); 
 

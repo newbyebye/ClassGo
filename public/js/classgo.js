@@ -231,22 +231,6 @@ function exportGame(){
 
 var fileForm = new Object();
 function checkFileSize(fileObj) {
-    /*
-    if(fileObj.value != "") {
-        var form = document.forms['upfile_form'];
-
-        //把form的原始数据缓存起来
-        fileForm.f = form;
-        fileForm.a = form.getAttribute("action"); //form.action 为一个静态的对象，所以这里要使用getAttribute方法取值
-        fileForm.t = form.target;
-
-        //请求服务器端
-        form.target = "check_file_frame";
-        form.action = "./v1/post/"+window.sessionStorage.getItem("postId")+"/upload?token="+window.sessionStorage.getItem("token");
-        form.submit(); 
-    }
-    return false;*/
-    console.log("checkFileSize");
     $.ajaxFileUpload({  
             url:"./v1/post/"+window.sessionStorage.getItem("postId")+"/upload?token="+window.sessionStorage.getItem("token"),  
             secureuri:false,
@@ -615,7 +599,7 @@ $(document).delegate(".fastclick", "vclick click", function(event) {
     	var html = '<li data-icon="false"><a href="#pageDetail?id='+ e.id +'">';
     	html += '<img src="'+ e.photo +'">';
     	html += '<h2>' + e.title + '</h2>';
-    	html += '<span class="ui-li-count">'+$.timeago(e.createAt)+'</span></a></li>'
+    	html += '<p class="ui-li-aside"><strong>'+$.timeago(e.createAt)+'</strong></p></a><hr></li>'
     	newContent = html + newContent;
     }); 
 
@@ -730,7 +714,7 @@ $(document).delegate(".fastclick", "vclick click", function(event) {
         var html = '<li data-icon="false"><a href="#pageDetail?id='+ e.id +'">';
         html += '<img src="'+ e.photo +'">';
         html += '<h2>' + e.title + '</h2>';
-        html += '<span class="ui-li-count">'+$.timeago(e.createAt)+'</span></a></li>'
+        html += '<span class="ui-li-count">'+$.timeago(e.createAt)+'</span></a><hr></li>'
         newContent = html + newContent;
     }); 
 
@@ -857,7 +841,7 @@ $(document).delegate(".fastclick", "vclick click", function(event) {
         var html = '<li data-icon="false"><a href="#pageDetail?id='+ e.id +'">';
         //html += '<img src="'+ e.photo +'">';
         html += '<h2>' + e.title + '</h2>';
-        html += '<span class="ui-li-count">'+$.timeago(e.createAt)+'</span></a></li>'
+        html += '<span class="ui-li-count">'+$.timeago(e.createAt)+'</span></a><hr></li>'
         newContent = html + newContent;
     }); 
 
