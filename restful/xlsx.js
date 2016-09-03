@@ -11,7 +11,6 @@ var gameDao  = require('../dao/gameDao');
 var uuid = require('node-uuid');
 var nodeExcel = require('excel-export');
 var xl = require('node-xlrd');
-var excelParser = require('excel-parser');
 var async = require('async');
 
 Date.prototype.Format = function (fmt) { //author: meizz 
