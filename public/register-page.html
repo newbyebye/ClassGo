@@ -29,18 +29,31 @@
           <label for="me_step_fullname">姓名</label>
           <input id="me_step_fullname"  placeholder="请输入姓名"/>
         </div>
-        <div data-role="fieldcontain">
+        <div data-role="fieldcontain" id="me_step_studentNo_view">
           <label for="me_step_studentNo">学号</label>
           <input id="me_step_studentNo"   placeholder="请输入学号"/>
         </div>
+
         <div data-role="fieldcontain">
-          <label for="me_step_profession">院系</label>
-          <input id="me_step_profession"   placeholder="请输入专业"/>
+          <label for="me_step_mobile">手机</label>
+          <input id="me_step_mobile"   placeholder="请输入手机号"/>
         </div>
+
         <div data-role="fieldcontain">
-          <label for="me_step_school">学校</label>
-          <input id="me_step_school"  placeholder="请输入学校"/>
+          <label for="me_step_password">密码</label>
+          <input id="me_step_password" />
         </div>
+
+        <div data-role="fieldcontain">
+          <label for="me_step_password_confirm">确认密码</label>
+          <input id="me_step_password_confirm" />
+        </div>
+
+        <div class="palette palette-carrot" id="step_error_div" style="display: none;"> 
+              <a class="close" data-dismiss="alert">×</a> 
+              <strong>Warning!</strong> <span id="step_error_msg"></span> 
+        </div> 
+
         <div data-role="fieldcontain">
         <button data-icon="flat-checkround" data-theme="g" href="javascript:void(0)" onclick="saveStepInfo()" >提交</button>
         </div>

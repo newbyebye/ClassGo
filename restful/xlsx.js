@@ -12,6 +12,7 @@ var uuid = require('node-uuid');
 var nodeExcel = require('excel-export');
 var xl = require('node-xlrd');
 var async = require('async');
+var userDao = require('../dao/userDao');
 
 Date.prototype.Format = function (fmt) { //author: meizz 
     var o = {
@@ -27,6 +28,46 @@ Date.prototype.Format = function (fmt) { //author: meizz
     for (var k in o)
     if (new RegExp("(" + k + ")").test(fmt)) fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
     return fmt;
+}
+
+
+function insertData(datas, notifyCallback){
+    console.log("insertData", datas[0]);
+    var count = datas.length;
+
+    var task = []
+
+    task[0] = function(callback){
+        callback(null, 0);
+    };
+
+    var j = 0;
+    for (var i = 1; i <= datas.length ; i++){
+        task[i] = function(idx, callback){
+            if (typeof idx === 'function'){
+                idx = 0;
+            }
+            var data = datas[idx];
+            console.log(idx, data, datas[idx]);
+            userDao.queryByStudentNo({fullname:data.fullname, studentNo:data.studentNo}, function(err, result){
+                console.log(err, result);
+                if (err || result.length == 0){
+                    ;
+                }
+                else{
+                    data.userId = result[0].id;
+                }
+                
+                postUserDao.add(data, function(err, result){
+                    callback(null, idx+1);
+                });
+            });
+        }
+    }
+
+    async.waterfall(task, function(err, result){
+          notifyCallback();
+      });
 }
 
 /*
@@ -84,17 +125,21 @@ router.post('/post/:id/upload', checkToken, function(req, res, next){
                 for(var rIdx = 0; rIdx < rCount; rIdx++){    // rIdx：行数；cIdx：列数
                     
                     var studentNo = sht.cell(rIdx,1);
+                    studentNo = studentNo.trim();
                     //console.log(studentNo);
                     if (studentNo.charAt(0) == 'U' || studentNo.charAt(0) == 'M' || studentNo.charAt(0) == 'D'){
-                        datas[dIdx] = {'postId':postId, 'userId':'', 'studentNo':studentNo, 'fullname':sht.cell(rIdx,2)};
-                        postUserDao.add(datas[dIdx], function(err, result){});
+                        var fullname = sht.cell(rIdx,2).trim();
+                        datas[dIdx] = {'postId':postId, 'userId':"", 'studentNo':studentNo, 'fullname':fullname.trim()};    
                         dIdx++;
                     }
                 }
             }
 
-            console.log(datas);
-            res.status(200).json({"count":dIdx});
+            //console.log(datas);
+            insertData(datas, function(){
+                res.status(200).json({"count":dIdx});
+            });
+            
           });
       
   });

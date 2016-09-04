@@ -346,6 +346,72 @@ function home(){
     $.mobile.changePage("#home");
 }
 
+function step1(){
+    if ($("input[name='checkbox1']:checked").val() == "0"){
+        $("#me_step_studentNo_view").show();
+        $("#me_step_info").show();           
+    }
+    else{
+        $("#me_step_studentNo_view").hide();
+        $("#me_step_info").hide();
+    }
+    window.location = '#pageStep2';
+}
+
+function delayHideStepError(){
+   setTimeout(function(){
+      $("#step_error_div").hide();
+   }, 5000);
+}
+
+function saveStepInfo(){
+    var data = {fullname:$(me_step_fullname).val(),              
+                mobile: $(me_step_mobile).val(), 
+                password: CryptoJS.SHA256($(me_step_password).val()).toString(),
+                role: $("input[name='checkbox1']:checked").val()
+            };
+
+    var pwd = $(me_step_password).val();
+    if (pwd.length == 0 || pwd.length > 30 || $(me_step_password).val() != $(me_step_password_confirm).val()){
+        $("#step_error_msg").text("密码输入不合法，请确认2次输入密码是否相同");
+        $("#step_error_div").show();
+        delayHideStepError();
+        return;
+    }
+
+    if ($(me_step_mobile).val().length != 11){
+        $("#step_error_msg").text("请输入合法手机号");
+        $("#step_error_div").show();
+        delayHideStepError();
+        return;
+    }
+
+    var role = $("input[name='checkbox1']:checked").val();
+
+    if (role == 0){
+        if ($(me_step_studentNo).val().length == 0){
+            $("#step_error_msg").text("请输入学号");
+            $("#step_error_div").show();
+            delayHideStepError();
+            return;
+        }
+
+        data.studentNo = $(me_step_studentNo).val();
+    }
+
+    if ($(me_step_fullname).val().length == 0){
+        $("#step_error_msg").text("请输入姓名");
+        $("#step_error_div").show();
+        delayHideStepError();
+        return;
+    }
+
+    CG.MyController.update(data, function(err, result){
+            updateMeView('me_show', data);   
+            window.location = "./home.html";
+    });
+}
+
 function savePost(){
     var id = $('#create_id').val();
     var data = {title:$(create_title).val(), body:$(create_body).val(), time: $(create_time).val(), address: $(create_address).val()};
@@ -547,14 +613,28 @@ function checkFileSize(fileObj) {
         $('#' + view +'_studentNo').val(data.studentNo);
         $('#' + view +'_studentNo').text(data.studentNo);
 
-        $('#' + view +'_profession').val(data.profession);
-        $('#' + view +'_profession').text(data.profession);
+        if (data.profession){
+            $('#' + view +'_profession').val(data.profession);
+            $('#' + view +'_profession').text(data.profession);
+        }
+        
+        if (data.school){
+            $('#' + view +'_school').val(data.school);
+            $('#' + view +'_school').text(data.school);
+        }
 
-        $('#' + view +'_school').val(data.school);
-        $('#' + view +'_school').text(data.school);
+        if (data.role != undefined){
+            if (data.role == 1 || data.role == "1"){
+                $('#' + view +'_studentNo_div').hide();
+            }
+            else{
+                $('#' + view +'_studentNo_div').show();
+            }
+        }
     }
 
     function saveUserInfo(){
+        
         var data = {fullname:$(me_edit_fullname).val(), studentNo:$(me_edit_studentNo).val(), profession: $(me_edit_profession).val(), school: $(me_edit_school).val()};
         
         CG.MyController.update(data, function(err, result){

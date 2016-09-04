@@ -13,8 +13,9 @@ var $user = {
     insert:'INSERT INTO user(id, username, password, openID, fullname, nickname, studentNo, city, photo) VALUES(0,?,?,?,?,?,?,?,?)',
     update:'update user set fullname=?, studentNo=?, profession=?, school=?, brief=?, role=? where id=?',
     delete: 'delete from user where id=?',
-    login: 'select * from user where username=? and password=?',
+    login: 'select * from user where mobile=? and password=?',
     queryById: 'select id, username, profession, sex, photo, fullname, mobile, nickname, studentNo, city, school, brief, createAt, updateAt, role, verify from user where id=?',
+    queryByStudentNo: 'select id from user where fullname=? and studentNo=?',
     //queryAll: 'select id, username, profession, sex, photo, fullname, mobile, nickname, studentNo, city, school, brief, createAt, updateAt from user',
     queryByOpenID: 'select * from user where openID=?',
 };
@@ -48,6 +49,15 @@ function createUpdateSql(param){
     if (param.role) {
         retval.sql += "role=?, ";
         retval.params[retval.params.length] = param.role;
+    }
+    if (param.mobile) {
+        retval.sql += "mobile=?, ";
+        retval.params[retval.params.length] = param.mobile;
+    }
+
+    if (param.password) {
+        retval.sql += "password=?, ";
+        retval.params[retval.params.length] = param.password;
     }
 
     retval.sql = retval.sql.substr(0, retval.sql.length - 2);
@@ -125,9 +135,7 @@ module.exports = {
             });
         });
     },*/
-    update: function (param, callback) {
-
-        
+    update: function (param, callback) {        
         pool.getConnection(function(err, connection) {
             if (err) {
                 console.log('[INSERT ERROR] - ', err.message);
@@ -143,6 +151,8 @@ module.exports = {
             connection.query("update user set " + sqlParams.sql + " where id=?", 
                 sqlParams.params, function(err, result) {
                 callback(err, result);
+
+
                 connection.release();
             });
         });
@@ -171,6 +181,21 @@ module.exports = {
             }
 
             connection.query($user.queryById, param.id, function(err, result) {
+                callback(err, result);
+                connection.release();
+            });
+        });
+    },
+
+    queryByStudentNo: function (param, callback) {
+        pool.getConnection(function(err, connection) {
+            if (err) {
+                console.log('[INSERT ERROR] - ', err.message);
+                callback(err);
+                return;
+            }
+
+            connection.query($user.queryByStudentNo, [param.fullname, param.studentNo], function(err, result) {
                 callback(err, result);
                 connection.release();
             });

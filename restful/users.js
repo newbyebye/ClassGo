@@ -6,6 +6,7 @@ var jwt = require('jsonwebtoken');
 var checkToken = require('../routes/checkToken')
 var userDao = require('../dao/userDao');
 var accessTokenDao = require('../dao/accessTokenDao');
+var postUserDao = require('../dao/postUserDao');
 var crypto = require('crypto');
 var wechat = require('../routes/wechat');
 
@@ -17,7 +18,6 @@ var wechat = require('../routes/wechat');
 jsapi_ticket=cfrz4c560WS25l5Lhi3rfi_tWY4uxqVWoTFRcpj9oa_1h961Z30eJcF_ElpoSukUuPkPWvFo8ELG2OGQmGPPSs3kOTJcMebQCI8fSgTr-oo-KAhkcloaT29kg1wFQGrLMGJdACASMP&noncestr=2nDgiWM7gCxhL8v087&timestamp=1461507879&url=http://localhost:3000/home.html
 */
 router.post('/wechat/signature', function(req, res, next){
-  console.log("###########################");
     wechat.getTicket(function(err, ticket){
       console.log(err);
       if (err){
@@ -95,7 +95,7 @@ router.post('/user', function(req, res, next) {
 */
 router.post('/user/login', function(req, res, next){
   userDao.login(req.body, function(err, result){
-      if (err || result.length == 0) {
+      if (err || result.length != 1) {
           console.log(err);
           var err = new Error('login failed');
           err.status = 401;
@@ -188,7 +188,35 @@ router.put('/user/:id', checkToken, function(req, res, next){
           return;
         }
 
-        res.status(200).json({});
+        userDao.queryById({id: req.params.id}, function(err, result){
+            console.log(err);
+            if (err || result.length == 0) {
+                var err = new Error('not found');
+                err.status = 501;
+                next(err);
+                return
+            }
+
+            var fullname = result[0].fullname;
+            var studentNo = result[0].studentNo;
+            var role = result[0].role;
+            if (role == 0){
+     
+                postUserDao.queryByStudentNo({fullname:fullname, studentNo:studentNo}, function(err, result){
+                    if (result.length > 0){
+                        console.log("result:", result);
+                        for (var i = 0; i < result.length; i++){
+                            postUserDao.update({userId:req.api_user.userId, id:result[i].id}, function(err,result){});
+                        }
+                    }
+                });
+            }
+            res.status(200).json({});
+        });
+
+        
+
+        //res.status(200).json({});
     });
 });
 

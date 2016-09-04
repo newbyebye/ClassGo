@@ -25,8 +25,9 @@ var pool  = mysql.createPool($conf.mysql);
 // CRUD SQL语句
 var $sql = { 
     insert:'INSERT INTO postUser(id, postId, userId, studentNo, fullname) VALUES(0,?,?,?,?)',
-    update:'update postUser set userId=? where studentNo=?',
+    update:'update postUser set userId=? where id=?',
     delete: 'delete from postUser where postId=? and userId=?',
+    queryByStudentNo: 'select * from postUser where fullname=? and studentNo=?',
     queryById: 'select * from postUser where postId=? and userId=?',
     queryAll: 'select * from postUser where postId=? ',
     querySum: 'select count(*) as sum from postUser where postId=?',
@@ -44,7 +45,7 @@ module.exports = {
 
             // 建立连接，向表中插入值
             connection.query($sql.insert, [param.postId, param.userId, param.studentNo, param.fullname], function(err, result) {
-
+                console.log(param.postId, param.studentNo, err, result);
                 callback(err, result);
 
                 // 释放连接 
@@ -57,7 +58,7 @@ module.exports = {
         
         pool.getConnection(function(err, connection) {
             connection.query($sql.update, 
-                [param.userId, param.studentNo], function(err, result) {
+                [param.userId, param.id], function(err, result) {
                 callback(err, result);
                 connection.release();
             });
@@ -75,6 +76,16 @@ module.exports = {
         });
     },
     
+    queryByStudentNo: function (param, callback) {
+        pool.getConnection(function(err, connection) {
+            connection.query($sql.queryByStudentNo, [param.fullname, param.studentNo], function(err, result) {
+                console.log($sql.queryByStudentNo, param.fullname, param.studentNo, result, err);
+                callback(err, result);
+                connection.release();
+            });
+        });
+    },
+
     queryById: function (param, callback) {
         pool.getConnection(function(err, connection) {
             connection.query($sql.queryById, [param.postId, param.userId], function(err, result) {

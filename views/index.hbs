@@ -28,18 +28,18 @@ $(function(){
 
 <form class="form-signin" role="form">
      	
-    <h2 class="form-signin-heading">请输入账号密码</h2>
-	<input type="text" id="username" name="username" class="form-control" placeholder="帐号名" required autofocus>
+    <h2 class="form-signin-heading">请输入手机号/密码登录</h2>
+	<input type="text" id="username" name="username" class="form-control" placeholder="请输入手机号" required autofocus>
     <input type="password" id="password" name="password" class="form-control" placeholder="密码" required>
     <div class="checkbox">
       <label>
         <input type="checkbox" value="remember-me"> 记住我
       </label>
     </div>
-    <div id="alert" class="alert alert-danger" role="alert" style="display: none">
-	  <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-	  <strong>Warning!</strong> 用户名或密码错误
-	</div>
+    <div class="palette palette-carrot" id="alert" style="display: none;"> 
+          <a class="close" data-dismiss="alert">×</a> 
+          <strong>Warning!</strong> 用户名或密码错误 
+    </div> 
     <button class="btn btn-lg btn-primary btn-block" type="button" onClick="login();">登陆</button>
 </form>
 <script type="text/javascript">
