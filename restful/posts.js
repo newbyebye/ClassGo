@@ -45,21 +45,38 @@ router.post('/post', checkToken, function(req, res, next) {
   	});
 });
 
+/**
+*   get all class info
+*   GET /v1/post/owner/count
+*/
+router.get('/post/owner/count', checkToken, function(req, res, next){
+
+  postDao.queryOwnerCount({userId:req.api_user.userId, role:req.api_user.role}, function(err, result){
+      if (err) {
+          console.log(err);
+          next(err);
+          return
+      }
+      
+      res.status(200).json(result[0]);
+  });
+});
 
 /**
 *
 * queryOwner
+* GET /v1/post/owner?filter={"fields":{},"where":{},"order":"a ASC","skip":21,"limit":20,"include":{},"includefilter":{}}
 */
 router.get('/post/owner', checkToken, function(req, res, next){
   var data = JSON.parse(req.query.filter);
-  data.authorId = req.api_user.userId;
+  data.userId = req.api_user.userId;
+  data.role = req.api_user.role;
   postDao.queryOwner(data, function(err, result){
       if (err){
           console.log(err);
           next(err);
           return
       }
- 
       res.status(200).json(result);
   });
 });
@@ -78,6 +95,23 @@ router.get('/post/register', checkToken, function(req, res, next){
           return
       }     
       res.status(200).json(result);
+  });
+});
+
+/**
+*   get all class info
+*   GET /v1/post/count
+*/
+router.get('/post/count', function(req, res, next){
+
+  postDao.queryAllCount(function(err, result){
+      if (err) {
+          console.log(err);
+          next(err);
+          return
+      }
+      
+      res.status(200).json(result[0]);
   });
 });
 

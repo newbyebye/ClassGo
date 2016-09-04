@@ -163,6 +163,150 @@ $(function() {
 			});
 		}
 	});
+
+    CG.PullDownRefresh = CG.Object.extend({
+        pullDownGeneratedCount: 0,
+        pullUpGeneratedCount: 0,
+        PAGE_SIZE: 20,
+
+        //costomer define
+        listSelector:"",
+        loadData: function(skip, limit, callback){
+
+        },
+
+        getCount: function(callback){
+
+        },
+
+        showData: function(item){
+
+        },
+
+        initData: function(){
+            var self = this;
+            self.getCount(function(err, data){
+                if(!err){
+                    if (data.count < self.PAGE_SIZE){
+                        self.pullDownGeneratedCount = 0;
+                    }
+                    else{
+                        self.pullDownGeneratedCount = data.count - self.PAGE_SIZE;
+                    }
+                    
+                    self.pullUpGeneratedCount = self.pullDownGeneratedCount;
+
+                    self.loadData(self.pullDownGeneratedCount, self.PAGE_SIZE, function(err, content){
+                        self.gotPullDownData(null, null, content);
+                    });
+                }
+            });
+        },
+
+        gotPullDownData: function(event, data, content) {
+            var newContent = "";
+            var self = this;
+            content.forEach(function(item){
+                newContent = self.showData(item) + newContent;
+            }); 
+
+            self.pullDownGeneratedCount += content.length;
+    
+            $(self.listSelector).prepend(newContent).listview("refresh");  // Prepend new content and refresh listview
+            if (data) {
+                data.iscrollview.refresh();    // Refresh the iscrollview
+            }
+        },
+
+        gotPullUpData: function(event, data, content) {
+            var newContent = "";
+            var self = this;
+            content.forEach(function(item){
+                newContent = self.showData(item) + newContent;
+            }); 
+    
+            $(self.listSelector).append(newContent).listview("refresh");  // Prepend new content and refresh listview
+            if (data) {
+                data.iscrollview.refresh();    // Refresh the iscrollview
+            }
+        },
+
+        onPullDown: function(event, data){
+            var self = this;
+            self.loadData(self.pullDownGeneratedCount, self.PAGE_SIZE, function(err, content){
+                if (err){
+                    return self.gotPullDownData(event, data, []);
+                }
+                self.gotPullDownData(event, data, content);
+            });
+        },
+
+        onPullUp: function(event, data){
+            var self = this;
+            var limit = self.PAGE_SIZE;
+            if (self.pullUpGeneratedCount == 0){
+                self.gotPullUpData(event, data, []);
+                return;
+            }
+            if (self.pullUpGeneratedCount - self.PAGE_SIZE > 0){
+                self.pullUpGeneratedCount = self.pullUpGeneratedCount - self.PAGE_SIZE;
+            }
+            else{
+                limit = self.pullUpGeneratedCount;
+                self.pullUpGeneratedCount = 0;
+            }
+            self.loadData(self.pullUpGeneratedCount, limit, function(err, content){
+                self.gotPullUpData(event, data, content);
+            }); 
+        }
+    });
+
+    CG.HomePullDownRefresh = CG.PullDownRefresh.extend({
+        //costomer define
+        listSelector:"div.home-page ul.ui-listview",
+        loadData: function(skip, limit, callback){
+            CG.PostController.get('/v1/post?filter={"order":"createAt ASC","skip":'+skip+',"limit":'+limit+'}', function(err, data){
+                callback(err, data);
+            });
+        },
+
+        getCount: function(callback){
+            CG.PostController.get('/v1/post/count', function(err, content){
+                callback(err, content);
+            });
+        },
+
+        showData: function(item){
+            var html = '<li data-icon="false"><a href="#pageDetail?id='+ item.id +'">';
+            html += '<img src="'+ item.photo +'">';
+            html += '<h2>' + item.title + '</h2>';
+            html += '<p class="ui-li-aside"><strong>'+$.timeago(item.createAt)+'</strong></p></a><hr></li>';
+            return html;
+        }
+    });
+
+    CG.MyClassPullDownRefresh = CG.PullDownRefresh.extend({
+        //costomer define
+        listSelector:"div.class-page ul.ui-listview",
+        loadData: function(skip, limit, callback){
+            CG.PostController.get('/v1/post/owner?filter={"order":"createAt ASC","skip":'+skip+',"limit":'+limit+'}', function(err, data){
+                callback(err, data);
+            });
+        },
+
+        getCount: function(callback){
+            CG.PostController.get('/v1/post/owner/count', function(err, content){
+                callback(err, content);
+            });
+        },
+
+        showData: function(item){
+            var html = '<li data-icon="false"><a href="#pageDetail?id='+ item.id +'">';
+            html += '<h2>' + item.title + '</h2>';
+            html += '<span class="ui-li-count">'+$.timeago(item.createAt)+'</span></a><hr></li>'
+            return html;
+        }
+    });
 });
 
 $(function(){
@@ -554,107 +698,23 @@ $(document).delegate(".fastclick", "vclick click", function(event) {
   $.mobile.changePage(href);
 });
 
-/*jslint browser: true, sloppy: true, white: true, nomen: true, plusplus:true, maxerr: 50, indent: 2 */
-/*global jQuery:false, iScroll:false */
 
-/*jshint forin:true, noarg:true, noempty:true, eqeqeq:true, bitwise:true, strict:true,
-         undef:true, curly:true, browser:true, jquery:true, indent:2, maxerr:50,
-         white:false, nomen:false */
-// $.mobile.changePage
-//-------------------------------------------------------
-// Pull-Up and Pull-Down callbacks for "Pull" page
-//-------------------------------------------------------
 (function pullPagePullImplementation($) {
   "use strict";
-  var pullDownGeneratedCount = 0,
-      pullUpGeneratedCount = 0,
-      limit = 20,
-      listSelector = "div.home-page ul.ui-listview",
-      lastItemSelector = listSelector + " > li:last-child";
 
-   function gotHomeData(skip, callback){
-    	CG.PostController.get('/v1/post?filter={"order":"createAt","skip":'+skip+',"limit":'+limit+'}', function(err, data){
-	        callback(err, data);
-    	});
-	}
-
-	function initData() {
-		gotHomeData(0, function(err, content){
-			gotPullDownData(null, null, content);
-		});
-	}
-    
-  /* For this example, I prepend three rows to the list with the pull-down, and append
-   * 3 rows to the list with the pull-up. This is only to make a clear illustration that the
-   * action has been performed. A pull-down or pull-up might prepend, append, replace or modify
-   * the list in some other way, modify some other page content, or may not change the page 
-   * at all. It just performs whatever action you'd like to perform when the gesture has been 
-   * completed by the user.
-   */
-  function gotPullDownData(event, data, content) {
-    var i,
-        newContent = "";
-
-    content.forEach(function(e){
-    	var html = '<li data-icon="false"><a href="#pageDetail?id='+ e.id +'">';
-    	html += '<img src="'+ e.photo +'">';
-    	html += '<h2>' + e.title + '</h2>';
-    	html += '<p class="ui-li-aside"><strong>'+$.timeago(e.createAt)+'</strong></p></a><hr></li>'
-    	newContent = html + newContent;
-    }); 
-
-    pullDownGeneratedCount += content.length;
-    
-    $(listSelector).prepend(newContent).listview("refresh");  // Prepend new content and refresh listview
-    	if (data) {
-    		data.iscrollview.refresh();    // Refresh the iscrollview
-    	}
-    }
-  
-  function gotPullUpData(event, data) {
-    var i,
-        iscrollview = data.iscrollview,
-        newContent = "";
-    for (i=0; i<3; i+=1) { 
-      newContent += "<li>Pullup-generated row " + (++pullUpGeneratedCount) + "</li>";
-      }
-    $(listSelector).append(newContent).listview("refresh");
-  
-    // The refresh is a bit different for the pull-up, because I want to demonstrate the use
-    // of refresh() callbacks. The refresh() function has optional pre and post-refresh callbacks.
-    // Here, I use a post-refresh callback to do a timed scroll to the bottom of the list
-    // after the new elements are added. The scroller will smoothly scroll to the bottom over
-    // a 400mSec period. It's important to use the refresh() callback to insure that the scroll
-    // isn't started until the scroller has first been refreshed.
-    iscrollview.refresh(null, null,
-      $.proxy(function afterRefreshCallback(iscrollview) { 
-        this.scrollToElement(lastItemSelector, 400); 
-        }, iscrollview) ); 
-    }
-  
-  // This is the callback that is called when the user has completed the pull-down gesture.
-  // Your code should initiate retrieving data from a server, local database, etc.
-  // Typically, you will call some function like jQuery.ajax() that will make a callback
-  // once data has been retrieved.
-  //
-  // For demo, we just use timeout to simulate the time required to complete the operation.
-  function onPullDown (event, data) {
-  	gotHomeData(pullDownGeneratedCount, function(err, content){
-  		if (err){
-  			return;
-  		}
-  		gotPullDownData(event, data, content);
-  	});
-  }    
+    function onPullDown (event, data) {
+        CG.HomePullDownRefresh.onPullDown(event, data);
+    }    
 
   // Called when the user completes the pull-up gesture.
-  function onPullUp (event, data) { 
-    setTimeout(function fakeRetrieveDataTimeout() {
-      gotPullUpData(event, data);
-      }, 
-      1500); 
-    }    
-  
+    function onPullUp (event, data) {
+        CG.HomePullDownRefresh.onPullUp(event, data);
+    }
+
+    function initData() {
+        CG.HomePullDownRefresh.initData();
+    }
+   
   // Set-up jQuery event callbacks
   $(document).delegate("div.home-page", "pageinit", 
     function bindPullPagePullCallbacks(event) {
@@ -667,235 +727,27 @@ $(document).delegate(".fastclick", "vclick click", function(event) {
   
 
   $(document).ready(function(){
-  	initData();
+  	 initData();
   });
 
-  }(jQuery));
-
-
-// pageMyFavourite
-(function pullPagePullImplementation($) {
-  "use strict";
-  var pullDownGeneratedCount = 0,
-      pullUpGeneratedCount = 0,
-      limit = 20,
-      listSelector = "div.favourite-page ul.ui-listview",
-      lastItemSelector = listSelector + " > li:last-child";
-
-   function gotFavouriteData(skip, callback){
-        CG.PostController.get('/v1/post/register?filter={"order":"createAt","skip":'+skip+',"limit":'+limit+'}', function(err, data){
-            callback(err, data);
-        });
-    }
-
-    function initData() {
-        if ($(listSelector) && $(listSelector).html() && $(listSelector).html().length > 0){
-            ;
-        }
-        else {
-            gotFavouriteData(0, function(err, content){
-                gotPullDownData(null, null, content);
-            });
-        }
-    }
-    
-  /* For this example, I prepend three rows to the list with the pull-down, and append
-   * 3 rows to the list with the pull-up. This is only to make a clear illustration that the
-   * action has been performed. A pull-down or pull-up might prepend, append, replace or modify
-   * the list in some other way, modify some other page content, or may not change the page 
-   * at all. It just performs whatever action you'd like to perform when the gesture has been 
-   * completed by the user.
-   */
-  function gotPullDownData(event, data, content) {
-    var i,
-        newContent = "";
-
-    content.forEach(function(e){
-        var html = '<li data-icon="false"><a href="#pageDetail?id='+ e.id +'">';
-        html += '<img src="'+ e.photo +'">';
-        html += '<h2>' + e.title + '</h2>';
-        html += '<span class="ui-li-count">'+$.timeago(e.createAt)+'</span></a><hr></li>'
-        newContent = html + newContent;
-    }); 
-
-    pullDownGeneratedCount += content.length;
-    
-    $(listSelector).prepend(newContent).listview("refresh");  // Prepend new content and refresh listview
-        if (data) {
-            data.iscrollview.refresh();    // Refresh the iscrollview
-        }
-    }
-  
-  function gotPullUpData(event, data) {
-    var i,
-        iscrollview = data.iscrollview,
-        newContent = "";
-    for (i=0; i<3; i+=1) { 
-      newContent += "<li>Pullup-generated row " + (++pullUpGeneratedCount) + "</li>";
-      }
-    $(listSelector).append(newContent).listview("refresh");
-  
-    // The refresh is a bit different for the pull-up, because I want to demonstrate the use
-    // of refresh() callbacks. The refresh() function has optional pre and post-refresh callbacks.
-    // Here, I use a post-refresh callback to do a timed scroll to the bottom of the list
-    // after the new elements are added. The scroller will smoothly scroll to the bottom over
-    // a 400mSec period. It's important to use the refresh() callback to insure that the scroll
-    // isn't started until the scroller has first been refreshed.
-    iscrollview.refresh(null, null,
-      $.proxy(function afterRefreshCallback(iscrollview) { 
-        this.scrollToElement(lastItemSelector, 400); 
-        }, iscrollview) ); 
-    }
-  
-  // This is the callback that is called when the user has completed the pull-down gesture.
-  // Your code should initiate retrieving data from a server, local database, etc.
-  // Typically, you will call some function like jQuery.ajax() that will make a callback
-  // once data has been retrieved.
-  //
-  // For demo, we just use timeout to simulate the time required to complete the operation.
-  function onPullDown (event, data) {
-    gotHomeData(pullDownGeneratedCount, function(err, content){
-        if (err){
-            return;
-        }
-        gotPullDownData(event, data, content);
-    });
-  }    
-
-  // Called when the user completes the pull-up gesture.
-  function onPullUp (event, data) { 
-    setTimeout(function fakeRetrieveDataTimeout() {
-      gotPullUpData(event, data);
-      }, 
-      1500); 
-    }    
-  
-  // Set-up jQuery event callbacks
-  $(document).delegate("div.favourite-page", "pageinit", 
-    function bindPullPagePullCallbacks(event) {
-      $(".iscroll-wrapper", this).bind( {
-      iscroll_onpulldown : onPullDown,
-      iscroll_onpullup   : onPullUp
-      } );
-    } );  
-
-  $(document).on("pagebeforechange", function(e, f){
-    if (typeof f.toPage !== "string"){
-        return;
-    }
-    
-    var hashs = $.mobile.path.parseUrl(f.absUrl).hash.split("?");
-    var hash = hashs[0];
-
-    if (hash === "#pageMyFavourite"){
-        initData();
-    }
-    
-    console.log("pageMyFavourite pagebeforechange");
-    
-  });
-
-  }(jQuery));
+}(jQuery));
 
 
 // pageMyClass
 (function pullPagePullImplementation($) {
   "use strict";
-  var pullDownGeneratedCount = 0,
-      pullUpGeneratedCount = 0,
-      limit = 20,
-      listSelector = "div.class-page ul.ui-listview",
-      lastItemSelector = listSelector + " > li:last-child";
+    function onPullDown (event, data) {
+        CG.MyClassPullDownRefresh.onPullDown(event, data);
+    }    
 
-   function gotMyClassData(skip, callback){
-        CG.PostController.get('/v1/post/owner?filter={"order":"createAt","skip":'+skip+',"limit":'+limit+'}', function(err, data){
-            callback(err, data);
-        });
+  // Called when the user completes the pull-up gesture.
+    function onPullUp (event, data) {
+        CG.MyClassPullDownRefresh.onPullUp(event, data);
     }
 
     function initData() {
-        if ($(listSelector) && $(listSelector).html() && $(listSelector).html().length > 0){
-            ;
-        }
-        else {
-            gotMyClassData(0, function(err, content){
-                if (!err){
-                    gotPullDownData(null, null, content);
-                }
-            });
-        }
+        CG.MyClassPullDownRefresh.initData();
     }
-    
-  /* For this example, I prepend three rows to the list with the pull-down, and append
-   * 3 rows to the list with the pull-up. This is only to make a clear illustration that the
-   * action has been performed. A pull-down or pull-up might prepend, append, replace or modify
-   * the list in some other way, modify some other page content, or may not change the page 
-   * at all. It just performs whatever action you'd like to perform when the gesture has been 
-   * completed by the user.
-   */
-  function gotPullDownData(event, data, content) {
-    var i,
-        newContent = "";
-        
-    content.forEach(function(e){
-        var html = '<li data-icon="false"><a href="#pageDetail?id='+ e.id +'">';
-        //html += '<img src="'+ e.photo +'">';
-        html += '<h2>' + e.title + '</h2>';
-        html += '<span class="ui-li-count">'+$.timeago(e.createAt)+'</span></a><hr></li>'
-        newContent = html + newContent;
-    }); 
-
-    pullDownGeneratedCount += content.length;
-    
-    $(listSelector).prepend(newContent).listview("refresh");  // Prepend new content and refresh listview
-        if (data) {
-            data.iscrollview.refresh();    // Refresh the iscrollview
-        }
-    }
-  
-  function gotPullUpData(event, data) {
-    var i,
-        iscrollview = data.iscrollview,
-        newContent = "";
-    for (i=0; i<3; i+=1) { 
-      newContent += "<li>Pullup-generated row " + (++pullUpGeneratedCount) + "</li>";
-      }
-    $(listSelector).append(newContent).listview("refresh");
-  
-    // The refresh is a bit different for the pull-up, because I want to demonstrate the use
-    // of refresh() callbacks. The refresh() function has optional pre and post-refresh callbacks.
-    // Here, I use a post-refresh callback to do a timed scroll to the bottom of the list
-    // after the new elements are added. The scroller will smoothly scroll to the bottom over
-    // a 400mSec period. It's important to use the refresh() callback to insure that the scroll
-    // isn't started until the scroller has first been refreshed.
-    iscrollview.refresh(null, null,
-      $.proxy(function afterRefreshCallback(iscrollview) { 
-        this.scrollToElement(lastItemSelector, 400); 
-        }, iscrollview) ); 
-    }
-  
-  // This is the callback that is called when the user has completed the pull-down gesture.
-  // Your code should initiate retrieving data from a server, local database, etc.
-  // Typically, you will call some function like jQuery.ajax() that will make a callback
-  // once data has been retrieved.
-  //
-  // For demo, we just use timeout to simulate the time required to complete the operation.
-  function onPullDown (event, data) {
-    gotHomeData(pullDownGeneratedCount, function(err, content){
-        if (err){
-            return;
-        }
-        gotPullDownData(event, data, content);
-    });
-  }    
-
-  // Called when the user completes the pull-up gesture.
-  function onPullUp (event, data) { 
-    setTimeout(function fakeRetrieveDataTimeout() {
-      gotPullUpData(event, data);
-      }, 
-      1500); 
-    }    
   
   // Set-up jQuery event callbacks
   $(document).delegate("div.class-page", "pageinit", 
@@ -905,10 +757,6 @@ $(document).delegate(".fastclick", "vclick click", function(event) {
       iscroll_onpullup   : onPullUp
       } );
     } );  
-
-  $(document).ready(function(){
-    initData();
-  });
 
   $(document).on("pagebeforechange", function(e, f){
     if (typeof f.toPage !== "string"){
@@ -920,261 +768,7 @@ $(document).delegate(".fastclick", "vclick click", function(event) {
 
     if (hash === "#pageMyClass"){
         initData();
-    }
-    
-    console.log("pageMyClass pagebeforechange");
-    
-  });
-
-  }(jQuery));
-
-
-//pageStudents
-(function pullPagePullImplementation($) {
-  "use strict";
-
-var $table = $('#table'),
-        $remove = $('#remove'),
-        selections = [];
-
-    function initTable() {
-        $table.bootstrapTable({
-            height: getHeight(),
-            columns: [
-                [
-                    {
-                        field: 'state',
-                        checkbox: true,
-                        rowspan: 2,
-                        align: 'center',
-                        valign: 'middle'
-                    }, {
-                        title: 'Item ID',
-                        field: 'id',
-                        rowspan: 2,
-                        align: 'center',
-                        valign: 'middle',
-                        sortable: true,
-                        footerFormatter: totalTextFormatter
-                    }, {
-                        title: 'Item Detail',
-                        colspan: 3,
-                        align: 'center'
-                    }
-                ],
-                [
-                    {
-                        field: 'name',
-                        title: 'Item Name',
-                        sortable: true,
-                        editable: true,
-                        footerFormatter: totalNameFormatter,
-                        align: 'center'
-                    }, {
-                        field: 'price',
-                        title: 'Item Price',
-                        sortable: true,
-                        align: 'center',
-                        editable: {
-                            type: 'text',
-                            title: 'Item Price',
-                            validate: function (value) {
-                                value = $.trim(value);
-                                if (!value) {
-                                    return 'This field is required';
-                                }
-                                if (!/^\$/.test(value)) {
-                                    return 'This field needs to start width $.'
-                                }
-                                var data = $table.bootstrapTable('getData'),
-                                    index = $(this).parents('tr').data('index');
-                                console.log(data[index]);
-                                return '';
-                            }
-                        },
-                        footerFormatter: totalPriceFormatter
-                    }, {
-                        field: 'operate',
-                        title: 'Item Operate',
-                        align: 'center',
-                        events: operateEvents,
-                        formatter: operateFormatter
-                    }
-                ]
-            ]
-        });
-        // sometimes footer render error.
-        setTimeout(function () {
-            $table.bootstrapTable('resetView');
-        }, 200);
-        $table.on('check.bs.table uncheck.bs.table ' +
-                'check-all.bs.table uncheck-all.bs.table', function () {
-            $remove.prop('disabled', !$table.bootstrapTable('getSelections').length);
-
-            // save your data, here just save the current page
-            selections = getIdSelections();
-            // push or splice the selections if you want to save all data selections
-        });
-        $table.on('expand-row.bs.table', function (e, index, row, $detail) {
-            if (index % 2 == 1) {
-                $detail.html('Loading from ajax request...');
-                $.get('LICENSE', function (res) {
-                    $detail.html(res.replace(/\n/g, '<br>'));
-                });
-            }
-        });
-        $table.on('all.bs.table', function (e, name, args) {
-            console.log(name, args);
-        });
-        $remove.click(function () {
-            var ids = getIdSelections();
-            $table.bootstrapTable('remove', {
-                field: 'id',
-                values: ids
-            });
-            $remove.prop('disabled', true);
-        });
-        $(window).resize(function () {
-            $table.bootstrapTable('resetView', {
-                height: getHeight()
-            });
-        });
-    }
-
-    function getIdSelections() {
-        return $.map($table.bootstrapTable('getSelections'), function (row) {
-            return row.id
-        });
-    }
-
-    function responseHandler(res) {
-        $.each(res.rows, function (i, row) {
-            row.state = $.inArray(row.id, selections) !== -1;
-        });
-        return res;
-    }
-
-    function detailFormatter(index, row) {
-        var html = [];
-        $.each(row, function (key, value) {
-            html.push('<p><b>' + key + ':</b> ' + value + '</p>');
-        });
-        return html.join('');
-    }
-
-    function operateFormatter(value, row, index) {
-        return [
-            '<a class="like" href="javascript:void(0)" title="Like">',
-            '<i class="glyphicon glyphicon-heart"></i>',
-            '</a>  ',
-            '<a class="remove" href="javascript:void(0)" title="Remove">',
-            '<i class="glyphicon glyphicon-remove"></i>',
-            '</a>'
-        ].join('');
-    }
-
-    window.operateEvents = {
-        'click .like': function (e, value, row, index) {
-            alert('You click like action, row: ' + JSON.stringify(row));
-        },
-        'click .remove': function (e, value, row, index) {
-            $table.bootstrapTable('remove', {
-                field: 'id',
-                values: [row.id]
-            });
-        }
-    };
-
-    function totalTextFormatter(data) {
-        return 'Total';
-    }
-
-    function totalNameFormatter(data) {
-        return data.length;
-    }
-
-    function totalPriceFormatter(data) {
-        var total = 0;
-        $.each(data, function (i, row) {
-            total += +(row.price.substring(1));
-        });
-        return '$' + total;
-    }
-
-    function getHeight() {
-        return $(window).height() - $('h1').outerHeight(true);
-    }
-
-    $(function () {
-        var scripts = [
-                location.search.substring(1) || 'lib/bootstrap/bootstrap-table.js'
-            ],
-            eachSeries = function (arr, iterator, callback) {
-                callback = callback || function () {};
-                if (!arr.length) {
-                    return callback();
-                }
-                var completed = 0;
-                var iterate = function () {
-                    iterator(arr[completed], function (err) {
-                        if (err) {
-                            callback(err);
-                            callback = function () {};
-                        }
-                        else {
-                            completed += 1;
-                            if (completed >= arr.length) {
-                                callback(null);
-                            }
-                            else {
-                                iterate();
-                            }
-                        }
-                    });
-                };
-                iterate();
-            };
-
-        eachSeries(scripts, getScript, initTable);
-    });
-
-    function getScript(url, callback) {
-        var head = document.getElementsByTagName('head')[0];
-        var script = document.createElement('script');
-        script.src = url;
-
-        var done = false;
-        // Attach handlers for all browsers
-        script.onload = script.onreadystatechange = function() {
-            if (!done && (!this.readyState ||
-                    this.readyState == 'loaded' || this.readyState == 'complete')) {
-                done = true;
-                if (callback)
-                    callback();
-
-                // Handle memory leak in IE
-                script.onload = script.onreadystatechange = null;
-            }
-        };
-
-        head.appendChild(script);
-
-        // We handle everything using the script element injection
-        return undefined;
-    }
-
-  $(document).on("pagebeforechange", function(e, f){
-    if (typeof f.toPage !== "string"){
-        return;
-    }
-
-    var hashs = $.mobile.path.parseUrl(f.absUrl).hash.split("?");
-    var hash = hashs[0];
-
-    if (hash === "#pageStudents"){
-        initTable();
-    }
-    
+    }    
   });
 
   }(jQuery));

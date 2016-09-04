@@ -14,6 +14,7 @@ var $sql = {
     delete: 'delete from post where id=?',
     queryById: 'select post.id, title, authorId, time, address,post.createAt, post.updateAt, post.body, user.photo, user.profession, user.fullname, user.nickname from post,user where post.authorId = user.id and post.id=?',
     queryAll: 'select post.id, title, authorId, time, address,post.createAt, post.updateAt, post.body, user.photo, user.fullname, user.nickname from post,user where post.authorId = user.id',
+    queryAllCount: 'select count(*) as count from post',
     queryOwner: 'select post.*, count(postId) as sum from post left join postUser on post.id = postUser.postId where post.authorId = ? group by post.id ',
     queryRegister: 'select post.id, title, authorId, time, address,post.createAt, post.updateAt, post.body, user.photo, user.fullname, user.nickname,postUser.userId from post,user,postUser where post.authorId = user.id and post.id = postUser.postId and postUser.userId=? group by post.id',
 };
@@ -67,12 +68,36 @@ module.exports = {
             });
         });
     },
-    // /v1/post?filter={"where":{},"order":"a ASC/DESC","skip":21,"limit":20}
+    // /v1/post?filter={"where":{},"order":"ASC/DESC","skip":21,"limit":20}
     // select * from post where authorId=1 order by updateAt desc limit 5,5 ; + " order by ? DESC limit ?, ?", [param.order, param.skip, param.limit],
     queryAll: function (param, callback) {
         console.log(param.order, param.skip, param.limit);
         pool.getConnection(function(err, connection) {
-            connection.query($sql.queryAll + " order by createAt desc limit ?, ?", [param.skip, param.limit], function(err, result) {
+            connection.query($sql.queryAll + " order by ? limit ?, ?", [param.order, param.skip, param.limit], function(err, result) {
+                console.log($sql.queryAll + " order by " + param.order + " limit " + param.skip + " , " + param.limit);
+                callback(err, result);
+                connection.release();
+            });
+        });
+    },
+
+    queryAllCount: function(callback) {
+        pool.getConnection(function(err, connection) {
+            connection.query($sql.queryAllCount, {}, function(err, result) {
+                callback(err, result);
+                connection.release();
+            });
+        });
+    },
+
+    queryOwnerCount: function(param, callback){
+        pool.getConnection(function(err, connection) {
+            var sql = "select count(*) as count from post where post.authorId = ?";
+            if (param.role == 0){//学生
+                sql = "select count(*) as count from postUser where userId = ?;";
+            }            
+
+            connection.query(sql, param.userId, function(err, result) {
                 callback(err, result);
                 connection.release();
             });
@@ -81,10 +106,15 @@ module.exports = {
 
     // 
     queryOwner: function(param, callback) {
-        console.log($sql.queryOwner, param.authorId);
+        //console.log($sql.queryOwner, param.authorId);
+        var sql = $sql.queryOwner + " order by ? limit ?, ?"
+        if (param.role == 0){
+            sql = "select post.* from postUser, post where postUser.postId = post.id and  userId = ? order by ? limit ?, ?";
+        }
 
         pool.getConnection(function(err, connection) {
-            connection.query($sql.queryOwner + " order by createAt desc", param.authorId, function(err, result) {
+            connection.query(sql, [param.userId, param.order, param.skip, param.limit], function(err, result) {
+                console.log(sql, param.userId, param.order, param.skip, param.limit);
                 callback(err, result);
                 connection.release();
             });
