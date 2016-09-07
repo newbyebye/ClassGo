@@ -76,7 +76,7 @@ router.get('/post/:id/game', function(req, res, next){
 * get game by id
 * GET /v1/game/:id
 */
-router.get('/game/:id', function(req, res, next){
+router.get('/game/:id', checkToken, function(req, res, next){
   gameDao.queryGameById({id: req.params.id}, function(err, result){
           if (err || result.length == 0) {
               console.log(err);
@@ -85,7 +85,22 @@ router.get('/game/:id', function(req, res, next){
               next(err);
               return
           }
-          res.status(200).json(result[0]);
+          var game = result[0];
+          postDao.queryById({id: result[0].postId}, function(err, result){
+              if (err || result.length == 0) {
+                  var err = new Error('not found');
+                  err.status = 501;
+                  next(err);
+                  return
+              }
+
+              if (req.api_user.userId == result[0].authorId ) {
+                  game.showResult = 1;
+              }
+
+              res.status(200).json(game);
+          });
+          
       });
 });
 
@@ -93,15 +108,40 @@ router.get('/game/:id', function(req, res, next){
 * get game statisticsVar1 by id
 * GET /v1/game/:id/stat1
 */
-router.get('/game/:id/stat1', function(req, res, next){
-  gameDao.statisticsVar1({id: req.params.id}, function(err, result){
+router.get('/game/:id/stat1', checkToken, function(req, res, next){
+  gameDao.queryGameById({id: req.params.id}, function(err, result){
+      if (err || result.length == 0) {
+          console.log(err);
+          var err = new Error('not found');
+          err.status = 501;
+          next(err);
+          return
+      }
+      
+      var showResult = result[0].showResult;
+      postDao.queryById({id: result[0].postId}, function(err, result){
           if (err || result.length == 0) {
-              console.log(err);
+              var err = new Error('not found');
+              err.status = 501;
+              next(err);
+              return
+          }
+
+          if (req.api_user.userId != result[0].authorId && showResult == 0) {
               res.status(200).json([]);
               return
           }
-          res.status(200).json(result);
+
+          gameDao.statisticsVar1({id: req.params.id}, function(err, result){
+              if (err || result.length == 0) {
+                  console.log(err);
+                  res.status(200).json([]);
+                  return
+              }
+              res.status(200).json(result);
+          });
       });
+  });
 });
 
 /*

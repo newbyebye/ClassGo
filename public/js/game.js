@@ -18,6 +18,15 @@ function loadGameResult(gameId){
              name += " - "+data.subname;
           }
 
+          if (data.showResult == 1){
+              $("#result_toolbar").show();
+              $('#game_result_table').show();
+          }
+          else{
+              $("#result_toolbar").hide();
+              $('#game_result_table').hide();
+          }
+
           $("#result_game_name").text(name+" 游戏结果");
 
           CG.PostController.get('/v1/game/'+gameId+'/stat1', function(err, data){
