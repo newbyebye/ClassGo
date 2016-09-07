@@ -174,9 +174,70 @@ router.post('/game/:id', checkToken, function(req, res, next){
           });
       }
   });
-  
 
 });
+
+function updateWinner(gameId, var1){
+    gameDao.calcRusultGame1({id:gameId, var1: var1}, function(err, result){
+        if (err || result.length == 0) {
+            console.log(err);
+            return
+        }
+
+        for (var i = 0; i < result.length; i++){
+            console.log(result[i]);
+            gameDao.updateWin({win:1, id:result[i].id}, function(err, result){});
+        }
+    });
+}
+
+Array.prototype.shuffle = function() {
+  var input = this;
+  for (var i = input.length-1; i >=0; i--) {
+  var randomIndex = Math.floor(Math.random()*(i+1)); 
+  var itemAtIndex = input[randomIndex]; 
+  input[randomIndex] = input[i]; 
+  input[i] = itemAtIndex;
+  }
+  return input;
+}  
+
+function game4(gameId, subtype){
+    gameDao.queryResultGame({id: gameId}, function(err, result){
+        if (err || result.length == 0) {
+            console.log(err);
+            return
+        }
+
+        if (result.length < 2){
+            return;
+        }
+
+        var count = Math.ceil(result.length * 0.1);
+        result.shuffle();
+        if (subtype == 1){
+           // 随机取count组，如果2人数字相加为100则该组2人获胜
+           for (var i = 0; i < count; i++){
+              if (result[i*2].var1 + result[i*2+1].var1 == 100){
+                 // 获胜
+                 gameDao.updateWin({win:1, id:result[i*2].id}, function(err, result){});
+                 gameDao.updateWin({win:1, id:result[i*2+1].id}, function(err, result){});
+              }
+           }
+        }
+        else{
+            // 随机取count组，如果2人数字相同则该组2人获胜
+            for (var i = 0; i < count; i++){
+              if (result[i*2].var1 == result[i*2+1].var1){
+                 // 获胜
+                 gameDao.updateWin({win:1, id:result[i*2].id}, function(err, result){});
+                 gameDao.updateWin({win:1, id:result[i*2+1].id}, function(err, result){});
+              }
+           }
+        }
+
+    });
+}
 
 function endgame(gameId){
     gameDao.updateStatus({id: gameId}, function(){
@@ -197,27 +258,98 @@ function endgame(gameId){
 
                 for (var i = 0; i < result.length; i++){
                     console.log(result[i]);
-                    gameDao.updateWin({id:result[i].id}, function(err, result){});
+                    gameDao.updateWin({win:1, id:result[i].id}, function(err, result){});
                 }
             });
           }
           else if (game.type == 3){
             // 强制性拍卖
-            if (game.subtype == 1){
-              calcRusultGame3_1
-              gameDao.calcRusultGame1({id:gameId}, function(err, result){
-                  if (err || result.length == 0) {
-                      console.log(err);
-                      return
+            gameDao.calcRusultGame3({id:gameId}, function(err, result){
+                if (err || result.length == 0) {
+                    console.log(err);
+                    return
+                }
+                var max = result[0].var1;
+                var maxIdx = 0;
+                for (var i = 0; i < result.length; i++){
+                  if (result[i].var1 != max){
+                    break;
                   }
+                  else{
+                    maxIdx++;
+                  }
+                }
+                var ownIdx = Math.floor(Math.random()*(maxIdx));
+                gameDao.updateWin({win:2, id:result[ownIdx].id}, function(err, result){});
+                // 最大值获得书
+                var ownVar = result[ownIdx].var1 - 25;
+                var winIdx = ownIdx;
+                if (result[result.length - 1].var1 > ownVar){
+                    gameDao.updateWin({win:1, id:result[ownIdx].id}, function(err, result){});
+                }
+                else{
+                    var min = result[result.length - 1].var1;
+                    for (var i = result.length - 1; i >= 0; i--){              
+                        if (result[i].var1 != min){
+                            break;
+                        }
+                        gameDao.updateWin({win:1, id:result[i].id}, function(err, result){});
+                    }
+                }
 
-                  for (var i = 0; i < result.length; i++){
-                      console.log(result[i]);
-                      gameDao.updateWin({id:result[i].id}, function(err, result){});
-                  }
-              });
-              
-            }
+                
+                
+            
+
+            });
+          }
+          else if (game.type == 4){
+            // 均衡多重性
+            game4(gameId, game.subtype);
+          }
+          else if (game.type == 5){
+            // 多数派游戏
+            gameDao.calcRusultGame5_6({id:gameId, order:'count desc'}, function(err, result){
+                if (err || result.length == 0) {
+                    console.log(err);
+                    return;
+                }
+
+                // 最大值为1 没有胜者
+                if (result[0].count == 1){
+                    console.log("game "+gameId + " no win.");
+                    return;
+                }
+
+                var var1 = result[0].var1;
+                updateWinner(gameId, var1);
+            });
+          }
+          else if (game.type == 6){
+            // 少数派游戏
+            gameDao.calcRusultGame5_6({id:gameId, order:'count asc'}, function(err, result){
+                if (err || result.length == 0) {
+                    console.log(err);
+                    return;
+                }
+
+                // 最大值为1 没有胜者
+                if (result[0].count == 1){
+                    console.log("game "+gameId + " no win.");
+                    return;
+                }
+
+                var min = result[0].count;
+
+                for (var i = 0; i < result.length; i++){
+                    if (min == result[i].count){
+                        updateWinner(gameId, result[i].var1);
+                    }
+                    else{
+                        break;
+                    }
+                }
+            });
           }
 
         });

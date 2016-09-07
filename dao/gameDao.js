@@ -86,21 +86,27 @@ var $sql = {
     queryGameById: 'select game.*, gameTime - time_to_sec(timediff(now(),game.createAt)) as restTime, gameTemplate.name, gameTemplate.type, gameTemplate.subname, gameTemplate.subtype, gameTemplate.ruleLabel,\
                    gameTemplate.var1Label, gameTemplate.var1Help, gameTemplate.var1Type, gameTemplate.var1Range, gameTemplate.var1Select, \
                    gameTemplate.var2Label, gameTemplate.var2Help, gameTemplate.var2Type, gameTemplate.var2Range, gameTemplate.var2Select from game,gameTemplate where game.id=? and game.gameTemplateId = gameTemplate.id',
-    updateWin: 'update userGame set isWin = 1 where id=?',
+    updateWin: 'update userGame set isWin = ? where id=?',
 
-    win: 'select userId,var1,fullname as name,studentNo from userGame,user where gameId = ? and isWin = 1 and user.id = userGame.userId',
+    win: 'select userId,var1,fullname as name,studentNo from userGame,user where gameId = ? and isWin > 0 and user.id = userGame.userId',
 
     statisticsVar1: 'select var1,count(var1) as count from userGame where gameId = ? group by var1',
     statisticsVar2: 'select var2,count(var2) as count from userGame where gameId = ? group by var2',
 
     report:'select userGame.*, game.postId, game.reward from userGame, game where userGame.gameId = game.id and postId = ?',
 
+    queryResultGame:'select * from userGame where gameId=?',
+
+    // 
+    calcRusultGame: 'select * from userGame where gameId =? and var1 = ?',
 
     // 猜数字游戏
     calcRusultGame1:'select * from userGame where gameId =? and var1 = (select max(var1) from userGame where gameId = ? and var1 <(select sum(var1)*0.7/count(*) from userGame where gameId = ?));',
     // 强制性拍卖
-    calcRusultGame3_1: 'select * from userGame where gameId = ? and var1 = (select max(var1) from userGame where gameId = ?)',
-    calcRusultGame3_2: 'select * from userGame where gameId = ? and var1 = (select max(var1) from userGame where gameId = ?)',
+    calcRusultGame3: 'select * from userGame where gameId = ? order by var1 desc',
+
+    // 多数派游戏
+    calcRusultGame5_6: 'select var1, count(var1) as count from userGame where gameId = ? group by var1 order by ?',
 };
 
 function getRandomCode(connection, callback){
@@ -165,7 +171,7 @@ module.exports = {
 
     updateWin: function(param, callback) {
         pool.getConnection(function(err, connection) {
-            connection.query($sql.updateWin, param.id, function(err, result) {
+            connection.query($sql.updateWin, [param.win, param.id], function(err, result) {
                 
                 callback(err, result);
     
@@ -184,11 +190,52 @@ module.exports = {
             });
         });
     },
+    
+
+    queryResultGame: function(param, callback){
+        pool.getConnection(function(err, connection) {
+            connection.query($sql.queryResultGame, param.id, function(err, result) {
+                callback(err, result);
+                connection.release();
+            });
+        });
+    },
+
+    calcRusultGame: function(param, callback){
+        pool.getConnection(function(err, connection) {
+            connection.query($sql.calcRusultGame, [param.id, param.var1], function(err, result) {
+                callback(err, result);
+                connection.release();
+            });
+        });
+    },
 
     // 猜数字游戏
     calcRusultGame1: function(param, callback){
         pool.getConnection(function(err, connection) {
             connection.query($sql.calcRusultGame1, [param.id, param.id, param.id], function(err, result) {
+                callback(err, result);
+                connection.release();
+            });
+        });
+    },
+
+    // 强制性拍卖
+    calcRusultGame3: function(param, callback){
+        pool.getConnection(function(err, connection) {
+            connection.query($sql.calcRusultGame3, [param.id], function(err, result) {
+                callback(err, result);
+                connection.release();
+            });
+        });
+    },
+
+    
+
+    // 少数派 多数派游戏
+    calcRusultGame5_6: function(param, callback){
+        pool.getConnection(function(err, connection) {
+            connection.query($sql.calcRusultGame5_6, [param.id, param.order], function(err, result) {
                 callback(err, result);
                 connection.release();
             });

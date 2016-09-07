@@ -48,7 +48,7 @@
           </select>
         </fieldset>
 
-        <div data-role="fieldcontain" id="game_playerNum_field">
+        <div data-role="fieldcontain" id="game_playerNum_field" style="display: none;">
           <label for="game_playerNum">参与游戏人数</label>
           <input id="game_playerNum"  placeholder="输入为空，默认为参与游戏的所有人"/>
         </div>
@@ -149,8 +149,8 @@
         <table id="game_result_table"
            data-toolbar="#result_toolbar"
            data-toggle="game_result_table"
-           data-filter-control="true"
-           data-filter-show-clear="true">
+           data-filter-control="false"
+           data-filter-show-clear="false">
           <thead>
           <tr>
               <th data-field="var1" data-filter-control="var1">数字</th>
@@ -165,8 +165,8 @@
         <table id="game_win_table"
            data-toolbar="#win_toolbar"
            data-toggle="game_win_table"
-           data-filter-control="true"
-           data-filter-show-clear="true">
+           data-filter-control="false"
+           data-filter-show-clear="false">
           <thead>
             <tr>
                 <th data-field="name" data-filter-control="name">获胜者姓名</th>

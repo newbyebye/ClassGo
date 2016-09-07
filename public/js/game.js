@@ -98,7 +98,7 @@ function newGameDetail(id){
             $('#game_reward').val("");
             $('#game_playerNum').val("");
 
-            if (game1.type == 2 || game1.type == 3 || game1.type == 4 || game1.type == 5 || game1.type == 6){
+            if (game1.type == 2  || game1.type == 4 || game1.type == 5 || game1.type == 6){
                 $('#game_subtype_field').show();
                 $('#game_template_id').val(0);
             }
