@@ -93,54 +93,56 @@ router.post('/post/:id/upload', checkToken, function(req, res, next){
       var postId = req.params.id;
       var path = req.files.upload_file.path;
       if (!path.endsWith(".xls")){
-          res.status(200).json({});
+          res.status(200).json({errorMsg:"only support *.xls"});
           return;
       }
 
-      
-          if (err) {
-              console.error(err);
-              res.status(200).json({});
-              return;
-          }
-
-          var datas = [];
-          var dIdx  = 0;
-          xl.open(path, function(err,bk){
-            if(err) {
-                var err = new Error('file error');
-                err.status = 502;
-                next(err);
-                return
-            }
-            
-            var shtCount = bk.sheet.count;
-            for(var sIdx = 0; sIdx < shtCount; sIdx++ ){
-                //console.log('sheet "%d" ', sIdx);
-                //console.log('  check loaded : %s', bk.sheet.loaded(sIdx) );
-                var sht = bk.sheets[sIdx],
-                    rCount = sht.row.count,
-                    cCount = sht.column.count;
-                //console.log('  name = %s; index = %d; rowCount = %d; columnCount = %d', sht.name, sIdx, rCount, cCount);
-                for(var rIdx = 0; rIdx < rCount; rIdx++){    // rIdx：行数；cIdx：列数
-                    
-                    var studentNo = sht.cell(rIdx,1);
+      var datas = [];
+      var dIdx  = 0;
+      xl.open(path, function(err,bk){
+        if(err) {
+            var err = new Error('file error');
+            err.status = 502;
+            next(err);
+            return
+        }
+        
+        var shtCount = bk.sheet.count;
+        for(var sIdx = 0; sIdx < shtCount; sIdx++ ){
+            //console.log('sheet "%d" ', sIdx);
+            //console.log('  check loaded : %s', bk.sheet.loaded(sIdx) );
+            var sht = bk.sheets[sIdx],
+                rCount = sht.row.count,
+                cCount = sht.column.count;
+            //console.log('  name = %s; index = %d; rowCount = %d; columnCount = %d', sht.name, sIdx, rCount, cCount);
+            for(var rIdx = 0; rIdx < rCount; rIdx++){    // rIdx：行数；cIdx：列数
+                
+                for (var cIdx = 0; cIdx < 10; cIdx++){
+                    var studentNo = sht.cell(rIdx,cIdx);
+                    //console.log(typeof studentNo);
+                    if (typeof studentNo != "string"){
+                        continue;
+                    }
                     studentNo = studentNo.trim();
                     //console.log(studentNo);
                     if (studentNo.charAt(0) == 'U' || studentNo.charAt(0) == 'M' || studentNo.charAt(0) == 'D'){
-                        var fullname = sht.cell(rIdx,2).trim();
+                        var fullname = sht.cell(rIdx,cIdx+1).trim();
                         datas[dIdx] = {'postId':postId, 'userId':"", 'studentNo':studentNo, 'fullname':fullname.trim()};    
                         dIdx++;
+                        break;
                     }
                 }
-            }
 
-            //console.log(datas);
-            insertData(datas, function(){
-                res.status(200).json({"count":dIdx});
-            });
-            
-          });
+                
+            }
+        }
+
+        //console.log(datas);
+        insertData(datas, function(){
+            res.status(200).json({"count":dIdx});
+        });
+        
+      });
       
   });
 });
