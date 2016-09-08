@@ -88,7 +88,7 @@ var $sql = {
                    gameTemplate.var2Label, gameTemplate.var2Help, gameTemplate.var2Type, gameTemplate.var2Range, gameTemplate.var2Select from game,gameTemplate where game.id=? and game.gameTemplateId = gameTemplate.id',
     updateWin: 'update userGame set isWin = ? where id=?',
 
-    win: 'select userId,var1,fullname as name,studentNo from userGame,user where gameId = ? and isWin > 0 and user.id = userGame.userId',
+    win: 'select userId,var1,fullname as name,studentNo, isWin from userGame,user where gameId = ? and isWin > 0 and user.id = userGame.userId',
 
     statisticsVar1: 'select var1,count(var1) as count from userGame where gameId = ? group by var1',
     statisticsVar2: 'select var2,count(var2) as count from userGame where gameId = ? group by var2',
@@ -102,6 +102,8 @@ var $sql = {
 
     // 猜数字游戏
     calcRusultGame1:'select * from userGame where gameId =? and var1 = (select max(var1) from userGame where gameId = ? and var1 <(select sum(var1)*0.7/count(*) from userGame where gameId = ?));',
+    calcRusultGameSum: 'select sum(var1) as sum from userGame where gameId=?',
+
     // 强制性拍卖
     calcRusultGame3: 'select * from userGame where gameId = ? order by var1 desc',
 
@@ -214,6 +216,15 @@ module.exports = {
     calcRusultGame1: function(param, callback){
         pool.getConnection(function(err, connection) {
             connection.query($sql.calcRusultGame1, [param.id, param.id, param.id], function(err, result) {
+                callback(err, result);
+                connection.release();
+            });
+        });
+    },
+
+    calcRusultGameSum: function(param, callback){
+        pool.getConnection(function(err, connection) {
+            connection.query($sql.calcRusultGameSum, [param.id, param.id, param.id], function(err, result) {
                 callback(err, result);
                 connection.release();
             });

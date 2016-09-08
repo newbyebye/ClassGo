@@ -37,6 +37,19 @@ function loadGameResult(gameId){
       var $win = $('#game_win_table');
       $win.bootstrapTable('destroy');
       CG.PostController.get('/v1/game/'+gameId+'/win', function(err, data){
+          for (var i = 0; i < data.length; i++){
+              var name = "";
+              if (data[i].name){
+                  name += data[i].name;
+              }
+              if (data[i].isWin == 2){
+                  name += "(获得书)"
+              }
+              else{
+                  name += "(获胜)"
+              }
+              data[i].name = name;
+          }
           $win.bootstrapTable({data: data});
       });
 }

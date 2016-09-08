@@ -131,9 +131,7 @@ router.post('/post/:id/upload', checkToken, function(req, res, next){
                         dIdx++;
                         break;
                     }
-                }
-
-                
+                } 
             }
         }
 
@@ -170,8 +168,6 @@ router.get('/post/:id/report', checkToken, function(req, res, next){
         next(err);
         return
       }
-
-
 
       // export xlsx
       var conf ={};

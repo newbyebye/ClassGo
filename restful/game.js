@@ -218,7 +218,7 @@ router.post('/game/:id', checkToken, function(req, res, next){
 });
 
 function updateWinner(gameId, var1){
-    gameDao.calcRusultGame1({id:gameId, var1: var1}, function(err, result){
+    gameDao.calcRusultGame({id:gameId, var1: var1}, function(err, result){
         if (err || result.length == 0) {
             console.log(err);
             return
@@ -290,17 +290,30 @@ function endgame(gameId){
           var game = result[0];
           if (game.type == 1){
             // 猜数字
-            gameDao.calcRusultGame1({id:gameId}, function(err, result){
+            gameDao.calcRusultGameSum({id:gameId}, function(err, result){
                 if (err || result.length == 0) {
                     console.log(err);
                     return
                 }
 
-                for (var i = 0; i < result.length; i++){
-                    console.log(result[i]);
-                    gameDao.updateWin({win:1, id:result[i].id}, function(err, result){});
+                if (result[0].sum == 0){
+                    updateWinner(gameId, 0);
+                }
+                else{
+                    gameDao.calcRusultGame1({id:gameId}, function(err, result){
+                        if (err || result.length == 0) {
+                            console.log(err);
+                            return
+                        }
+
+                        for (var i = 0; i < result.length; i++){
+                            console.log(result[i]);
+                            gameDao.updateWin({win:1, id:result[i].id}, function(err, result){});
+                        }
+                    });
                 }
             });
+            
           }
           else if (game.type == 3){
             // 强制性拍卖
