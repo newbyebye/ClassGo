@@ -184,20 +184,20 @@ router.get('/post/:id/report', checkToken, function(req, res, next){
       async.waterfall([
         function(callback){
             lessonDao.queryAll({postId: req.params.id}, function(err, result){
-              if (err || result.length == 0){
-                  callback(err, result);
-                  return;
-              }
+                if (err || result.length == 0){
+                    callback(err, result);
+                    return;
+                }
 
-                  conf.ucols = {};
-                  for (var i = 0; i < result.length; i++){
-                      conf.cols.push({caption: new Date(result[i].startdate).Format("yyyy-MM-dd"), type: "string"});
-                      conf.ucols[new Date(result[i].startdate).Format("yyyy-MM-dd")] = 3 + i;
-                  }
-                  conf.cols.push({caption:"签到总数", type: "string"});
-                  conf.ucols["sum"] = 3 + i;
+                conf.ucols = {};
+                for (var i = 0; i < result.length; i++){
+                    conf.cols.push({caption: new Date(result[i].startdate).Format("yyyy-MM-dd"), type: "string"});
+                    conf.ucols[new Date(result[i].startdate).Format("yyyy-MM-dd")] = 3 + i;
+                }
+                conf.cols.push({caption:"签到总数", type: "string"});
+                conf.ucols["sum"] = 3 + i;
 
-                  callback(null, conf.cols.length);
+                callback(null, conf.cols.length);
               
             });
         },
@@ -233,7 +233,7 @@ router.get('/post/:id/report', checkToken, function(req, res, next){
 
         function(c, callback){
             signDao.report({postId: req.params.id}, function(err, result){
-                if (err || result.length == 0) {
+                if (err) {
                   var err = new Error('deny access');
                   err.status = 502;
                   callback(err);
@@ -253,12 +253,7 @@ router.get('/post/:id/report', checkToken, function(req, res, next){
             });
         },
       ], function(err, result){
-          if (err){
-             next(err);
-             return;
-          }
-
-          console.log(conf);
+          //console.log(conf);
 
           for (var i = 0; i < conf.rows.length; i++){
               var count = 0;
