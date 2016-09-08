@@ -408,11 +408,11 @@ router.get('/post/:id/gamereport', checkToken, function(req, res, next){
             });
         },
       ], function(err, result){
+          /*
           if (err){
              next(err);
              return;
-          }
-
+          }*/
           console.log(conf);
 
           for (var i = 0; i < conf.rows.length; i++){
