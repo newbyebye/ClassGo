@@ -302,19 +302,19 @@ router.post('/post/:id/lesson', checkToken, function(req, res, next){
                   return;
                 }
 
+                setTimeout(function(){
+                    console.log("update lesson status");
+                    lessonDao.updateStatus({"id": result.insertId, "status": 2}, function(){});
+                }, 180*60*1000);
+
                 res.status(200).json({
                   id: result.insertId
                 });
             });
             return
         }
-
-
         res.status(200).json({id: result[0].id});
       });
-      
-      // "starttime": "2010-10-05",
-      
     });
 });
 
@@ -389,6 +389,13 @@ router.post('/post/lesson/:id/sign', checkToken, function(req, res, next){
           err.status = 501;
           next(err);
           return
+      }
+
+      if (result[0].status != 1){
+          var err = new Error('lesson is closed');
+          err.status = 502;
+          next(err);
+          return;
       }
 
       req.body.lessonId = req.params.id;

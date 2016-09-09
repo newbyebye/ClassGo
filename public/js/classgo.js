@@ -525,9 +525,11 @@ function checkFileSize(fileObj) {
                 if (data.status == 1) {
                     $('#detail_lesson_id').val(data.id);
                     getMySignInStatus();
+                    $("#startSignIn").text("关闭签到");
                 }
                 else{
                     $('#detail_lesson_id').val("");
+                    $("#startSignIn").text("开启签到");
                 }
             }
         });
@@ -660,8 +662,7 @@ function checkFileSize(fileObj) {
         wx.getLocation({
             type: 'wgs84', // 默认为wgs84的gps坐标，如果要返回直接给openLocation用的火星坐标，可传入'gcj02'
             success: function (res) {
-                console.log(res);
-
+            
                 var latitude = res.latitude; // 纬度，浮点数，范围为90 ~ -90
                 var longitude = res.longitude; // 经度，浮点数，范围为180 ~ -180。
                 var speed = res.speed; // 速度，以米/每秒计
@@ -687,8 +688,15 @@ function checkFileSize(fileObj) {
     }
 
     function startSignIn() {
-        
-        // {"status": 1, "starttime": "2010-10-05", "timeout": 600, "lng":12312.1231, "lat":1.2342}
+        var text = $("#startSignIn").text();
+        var status = 1;
+        if("开启签到" == text){
+            status = 1;
+        }
+        else{
+            status = 2;
+        }
+
         wx.getLocation({
             type: 'wgs84', // 默认为wgs84的gps坐标，如果要返回直接给openLocation用的火星坐标，可传入'gcj02'
             success: function (res) {
@@ -697,11 +705,17 @@ function checkFileSize(fileObj) {
                 var speed = res.speed; // 速度，以米/每秒计
                 var accuracy = res.accuracy; // 位置精度
 
-                var data = {"status": 1, "starttime": new Date(), "timeout": 600, "lng":longitude, "lat":latitude};
+                var data = {"status": status, "starttime": new Date(), "timeout": 180*60, "lng":longitude, "lat":latitude};
                 CG.PostController.post('/v1/post/'+$('#detail_id').val()+'/lesson', data, function(err, data){
                     if (!err){
                         $('#detail_lesson_id').val(data.id);
-                        $('#detail_info').text("签名已开始,请通知学员开始签到，10分钟后签到会自动关闭。");
+                        if(status == 1){
+                            $('#detail_info').text("签名已开始,请通知学员开始签到，180分钟后签到会自动关闭。");
+                            $("#startSignIn").text("关闭签到");
+                        }
+                        else{
+                            $("#startSignIn").text("开启签到");
+                        }
                     }
                 });
             },

@@ -59,11 +59,20 @@ module.exports = {
     update: function (param, callback) {
         
         pool.getConnection(function(err, connection) {
-            connection.query($sql.update, 
-                [param.status, param.lng, param.lat, param.id], function(err, result) {
-                callback(err, result);
-                connection.release();
-            });
+            if (param.lng){
+                connection.query($sql.update, 
+                    [param.status, param.lng, param.lat, param.id], function(err, result) {
+                    callback(err, result);
+                    connection.release();
+                });
+            }
+            else{
+                connection.query('update lesson set status=? where id=?', 
+                    [param.status, param.id], function(err, result) {
+                    callback(err, result);
+                    connection.release();
+                });
+            }
         });
     },
     
