@@ -466,13 +466,13 @@ function checkFileSize(fileObj) {
         $.mobile.changePage("#pageAddClass");
   }
 
-	function getRegisterSum(postId) {
-        CG.PostController.get('/v1/post/'+postId+'/registersum', function(err, data){
-            if (!err){
-                $('#detail_sum').text(data.sum);
-            }
-        });
-  }
+function getRegisterSum(postId) {
+    CG.PostController.get('/v1/post/'+postId+'/registersum', function(err, data){
+        if (!err){
+            $('#detail_sum').text(data.sum);
+        }
+    });
+}
 
   function loadOwnerData(photo){
         CG.PostController.get('/v1/post/owner', function(err, data){
@@ -565,8 +565,6 @@ function checkFileSize(fileObj) {
 	function viewHomeDetail(id){
         $('#detail_info').text("");
         $('#detail_lesson_id').val("");
-        //stopRefreshDetail();
-        //startRefreshDetail(id);
         loadTodayLesson(id);
         getRegisterSum(id);
         getMyRegisterStatus(id);
@@ -956,9 +954,32 @@ $(document).delegate(".fastclick", "vclick click", function(event) {
             updateMeView('me_step', data);
         });
     }
-
-    console.log("default pagebeforechange");
-    
+    else if (hash === "#pageStudents"){
+        console.log("pageStudents");
+        CG.PostController.get("/v1/post/"+window.sessionStorage.getItem("postId")+"/minireport", function(err, result){
+            //var $table = $('#info_table');
+            //$table.bootstrapTable('destroy');
+            if (err){
+                return;
+            }
+            $("#student_numbers").text(result.count + "人签到");
+            /*
+            $table.bootstrapTable({data: result.rows, 
+                  columns: [{
+                    field: 'studentNo',
+                    title: '学号'
+                  },
+                  {
+                    field: 'fullname',
+                    title: '姓名'
+                  },
+                  {
+                    field: result.ucols,
+                    title: result.ucols
+                  }]
+                });*/
+        });
+    }    
   });
 
 }(jQuery));

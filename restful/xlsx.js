@@ -146,6 +146,89 @@ router.post('/post/:id/upload', checkToken, function(req, res, next){
 });
 
 
+router.get('/post/:id/minireport', checkToken, function(req, res, next){
+  postDao.queryById({id: req.params.id}, function(err, result){
+      if (err || result.length == 0) {
+          var err = new Error('not found');
+          err.status = 501;
+          next(err);
+          return
+      }
+
+      // export xlsx
+      var conf ={};
+      conf.count = 0;
+      
+      async.waterfall([
+        function(callback){
+            lessonDao.queryAll({postId: req.params.id}, function(err, result){
+                if (err || result.length == 0){
+                    callback(err, result);
+                    return;
+                }
+
+                conf.ucols = new Date(result[result.length - 1].startdate).Format("yyyy-MM-dd");
+                
+
+                callback(null, 1);
+              
+            });
+        },
+
+        function(cols, callback){
+            postUserDao.queryAll({postId: req.params.id}, function(err, result){
+              if (err || result.length == 0) {
+                  var err = new Error('deny access');
+                  err.status = 501;
+                  callback(err);
+                  return;
+              }
+
+              conf.rows = [];
+              conf.urows = {};
+              for (var i = 0; i < result.length; i++){
+                  var row = {};
+                  
+                  row.id = "" + (i + 1);
+                  row.studentNo = result[i].studentNo;
+                  row.fullname  = result[i].fullname;
+                  conf.rows.push(row);
+                  if (result[i].userId != 0){
+                     conf.urows[result[i].userId] = i;
+                  }
+              }
+
+              callback(null, conf);
+            });
+        },
+
+        function(c, callback){
+            signDao.report({postId: req.params.id}, function(err, result){
+                if (err) {
+                  var err = new Error('deny access');
+                  err.status = 502;
+                  callback(err);
+                  return;
+                }
+              
+                for (var i = 0; i < result.length; i++){
+                    
+                    var r = conf.urows[result[i].userId];
+                    if (r != undefined && new Date(result[i].starttime).Format("yyyy-MM-dd") == conf.ucols){
+                        conf.rows[r][new Date(result[i].starttime).Format("yyyy-MM-dd")] = '已签到';
+                        conf.count++;
+                    }
+                }
+                callback(null, result);
+            });
+        },
+      ], function(err, result){
+          res.status(200).json(conf);
+      });
+  });
+});
+
+
 
 /*
 * get sign report
