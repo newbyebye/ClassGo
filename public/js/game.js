@@ -27,7 +27,7 @@ function loadGameResult(gameId){
               $('#game_result_table').hide();
           }
 
-          $("#result_game_name").text(name+" 游戏结果");
+          $("#result_game_name").text(filterXSS(name+" 游戏结果"));
 
           if (data.type == 2 && data.subtype == 3){
               CG.PostController.get('/v1/game/'+gameId+'/stat2', function(err, data){
@@ -136,8 +136,8 @@ function newGameDetail(id){
         if (size > 0){
             var game1 = data[0];
 
-            $('#game_name').text(game1.name);
-            $('#game_type').text(game1.type);
+            $('#game_name').text(filterXSS(game1.name));
+            $('#game_type').text(filterXSS(""+game1.type));
             $('#game_reward').val("");
             $('#game_playerNum').val("");
 
@@ -167,9 +167,9 @@ function newGameDetail(id){
 
         if (size > 1){
             $('#game_subtype').html("");
-            $("#game_subtype-button span").html("<span>&nbsp;"+data[0].subname+"</span>");
+            $("#game_subtype-button span").html(filterXSS("<span>&nbsp;"+data[0].subname+"</span>"));
             for (var i = 0; i < size; i++){
-                $('#game_subtype').append('<option value="'+ data[i].id+'" >'+data[i].subname+'</option>');
+                $('#game_subtype').append(filterXSS('<option value="'+ data[i].id+'" >'+data[i].subname+'</option>'));
             }
              
         }
@@ -208,26 +208,26 @@ function viewActivateGame(id, status) {
           }
           else{
              // title
-             $("#player_game_name").text(name);
+             $("#player_game_name").text(filterXSS(name));
              $("#player_game_id").val(id);
-             $("#player_game_time").text(data.restTime + "秒");
+             $("#player_game_time").text(filterXSS(data.restTime + "秒"));
              countdown(data.restTime);
              
              
              // rule
-             $("#player_game_rule").text(data.ruleLabel);
-             $("#player_game_var1help").text(data.var1Help);
+             $("#player_game_rule").text(filterXSS(data.ruleLabel));
+             $("#player_game_var1help").text(filterXSS(data.var1Help));
              $("#player_game_var1").attr("placeholder", data.var1Help);
-             $("#player_game_var2help").text(data.var2Help);
+             $("#player_game_var2help").text(filterXSS(data.var2Help));
              $("#player_game_var2").attr("placeholder", data.var2Help);
              if(data.var1Label){
-                $("#player_game_var1label").text(data.var1Label);
+                $("#player_game_var1label").text(filterXSS(data.var1Label));
              }
              else{
                 $("#player_game_var1label").text("");
              }
              if(data.var2Label){
-                $("#player_game_var2label").text(data.var2Label);
+                $("#player_game_var2label").text(filterXSS(data.var2Label));
              }
              else{
                 $("#player_game_var2label").text("");
@@ -255,10 +255,10 @@ function viewActivateGame(id, status) {
 
                 $('#player_game_var3_select').html("");
                 var addrs = data.var1Select.split(",");
-                $("#player_game_var3_select span").html("<span>&nbsp;"+addrs[0].split(":")[1]+"</span>");
+                $("#player_game_var3_select span").html(filterXSS("<span>&nbsp;"+addrs[0].split(":")[1]+"</span>"));
                 $('#player_game_var3_select').val("0");
                 for (var i = 0; i < addrs.length; i++){
-                  $('#player_game_var3_select').append('<option value="'+ addrs[i].split(":")[0]+'" >'+addrs[i].split(":")[1]+'</option>');
+                  $('#player_game_var3_select').append(filterXSS('<option value="'+ addrs[i].split(":")[0]+'" >'+addrs[i].split(":")[1]+'</option>'));
                 }
              }
              else{
@@ -310,7 +310,7 @@ function viewActivateGame(id, status) {
                         newContent = html + newContent;
                 }); 
 
-                $(listSelector).prepend(newContent).listview("refresh");  // Prepend new content and refresh listview                      
+                $(listSelector).prepend(filterXSS(newContent)).listview("refresh");  // Prepend new content and refresh listview                      
             }});
                           
         }
@@ -365,32 +365,12 @@ function viewActivateGame(id, status) {
 
     pullDownGeneratedCount += content.length;
     
-    $(listSelector).html(newContent).listview("refresh");  // Prepend new content and refresh listview
+    $(listSelector).html(filterXSS(newContent)).listview("refresh");  // Prepend new content and refresh listview
         if (data) {
             data.iscrollview.refresh();    // Refresh the iscrollview
         }
   }
   
-  function gotPullUpData(event, data) {
-    var i,
-        iscrollview = data.iscrollview,
-        newContent = "";
-    for (i=0; i<3; i+=1) { 
-      newContent += "<li>Pullup-generated row " + (++pullUpGeneratedCount) + "</li>";
-      }
-    $(listSelector).append(newContent).listview("refresh");
-  
-    // The refresh is a bit different for the pull-up, because I want to demonstrate the use
-    // of refresh() callbacks. The refresh() function has optional pre and post-refresh callbacks.
-    // Here, I use a post-refresh callback to do a timed scroll to the bottom of the list
-    // after the new elements are added. The scroller will smoothly scroll to the bottom over
-    // a 400mSec period. It's important to use the refresh() callback to insure that the scroll
-    // isn't started until the scroller has first been refreshed.
-    iscrollview.refresh(null, null,
-      $.proxy(function afterRefreshCallback(iscrollview) { 
-        this.scrollToElement(lastItemSelector, 400); 
-        }, iscrollview) ); 
-    }
   
   // This is the callback that is called when the user has completed the pull-down gesture.
   // Your code should initiate retrieving data from a server, local database, etc.

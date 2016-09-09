@@ -225,7 +225,7 @@ $(function() {
                 newContent = self.showData(item) + newContent;
             }); 
     
-            $(self.listSelector).append(newContent).listview("refresh");  // Prepend new content and refresh listview
+            $(self.listSelector).append(filterXSS(newContent)).listview("refresh");  // Prepend new content and refresh listview
             if (data) {
                 data.iscrollview.refresh();    // Refresh the iscrollview
             }
@@ -448,7 +448,7 @@ function checkFileSize(fileObj) {
             dataType: 'json',//返回数据的类型  
             success: function (data, status) {  
                 if (data.count){
-                    $("#upload_msg").text("成功导入"+data.count+"条注册信息");
+                    $("#upload_msg").text("成功导入"+filterXSS("" + data.count)+"条注册信息");
                 }
                 else{
                     $("#upload_msg").text("导入失败，请检查文件格式是否正确");
@@ -469,7 +469,7 @@ function checkFileSize(fileObj) {
 function getRegisterSum(postId) {
     CG.PostController.get('/v1/post/'+postId+'/registersum', function(err, data){
         if (!err){
-            $('#detail_sum').text(data.sum);
+            $('#detail_sum').text(filterXSS("" + data.sum));
         }
     });
 }
@@ -481,14 +481,14 @@ function getRegisterSum(postId) {
                 return;
             }
             data.forEach(function(e){
-                $(scrollerOwner).append('\
+                $(scrollerOwner).append(filterXSS('\
                     <a href="javascript:void(0)" onclick="viewHomeDetail('+ e.id +')" class="wechat-list" >\
                         <img src="'+ photo +'">\
                         <div class="cell">\
                             <div class="wechat-h-time"><h5>'+e.title+'</h5><time>'+$.timeago(e.createAt)+'</time></div>\
                             <p>'+e.body+'</p>\
                         </div>\
-                    </a>');
+                    </a>'));
             });
             if (Mobilebone.pages["pageMyFavourite"]){
                 Mobilebone.pages["pageMyFavourite"].refresh();
@@ -504,10 +504,10 @@ function getRegisterSum(postId) {
             data.forEach(function(e){
                 $(scrollerRegister).append('\
                     <a href="javascript:void(0)" onclick="viewHomeDetail('+ e.id +')" class="wechat-list" >\
-                        <img src="'+ e.photo +'">\
+                        <img src="'+ filterXSS(e.photo) +'">\
                         <div class="cell">\
-                            <div class="wechat-h-time"><h5>'+e.title+'</h5><time>'+$.timeago(e.createAt)+'</time></div>\
-                            <p>'+e.body+'</p>\
+                            <div class="wechat-h-time"><h5>'+filterXSS(e.title)+'</h5><time>'+$.timeago(e.createAt)+'</time></div>\
+                            <p>'+filterXSS(e.body)+'</p>\
                         </div>\
                     </a>');
             });
@@ -571,9 +571,9 @@ function getRegisterSum(postId) {
 
         CG.PostController.get('/v1/post/'+id, function(err, data){
             $('#detail_id').val(id);
-            $('#detail_author').text(data.fullname + '-'+data.profession);
-            $('#detail_photo').attr('src', data.photo);
-            $('#detail_title').text(data.title);
+            $('#detail_author').text(filterXSS(data.fullname + '-'+data.profession));
+            $('#detail_photo').attr('src', filterXSS(data.photo));
+            $('#detail_title').text(filterXSS(data.title));
             var addr = "";
             var time = "";
             if (data.time){
@@ -582,9 +582,9 @@ function getRegisterSum(postId) {
             if (data.address){
                 addr += data.address;
             }
-            $('#detail_time').text(time);
-            $('#detail_address').text(addr);
-            $('#detail_body').text(data.body);
+            $('#detail_time').text(filterXSS(time));
+            $('#detail_address').text(filterXSS(addr));
+            $('#detail_body').text(filterXSS(data.body));
 
             if (data.authorId == window.sessionStorage.getItem("userId")){
                 $('#detail_owner').show();
@@ -601,26 +601,26 @@ function getRegisterSum(postId) {
 
     function updateMeView(view, data){
         if (data.photo){
-            $('#' + view +'_photo').attr('src', data.photo);
+            $('#' + view +'_photo').attr('src', filterXSS(data.photo));
         }
         if (data.nickname){
-            $('#' + view +'_nickname').text(data.nickname);
+            $('#' + view +'_nickname').text(filterXSS(data.nickname));
         }
         
-        $('#' + view +'_fullname').val(data.fullname);
-        $('#' + view +'_fullname').text(data.fullname);
+        $('#' + view +'_fullname').val(filterXSS(data.fullname));
+        $('#' + view +'_fullname').text(filterXSS(data.fullname));
 
-        $('#' + view +'_studentNo').val(data.studentNo);
-        $('#' + view +'_studentNo').text(data.studentNo);
+        $('#' + view +'_studentNo').val(filterXSS(data.studentNo));
+        $('#' + view +'_studentNo').text(filterXSS(data.studentNo));
 
         if (data.profession){
-            $('#' + view +'_profession').val(data.profession);
-            $('#' + view +'_profession').text(data.profession);
+            $('#' + view +'_profession').val(filterXSS(data.profession));
+            $('#' + view +'_profession').text(filterXSS(data.profession));
         }
         
         if (data.school){
-            $('#' + view +'_school').val(data.school);
-            $('#' + view +'_school').text(data.school);
+            $('#' + view +'_school').val(filterXSS(data.school));
+            $('#' + view +'_school').text(filterXSS(data.school));
         }
 
         if (data.role != undefined){
@@ -731,10 +731,10 @@ function getRegisterSum(postId) {
         var id = $('#detail_id').val();
         $('#create_id').val(id);
         CG.PostController.get('/v1/post/'+id, function(err, data){
-            $('#create_title').val(data.title);
-            $('#create_body').val(data.body);
-            $('#create_time').val(data.time);
-            $('#create_address').val(data.address);
+            $('#create_title').val(filterXSS(data.title));
+            $('#create_body').val(filterXSS(data.body));
+            $('#create_time').val(filterXSS(data.time));
+            $('#create_address').val(filterXSS(data.address));
             $.mobile.changePage("#pageAddClass");
         });  
     }
@@ -962,7 +962,7 @@ $(document).delegate(".fastclick", "vclick click", function(event) {
             if (err){
                 return;
             }
-            $("#student_numbers").text(result.count + "人签到");
+            $("#student_numbers").text(filterXSS(""+result.count) + "人签到");
             /*
             $table.bootstrapTable({data: result.rows, 
                   columns: [{

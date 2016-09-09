@@ -18,6 +18,7 @@ module.exports = function(){
   "public/lib/bootstrap/bootstrap-table-filter-control.js",
   "public/js/jweixin-1.0.0.js",
   "public/js/ajaxfileupload.js",
+  "public/js/xss.js",
   "public/js/classgo.js",
   "public/js/game.js",
   "public/js/jweixin-1.0.0.js",
