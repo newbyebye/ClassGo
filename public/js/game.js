@@ -29,28 +29,49 @@ function loadGameResult(gameId){
 
           $("#result_game_name").text(name+" 游戏结果");
 
-          CG.PostController.get('/v1/game/'+gameId+'/stat1', function(err, data){
-            $table.bootstrapTable({data: data});
-          });
+          if (data.type == 2 && data.subtype == 3){
+              CG.PostController.get('/v1/game/'+gameId+'/stat2', function(err, data){
+              });
+          }
+          else{
+              CG.PostController.get('/v1/game/'+gameId+'/stat1', function(err, data){
+                $table.bootstrapTable({data: data, 
+                  columns: [{
+                    field: 'var1',
+                    title: '数字'
+                  },
+                  {
+                    field: 'count',
+                    title: '人数'
+                  }]
+                });
+              });
+          }
+          
       });
 
       var $win = $('#game_win_table');
       $win.bootstrapTable('destroy');
       CG.PostController.get('/v1/game/'+gameId+'/win', function(err, data){
-          for (var i = 0; i < data.length; i++){
-              var name = "";
-              if (data[i].name){
-                  name += data[i].name;
-              }
-              if (data[i].isWin == 2){
-                  name += "(获得书)"
-              }
-              else{
-                  name += "(获胜)"
-              }
-              data[i].name = name;
-          }
-          $win.bootstrapTable({data: data});
+          if (data){
+            for (var i = 0; i < data.length; i++){
+                var name = "";
+                if (data[i].name){
+                    name += data[i].name;
+                }
+                if (data[i].isWin == 2){
+                    name += "(获得书)"
+                }
+                else{
+                    name += "(获胜)"
+                }
+                data[i].name = name;
+            }
+            $win.bootstrapTable({data: data});
+         }
+         else{
+            $win.bootstrapTable({data: []});
+         }
       });
 }
 
@@ -225,14 +246,13 @@ function viewActivateGame(id, status) {
                 $("#player_game_var2help_field").hide();
                 $("#player_game_var2_field").hide();
              }
-             else if ((data.type == 4 && data.subtype == 3) || (data.type == 6 && data.subtype == 2) || (data.type == 5 && data.subtype == 2)){
+             else if ((data.type == 4 && data.subtype == 3) || (data.type == 6 && data.subtype == 2) || (data.type == 5 && data.subtype == 2) || (data.type == 5 && data.subtype == 3)){
                 $("#player_game_var1help_field").hide();
                 $("#player_game_var2help_field").hide();
                 $("#player_game_var1_field").hide();
                 $("#player_game_var2_field").hide();
                 $("#player_game_var3_field").show();
 
- 
                 $('#player_game_var3_select').html("");
                 var addrs = data.var1Select.split(",");
                 $("#player_game_var3_select span").html("<span>&nbsp;"+addrs[0].split(":")[1]+"</span>");
