@@ -14,6 +14,15 @@ function loadGameResult(gameId){
       $table.bootstrapTable('destroy');
       CG.PostController.get('/v1/game/'+gameId, function(err, data){
           var name = data.name;
+          var var1Type = data.var1Type;
+          var var1Selects = [];
+
+          if (var1Type == 3){
+              var s = data.var1Select.split(",");
+              for (var i = 0; i < s.length; i++){
+                  var1Selects[s[i].split(":")[0]] = s[i].split(":")[1];
+              }
+          }
           if (data.subname){
              name += " - "+data.subname;
           }
@@ -35,6 +44,11 @@ function loadGameResult(gameId){
           }
           else{
               CG.PostController.get('/v1/game/'+gameId+'/stat1', function(err, data){
+                if (var1Type == 3){
+                    for (var i = 0; i < data.length; i++){
+                        data[i].var1 = var1Selects[data[i].var1];
+                    }
+                }
                 $table.bootstrapTable({data: data, 
                   columns: [{
                     field: 'var1',
@@ -47,32 +61,39 @@ function loadGameResult(gameId){
                 });
               });
           }
+
+          var $win = $('#game_win_table');
+          $win.bootstrapTable('destroy');
+          CG.PostController.get('/v1/game/'+gameId+'/win', function(err, data){
+              if (data){
+                if (var1Type == 3){
+                    for (var i = 0; i < data.length; i++){
+                        data[i].var1 = var1Selects[data[i].var1];
+                    }
+                }
+                for (var i = 0; i < data.length; i++){
+                    var name = "";
+                    if (data[i].name){
+                        name += data[i].name;
+                    }
+                    if (data[i].isWin == 2){
+                        name += "(获得书)"
+                    }
+                    else{
+                        name += "(获胜)"
+                    }
+                    data[i].name = name;
+                }
+                $win.bootstrapTable({data: data});
+             }
+             else{
+                $win.bootstrapTable({data: []});
+             }
+          });
           
       });
 
-      var $win = $('#game_win_table');
-      $win.bootstrapTable('destroy');
-      CG.PostController.get('/v1/game/'+gameId+'/win', function(err, data){
-          if (data){
-            for (var i = 0; i < data.length; i++){
-                var name = "";
-                if (data[i].name){
-                    name += data[i].name;
-                }
-                if (data[i].isWin == 2){
-                    name += "(获得书)"
-                }
-                else{
-                    name += "(获胜)"
-                }
-                data[i].name = name;
-            }
-            $win.bootstrapTable({data: data});
-         }
-         else{
-            $win.bootstrapTable({data: []});
-         }
-      });
+      
 }
 
 function refreshGame(){
@@ -194,7 +215,6 @@ function countdown(time){
 
 function viewActivateGame(id, status) {
   CG.PostController.get('/v1/game/'+id, function(err, data){
-      console.log(data);
       if (!err){
           var name = data.name;
           if (data.subname){
@@ -305,12 +325,12 @@ function viewActivateGame(id, status) {
                     var i, newContent = "";
                     content.forEach(function(e){
                         var html = '<li data-icon="false"><a href="#pageNewGame?id='+ e.id +'">';
-                        html += '<h2>' + e.name + '</h2>';
+                        html += '<h2>' + filterXSS(e.name) + '</h2>';
                         html += '</a></li>'
                         newContent = html + newContent;
                 }); 
 
-                $(listSelector).prepend(filterXSS(newContent)).listview("refresh");  // Prepend new content and refresh listview                      
+                $(listSelector).prepend(newContent).listview("refresh");  // Prepend new content and refresh listview                      
             }});
                           
         }
@@ -351,7 +371,7 @@ function viewActivateGame(id, status) {
         if (e.subname){
            name += " - " + e.subname;
         }
-        html += '<h2>' + name + '</h2>';
+        html += '<h2>' + filterXSS(name) + '</h2>';
         if (e.status == 1){
             html += '<p><strong>正在进行中</strong></p>';
         }else{
@@ -365,7 +385,7 @@ function viewActivateGame(id, status) {
 
     pullDownGeneratedCount += content.length;
     
-    $(listSelector).html(filterXSS(newContent)).listview("refresh");  // Prepend new content and refresh listview
+    $(listSelector).html(newContent).listview("refresh");  // Prepend new content and refresh listview
         if (data) {
             data.iscrollview.refresh();    // Refresh the iscrollview
         }
