@@ -6,12 +6,12 @@ node
 express  
 mysql  
 
-jquery
-jquery-mobile
-flatui
-iscroll
-bootstrap
-bootstrap-table
+jquery  
+jquery-mobile  
+flatui  
+iscroll  
+bootstrap  
+bootstrap-table  
 
 
   
@@ -29,6 +29,7 @@ version 0.2 2016-09-11
 
 
 # Start
+npm install  
 DEBUG=ClassGo npm start
 
 pm2 start bin/www
