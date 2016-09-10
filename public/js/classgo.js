@@ -225,7 +225,7 @@ $(function() {
                 newContent = self.showData(item) + newContent;
             }); 
     
-            $(self.listSelector).append(filterXSS(newContent)).listview("refresh");  // Prepend new content and refresh listview
+            $(self.listSelector).append(newContent).listview("refresh");  // Prepend new content and refresh listview
             if (data) {
                 data.iscrollview.refresh();    // Refresh the iscrollview
             }
@@ -481,14 +481,14 @@ function getRegisterSum(postId) {
                 return;
             }
             data.forEach(function(e){
-                $(scrollerOwner).append(filterXSS('\
+                $(scrollerOwner).append('\
                     <a href="javascript:void(0)" onclick="viewHomeDetail('+ e.id +')" class="wechat-list" >\
                         <img src="'+ photo +'">\
                         <div class="cell">\
-                            <div class="wechat-h-time"><h5>'+e.title+'</h5><time>'+$.timeago(e.createAt)+'</time></div>\
-                            <p>'+e.body+'</p>\
+                            <div class="wechat-h-time"><h5>'+filterXSS(e.title)+'</h5><time>'+$.timeago(e.createAt)+'</time></div>\
+                            <p>'+filterXSS(e.body)+'</p>\
                         </div>\
-                    </a>'));
+                    </a>');
             });
             if (Mobilebone.pages["pageMyFavourite"]){
                 Mobilebone.pages["pageMyFavourite"].refresh();

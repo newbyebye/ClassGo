@@ -16,6 +16,8 @@ function loadGameResult(gameId){
           var name = data.name;
           var var1Type = data.var1Type;
           var var1Selects = [];
+          var type = data.type;
+          var subtype = data.subtype;
 
           if (var1Type == 3){
               var s = data.var1Select.split(",");
@@ -38,29 +40,29 @@ function loadGameResult(gameId){
 
           $("#result_game_name").text(filterXSS(name+" 游戏结果"));
 
-          if (data.type == 2 && data.subtype == 3){
-              CG.PostController.get('/v1/game/'+gameId+'/stat2', function(err, data){
-              });
-          }
-          else{
-              CG.PostController.get('/v1/game/'+gameId+'/stat1', function(err, data){
-                if (var1Type == 3){
-                    for (var i = 0; i < data.length; i++){
-                        data[i].var1 = var1Selects[data[i].var1];
-                    }
+          CG.PostController.get('/v1/game/'+gameId+'/stat1', function(err, data){
+            if (type == 2 && subtype == 3){
+                for (var i = 0; i < data.length; i++){
+                    data[i].var1 = data[i].var1 +" - "+ data[i].var2;
                 }
-                $table.bootstrapTable({data: data, 
-                  columns: [{
-                    field: 'var1',
-                    title: '数字'
-                  },
-                  {
-                    field: 'count',
-                    title: '人数'
-                  }]
-                });
-              });
-          }
+            }
+            else if (var1Type == 3){
+                for (var i = 0; i < data.length; i++){
+                    data[i].var1 = var1Selects[data[i].var1];
+                }
+            }
+            $table.bootstrapTable({data: data, 
+              columns: [{
+                field: 'var1',
+                title: '数字'
+              },
+              {
+                field: 'count',
+                title: '人数'
+              }]
+            });
+          });
+          
 
           var $win = $('#game_win_table');
           $win.bootstrapTable('destroy');
@@ -188,9 +190,9 @@ function newGameDetail(id){
 
         if (size > 1){
             $('#game_subtype').html("");
-            $("#game_subtype-button span").html(filterXSS("<span>&nbsp;"+data[0].subname+"</span>"));
+            $("#game_subtype-button span").html("<span>&nbsp;"+filterXSS(data[0].subname)+"</span>");
             for (var i = 0; i < size; i++){
-                $('#game_subtype').append(filterXSS('<option value="'+ data[i].id+'" >'+data[i].subname+'</option>'));
+                $('#game_subtype').append('<option value="'+ data[i].id+'" >'+filterXSS(data[i].subname)+'</option>');
             }
              
         }
@@ -275,10 +277,10 @@ function viewActivateGame(id, status) {
 
                 $('#player_game_var3_select').html("");
                 var addrs = data.var1Select.split(",");
-                $("#player_game_var3_select span").html(filterXSS("<span>&nbsp;"+addrs[0].split(":")[1]+"</span>"));
+                $("#player_game_var3_select span").html("<span>&nbsp;"+filterXSS(addrs[0].split(":")[1])+"</span>");
                 $('#player_game_var3_select').val("0");
                 for (var i = 0; i < addrs.length; i++){
-                  $('#player_game_var3_select').append(filterXSS('<option value="'+ addrs[i].split(":")[0]+'" >'+addrs[i].split(":")[1]+'</option>'));
+                  $('#player_game_var3_select').append('<option value="'+ addrs[i].split(":")[0]+'" >'+filterXSS(addrs[i].split(":")[1])+'</option>');
                 }
              }
              else{

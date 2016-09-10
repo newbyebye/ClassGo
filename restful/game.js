@@ -145,24 +145,6 @@ router.get('/game/:id/stat1', checkToken, function(req, res, next){
 });
 
 /*
-* get game statisticsVar2 by id
-* GET /v1/game/:id/stat2
-*/
-router.get('/game/:id/stat2', function(req, res, next){
-  gameDao.statisticsVar2({id: req.params.id}, function(err, result){
-          if (err || result.length == 0) {
-              console.log(err);
-              var err = new Error('not found');
-              err.status = 501;
-              next(err);
-              return
-          }
-          res.status(200).json(result);
-      });
-});
-
-
-/*
 * get game win by id
 * GET /v1/game/:id/win
 */

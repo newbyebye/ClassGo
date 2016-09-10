@@ -90,8 +90,8 @@ var $sql = {
 
     win: 'select userId,var1,fullname as name,studentNo, isWin from userGame,user where gameId = ? and isWin > 0 and user.id = userGame.userId',
 
-    statisticsVar1: 'select var1,count(var1) as count from userGame where gameId = ? group by var1',
-    statisticsVar2: 'select var2,count(var2) as count from userGame where gameId = ? group by var2',
+    statisticsVar1: 'select var1,count(var1) as count, var2 from userGame where gameId = ? group by var1,var2',
+    
 
     report:'select userGame.*, game.postId, game.reward from userGame, game where userGame.gameId = game.id and postId = ?',
 
@@ -339,15 +339,6 @@ module.exports = {
     statisticsVar1: function(param, callback){
         pool.getConnection(function(err, connection) {
             connection.query($sql.statisticsVar1, param.id, function(err, result) {
-                callback(err, result);
-                connection.release();
-            });
-        });
-    },
-    
-    statisticsVar2: function(param, callback){
-        pool.getConnection(function(err, connection) {
-            connection.query($sql.statisticsVar2, param.id, function(err, result) {
                 callback(err, result);
                 connection.release();
             });
