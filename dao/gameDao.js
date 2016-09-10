@@ -109,6 +109,9 @@ var $sql = {
 
     // 多数派游戏
     calcRusultGame5_6: 'select var1, count(var1) as count from userGame where gameId = ? group by var1 order by ?',
+
+    // 少数派游戏
+    calcRusultGame6: 'select var1, count(var1) as count from userGame where gameId = ? group by var1 order by count asc',
 };
 
 function getRandomCode(connection, callback){
@@ -247,6 +250,18 @@ module.exports = {
     calcRusultGame5_6: function(param, callback){
         pool.getConnection(function(err, connection) {
             connection.query($sql.calcRusultGame5_6, [param.id, param.order], function(err, result) {
+                console.log($sql.calcRusultGame5_6, [param.id, param.order]);
+                callback(err, result);
+                connection.release();
+            });
+        });
+    },
+
+     // 少数派 
+    calcRusultGame6: function(param, callback){
+        pool.getConnection(function(err, connection) {
+            connection.query($sql.calcRusultGame6, [param.id], function(err, result) {
+                console.log($sql.calcRusultGame6, [param.id]);
                 callback(err, result);
                 connection.release();
             });

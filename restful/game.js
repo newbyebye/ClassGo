@@ -362,17 +362,13 @@ function endgame(gameId){
           }
           else if (game.type == 6){
             // 少数派游戏
-            gameDao.calcRusultGame5_6({id:gameId, order:'count asc'}, function(err, result){
+            console.log("6666666");
+            gameDao.calcRusultGame6({id:gameId}, function(err, result){
                 if (err || result.length == 0) {
                     console.log(err);
                     return;
                 }
-
-                // 最大值为1 没有胜者
-                if (result[0].count == 1){
-                    console.log("game "+gameId + " no win.");
-                    return;
-                }
+                console.log(result);
 
                 var min = result[0].count;
 
