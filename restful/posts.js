@@ -313,7 +313,18 @@ router.post('/post/:id/lesson', checkToken, function(req, res, next){
             });
             return
         }
-        res.status(200).json({id: result[0].id});
+        else{
+            var id = result[0].id;
+            req.body.id = id;
+            lessonDao.update(req.body, function(err, result){
+                if (err) {
+                  next(err);
+                  return;
+                }
+                res.status(200).json({id: id});
+            });
+        }
+        
       });
     });
 });
