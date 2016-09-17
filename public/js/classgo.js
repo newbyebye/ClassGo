@@ -759,9 +759,19 @@ function getRegisterSum(postId) {
                             break;
                         }
                     }
-
                     $("div.home-page ul.ui-listview").html(l.join("<li"));
-                    $.mobile.changePage("#home");
+
+                    var h = $("div.class-page ul.ui-listview").html();
+                    var l = h.split("<li");
+                    for (var i = 0; i < l.length; i++){
+                        if (l[i].indexOf("pageDetail?id="+id) != -1){
+                            l.splice(i, 1);
+                            break;
+                        }
+                    }
+                    $("div.class-page ul.ui-listview").html(l.join("<li"));
+
+                    back();
                 }
             });
         }
