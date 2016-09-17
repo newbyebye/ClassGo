@@ -168,6 +168,7 @@ $(function() {
         pullDownGeneratedCount: 0,
         pullUpGeneratedCount: 0,
         PAGE_SIZE: 20,
+        bInit: false,
 
         //costomer define
         listSelector:"",
@@ -185,22 +186,28 @@ $(function() {
 
         initData: function(){
             var self = this;
-            self.getCount(function(err, data){
-                if(!err){
-                    if (data.count < self.PAGE_SIZE){
-                        self.pullDownGeneratedCount = 0;
-                    }
-                    else{
-                        self.pullDownGeneratedCount = data.count - self.PAGE_SIZE;
-                    }
-                    
-                    self.pullUpGeneratedCount = self.pullDownGeneratedCount;
+            if (!self.bInit){
+                self.getCount(function(err, data){
+                    if(!err){
+                        self.bInit = true;
+                        if (data.count < self.PAGE_SIZE){
+                            self.pullDownGeneratedCount = 0;
+                        }
+                        else{
+                            self.pullDownGeneratedCount = data.count - self.PAGE_SIZE;
+                        }
+                        
+                        self.pullUpGeneratedCount = self.pullDownGeneratedCount;
 
-                    self.loadData(self.pullDownGeneratedCount, self.PAGE_SIZE, function(err, content){
-                        self.gotPullDownData(null, null, content);
-                    });
-                }
-            });
+                        self.loadData(self.pullDownGeneratedCount, self.PAGE_SIZE, function(err, content){
+                            self.gotPullDownData(null, null, content);
+                        });
+                    }
+                });
+            }
+            else{
+                self.onPullDown();
+            }
         },
 
         gotPullDownData: function(event, data, content) {
