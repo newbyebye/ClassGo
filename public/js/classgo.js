@@ -118,8 +118,8 @@ $(function() {
 			this.internalPost(path, data, "PUT", callback);
 		},
 
-		delete : function(path, data, callback) {
-			this.internalPost(path, data, "DELETE", callback);
+		delete : function(path, callback) {
+			this.internalPost(path, {}, "DELETE", callback);
 		},
 
 		submit : function(data, callback) {
@@ -739,6 +739,26 @@ function getRegisterSum(postId) {
         });  
     }
 
+    function deletePost(){
+        var id = $('#detail_id').val();
+        if (confirm("删除是不可恢复的，你确认要删除吗？")){
+            CG.PostController.delete('/v1/post/'+id, function(err, data){
+                if (!err){
+                    var h = $("div.home-page ul.ui-listview").html();
+                    var l = h.split("<li");
+                    for (var i = 0; i < l.length; i++){
+                        if (l[i].indexOf("pageDetail?id="+id) != -1){
+                            l.splice(i, 1);
+                            break;
+                        }
+                    }
+
+                    $("div.home-page ul.ui-listview").html(l.join("<li"));
+                    $.mobile.changePage("#home");
+                }
+            });
+        }
+    }
   
 
 // The Mobile Safari Forms Assistant pushes the page up if it needs to scroll, but jQuery Mobile
