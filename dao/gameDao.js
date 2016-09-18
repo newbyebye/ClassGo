@@ -108,7 +108,7 @@ var $sql = {
     calcRusultGame3: 'select * from userGame where gameId = ? order by var1 desc',
 
     // 多数派游戏
-    calcRusultGame5_6: 'select var1, count(var1) as count from userGame where gameId = ? group by var1 order by ?',
+    calcRusultGame5: 'select var1, count(var1) as count from userGame where gameId = ? group by var1 order by count desc',
 
     // 少数派游戏
     calcRusultGame6: 'select var1, count(var1) as count from userGame where gameId = ? group by var1 order by count asc',
@@ -244,13 +244,11 @@ module.exports = {
         });
     },
 
-    
-
     // 少数派 多数派游戏
-    calcRusultGame5_6: function(param, callback){
+    calcRusultGame5: function(param, callback){
         pool.getConnection(function(err, connection) {
-            connection.query($sql.calcRusultGame5_6, [param.id, param.order], function(err, result) {
-                console.log($sql.calcRusultGame5_6, [param.id, param.order]);
+            connection.query($sql.calcRusultGame5, [param.id], function(err, result) {
+                console.log($sql.calcRusultGame5, [param.id]);
                 callback(err, result);
                 connection.release();
             });

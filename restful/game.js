@@ -331,11 +331,6 @@ function endgame(gameId){
                         gameDao.updateWin({win:1, id:result[i].id}, function(err, result){});
                     }
                 }
-
-                
-                
-            
-
             });
           }
           else if (game.type == 4){
@@ -344,7 +339,7 @@ function endgame(gameId){
           }
           else if (game.type == 5){
             // 多数派游戏
-            gameDao.calcRusultGame5_6({id:gameId, order:'count desc'}, function(err, result){
+            gameDao.calcRusultGame5({id:gameId}, function(err, result){
                 if (err || result.length == 0) {
                     console.log(err);
                     return;
