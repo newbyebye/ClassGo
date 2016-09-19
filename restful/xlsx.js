@@ -125,7 +125,7 @@ router.post('/post/:id/upload', checkToken, function(req, res, next){
                     }
                     studentNo = studentNo.trim();
                     //console.log(studentNo);
-                    if (studentNo.charAt(0) == 'U' || studentNo.charAt(0) == 'M' || studentNo.charAt(0) == 'D'){
+                    if (studentNo.charAt(0) == 'U' || studentNo.charAt(0) == 'M' || studentNo.charAt(0) == 'D' || studentNo.charAt(0) == 'X'){
                         var fullname = sht.cell(rIdx,cIdx+1).trim();
                         datas[dIdx] = {'postId':postId, 'userId':"", 'studentNo':studentNo, 'fullname':fullname.trim()};    
                         dIdx++;
