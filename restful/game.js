@@ -172,29 +172,46 @@ router.post('/game/:id', checkToken, function(req, res, next){
   console.log(req.api_user);
   req.body.userId = req.api_user.userId;
 
-  gameDao.queryUserGame(req.body, function(err, result){
-      if (err || result.length == 0){
-          gameDao.addUserData(req.body, function(err, result){
-              if (err) {
-                next(err);
-                return;
-              }
-
-              res.status(200).json({});
-          });
+  gameDao.queryGameById({id: req.params.id}, function(err, result){
+      if (err || result.length == 0) {
+          console.log(err);
+          var err = new Error('not found');
+          err.status = 501;
+          next(err);
+          return
       }
-      else{
-          console.log(result);
-          req.body.id = result[0].id;
-          gameDao.updateUserGame(req.body, function(err, result){
-              if (err) {
-                next(err);
-                return;
-              }
 
-              res.status(200).json({});
-          });
+      if (result[0].status == 0) {
+          var err = new Error('game is closed');
+          err.status = 502;
+          next(err);
+          return
       }
+
+      gameDao.queryUserGame(req.body, function(err, result){
+          if (err || result.length == 0){
+              gameDao.addUserData(req.body, function(err, result){
+                  if (err) {
+                    next(err);
+                    return;
+                  }
+
+                  res.status(200).json({});
+              });
+          }
+          else{
+              console.log(result);
+              req.body.id = result[0].id;
+              gameDao.updateUserGame(req.body, function(err, result){
+                  if (err) {
+                    next(err);
+                    return;
+                  }
+
+                  res.status(200).json({});
+              });
+          }
+      });
   });
 
 });
