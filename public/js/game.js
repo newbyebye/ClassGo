@@ -141,6 +141,10 @@ function submitPlayGame(){
       return;
    }
 
+   if (!confirm("游戏时间结束后不允许再修改，确认提交？")){
+      return;
+   }
+
    var data = {"var1":$('#player_game_var1').val(), "var2":$('#player_game_var2').val()};
    if ($("#player_game_var3_field").attr("style") === "display: block;"){
       data.var1 = $('#player_game_var3_select').val();
