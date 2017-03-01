@@ -304,7 +304,7 @@ router.post('/post/:id/lesson', checkToken, function(req, res, next){
 
                 setTimeout(function(){
                     console.log("update lesson status");
-                    lessonDao.updateStatus({"id": result.insertId, "status": 2}, function(){});
+                    lessonDao.update({"id": result.insertId, "status": 2}, function(){});
                 }, 180*60*1000);
 
                 res.status(200).json({
